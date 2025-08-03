@@ -1,119 +1,80 @@
-/* 🌌 Fond galaxie stitch */
 body {
   margin: 0;
-  padding: 0;
-  font-family: 'Comic Sans MS', 'Papyrus', cursive;
+  font-family: 'Comic Sans MS', cursive;
   background: url('fond-stitch.jpg') no-repeat center center fixed;
   background-size: cover;
   overflow: hidden;
-  height: 100vh;
 }
 
-/* 🪞 Fenêtre principale du chat */
 #chat-app {
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
+  height: 100vh;
   padding: 10px;
-  z-index: 1;
+  box-sizing: border-box;
+  justify-content: flex-end;
 }
 
-/* 💬 Zone de messages */
 #messages {
   flex: 1;
   overflow-y: auto;
   padding: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+  backdrop-filter: blur(2px);
 }
 
-/* 💫 Bulles de message */
 .message {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid #ff69b4;
   border-radius: 20px;
   padding: 10px;
+  margin: 10px 0;
   color: white;
+  backdrop-filter: blur(6px);
+  animation: neonPulse 2s infinite ease-in-out;
   max-width: 80%;
-  backdrop-filter: blur(5px);
-  border: 2px solid rgba(255, 105, 180, 0.6);
-  animation: pulse-border 2s infinite;
   word-break: break-word;
 }
 
-/* ✨ Contour néon rose animé */
-@keyframes pulse-border {
-  0% {
-    box-shadow: 0 0 6px rgba(255, 105, 180, 0.3), 0 0 10px rgba(255, 105, 180, 0.4);
-  }
-  50% {
-    box-shadow: 0 0 12px rgba(255, 105, 180, 0.6), 0 0 20px rgba(255, 105, 180, 0.8);
-  }
-  100% {
-    box-shadow: 0 0 6px rgba(255, 105, 180, 0.3), 0 0 10px rgba(255, 105, 180, 0.4);
-  }
+@keyframes neonPulse {
+  0%, 100% { box-shadow: 0 0 10px #ff69b4; }
+  50% { box-shadow: 0 0 20px #ff69b4, 0 0 30px #ff69b4; }
 }
 
-/* 🖼️ Images dans les messages */
 .message img {
   max-width: 100%;
   height: auto;
   border-radius: 10px;
   margin-top: 5px;
-  display: block;
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
 }
 
-/* 📝 Formulaire d'envoi */
 form {
   display: flex;
-  align-items: center;
-  gap: 10px;
-  background: rgba(255, 255, 255, 0.05);
+  gap: 8px;
   padding: 10px;
-  border-radius: 12px;
-  backdrop-filter: blur(3px);
-  z-index: 2;
-  margin-top: 10px;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(4px);
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-/* 📥 Champ de saisie */
 #message-input {
   flex: 1;
   padding: 10px;
-  border-radius: 10px;
+  border-radius: 20px;
   border: none;
-  background: rgba(255, 255, 255, 0.15);
-  color: white;
   outline: none;
+  font-size: 16px;
 }
 
-/* 📤 Bouton envoyer */
 button {
+  background: #ff69b4;
+  color: white;
+  border: none;
+  border-radius: 20px;
   padding: 10px 15px;
-  border: none;
-  border-radius: 10px;
-  background: #ff69b4;
-  color: white;
   cursor: pointer;
-  font-weight: bold;
-  transition: 0.3s;
 }
 
-button:hover {
-  background: #ff85c1;
-}
-
-/* 📁 Input image (rendu visible via label si besoin) */
 #image-upload {
-  display: block;
-  background: #ff69b4;
-  border-radius: 8px;
-  padding: 6px;
-  color: white;
-  font-size: 12px;
-  cursor: pointer;
-  border: none;
+  width: auto;
+  max-width: 60px;
 }
