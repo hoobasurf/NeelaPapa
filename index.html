@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Stitch & Papa</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="chat-app">
+    <header>
+      <h1>🧸 Stitch & Papa</h1>
+      <p id="status">Connexion...</p>
+    </header>
+    <main id="messages"></main>
+    <form id="message-form">
+      <input type="text" id="message-input" placeholder="Écris ici..." autocomplete="off" />
+      <button type="submit">Envoyer</button>
+      <input type="file" id="image-upload" accept="image/*" />
+    </form>
+  </div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
