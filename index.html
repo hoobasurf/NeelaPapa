@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Neela & Papa</title>
@@ -9,14 +8,13 @@
 </head>
 <body>
   <div id="chat-app">
-    <header>
-      <p id="status">Connexion...</p>
-    </header>
     <main id="messages"></main>
+
     <form id="message-form">
       <input type="text" id="message-input" placeholder="Écris ici..." autocomplete="off" />
-      <button type="submit">Envoyer</button>
+      <label for="image-upload" class="custom-file">📎</label>
       <input type="file" id="image-upload" accept="image/*" />
+      <button type="submit">➤</button>
     </form>
   </div>
 
