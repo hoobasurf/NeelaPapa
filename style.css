@@ -8,14 +8,16 @@ body {
   overflow: hidden;
 }
 
+/* Appli Chat */
 #chat-app {
   display: flex;
   flex-direction: column;
-  justify-content: flex-end; /* Pour que la fenêtre soit plus bas */
+  justify-content: flex-end;
   height: 100vh;
   padding: 2rem 1rem 1rem 1rem;
-  backdrop-filter: none; /* On veut laisser le fond visible */
   background: transparent;
+  position: relative;
+  z-index: 1;
 }
 
 header {
@@ -32,7 +34,7 @@ header {
   overflow-y: auto;
   padding: 1rem;
   border-radius: 15px;
-  background: rgba(255, 255, 255, 0.02); /* ultra transparent */
+  background: rgba(255, 255, 255, 0.02);
   border: 2px solid rgba(255, 105, 180, 0.3);
   animation: neonPulse 2.5s infinite alternate;
   box-shadow: 0 0 20px rgba(255, 105, 180, 0.2);
@@ -54,7 +56,7 @@ header {
   margin-bottom: 1rem;
   max-width: 80%;
   padding: 0.7rem 1rem;
-  background: rgba(255, 255, 255, 0.1); /* Transparence douce */
+  background: rgba(255, 255, 255, 0.1);
   border-radius: 20px;
   color: #fff;
   backdrop-filter: blur(2px);
@@ -64,7 +66,7 @@ header {
 }
 
 .message.me {
-  background: rgba(255, 105, 180, 0.2); /* Rose transparent */
+  background: rgba(255, 105, 180, 0.2);
   align-self: flex-end;
   border: 1px solid rgba(255, 105, 180, 0.4);
 }
@@ -95,4 +97,65 @@ button {
   border-radius: 12px;
   cursor: pointer;
   box-shadow: 0 0 8px #ffb3e6;
+}
+
+/* 🌠 Effet magique */
+#magic-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  background: radial-gradient(ellipse at top left, rgba(255, 194, 255, 0.15), transparent),
+              radial-gradient(ellipse at bottom right, rgba(180, 150, 255, 0.1), transparent);
+  animation: moveGlow 15s ease-in-out infinite;
+  mix-blend-mode: screen;
+}
+
+@keyframes moveGlow {
+  0% { background-position: top left, bottom right; }
+  50% { background-position: center center, center center; }
+  100% { background-position: top left, bottom right; }
+}
+
+/* ✨ Étoiles scintillantes */
+.stars::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background-image: radial-gradient(white 1px, transparent 1px);
+  background-size: 3px 3px;
+  animation: twinkle 4s linear infinite;
+  opacity: 0.3;
+  z-index: 0;
+  pointer-events: none;
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.6; }
+}
+
+/* 🪄 Traînée de poussière magique */
+.dust {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: repeating-radial-gradient(circle, rgba(255,255,255,0.05) 0, rgba(255,255,255,0.05) 1px, transparent 2px);
+  animation: dust-move 30s linear infinite;
+  z-index: 0;
+  pointer-events: none;
+}
+
+@keyframes dust-move {
+  from {
+    transform: translate(0, 0);
+  }
+  to {
+    transform: translate(-100px, -100px);
+  }
 }
