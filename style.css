@@ -6,9 +6,10 @@ body {
   background: url('fond-stitch.jpg') no-repeat center center fixed;
   background-size: cover;
   overflow: hidden;
+  height: 100vh;
 }
 
-/* 🪞 Fenêtre de chat transparente */
+/* 🪞 Fenêtre principale du chat */
 #chat-app {
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
@@ -19,7 +20,7 @@ body {
   z-index: 1;
 }
 
-/* 💬 Zone des messages */
+/* 💬 Zone de messages */
 #messages {
   flex: 1;
   overflow-y: auto;
@@ -31,7 +32,7 @@ body {
 
 /* 💫 Bulles de message */
 .message {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.08);
   border-radius: 20px;
   padding: 10px;
   color: white;
@@ -65,7 +66,7 @@ body {
   box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
 }
 
-/* 📝 Formulaire de message */
+/* 📝 Formulaire d'envoi */
 form {
   display: flex;
   align-items: center;
@@ -75,15 +76,16 @@ form {
   border-radius: 12px;
   backdrop-filter: blur(3px);
   z-index: 2;
+  margin-top: 10px;
 }
 
-/* 📥 Champ texte */
+/* 📥 Champ de saisie */
 #message-input {
   flex: 1;
   padding: 10px;
   border-radius: 10px;
   border: none;
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.15);
   color: white;
   outline: none;
 }
@@ -104,7 +106,14 @@ button:hover {
   background: #ff85c1;
 }
 
-/* 📁 Upload image */
+/* 📁 Input image (rendu visible via label si besoin) */
 #image-upload {
-  display: none;
+  display: block;
+  background: #ff69b4;
+  border-radius: 8px;
+  padding: 6px;
+  color: white;
+  font-size: 12px;
+  cursor: pointer;
+  border: none;
 }
