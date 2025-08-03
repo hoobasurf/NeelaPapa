@@ -4,23 +4,25 @@ body {
   background: url('fond-stitch.jpg') no-repeat center center fixed;
   background-size: cover;
   color: #fff;
+  height: 100vh;
+  overflow: hidden;
 }
 
 #chat-app {
-  max-width: 500px;
-  margin: 0 auto;
-  padding: 1rem;
   display: flex;
   flex-direction: column;
+  justify-content: flex-end; /* Pour que la fenêtre soit plus bas */
   height: 100vh;
-  backdrop-filter: blur(8px);
+  padding: 2rem 1rem 1rem 1rem;
+  backdrop-filter: none; /* On veut laisser le fond visible */
+  background: transparent;
 }
 
 header {
   text-align: center;
   margin-bottom: 1rem;
   font-weight: bold;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   color: #ffe0f6;
   text-shadow: 0 0 10px #ff91d4;
 }
@@ -29,60 +31,48 @@ header {
   flex-grow: 1;
   overflow-y: auto;
   padding: 1rem;
-  background: rgba(255, 255, 255, 0.05); /* transparence douce */
   border-radius: 15px;
-  border: 2px solid transparent;
+  background: rgba(255, 255, 255, 0.02); /* ultra transparent */
+  border: 2px solid rgba(255, 105, 180, 0.3);
   animation: neonPulse 2.5s infinite alternate;
-  box-shadow: 0 0 20px rgba(255, 105, 180, 0.3);
+  box-shadow: 0 0 20px rgba(255, 105, 180, 0.2);
+  margin-bottom: 1rem;
 }
 
-/* Effet néon rose clignotant doux */
 @keyframes neonPulse {
   0% {
-    border-color: rgba(255, 105, 180, 0.4);
-    box-shadow: 0 0 8px rgba(255, 105, 180, 0.4);
+    border-color: rgba(255, 105, 180, 0.3);
+    box-shadow: 0 0 8px rgba(255, 105, 180, 0.3);
   }
   100% {
-    border-color: rgba(255, 105, 180, 0.9);
-    box-shadow: 0 0 20px rgba(255, 105, 180, 0.9);
+    border-color: rgba(255, 105, 180, 0.8);
+    box-shadow: 0 0 20px rgba(255, 105, 180, 0.8);
   }
 }
 
 .message {
   margin-bottom: 1rem;
   max-width: 80%;
-  word-wrap: break-word;
   padding: 0.7rem 1rem;
-  background: linear-gradient(135deg, #d78fff, #6fdfff);
-  border-radius: 20px 20px 20px 5px;
+  background: rgba(255, 255, 255, 0.1); /* Transparence douce */
+  border-radius: 20px;
   color: #fff;
-  box-shadow: 0 0 12px rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(2px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
   animation: pop 0.3s ease;
 }
 
 .message.me {
-  background: linear-gradient(135deg, #ff91d4, #ffa1e3);
+  background: rgba(255, 105, 180, 0.2); /* Rose transparent */
   align-self: flex-end;
-  border-radius: 20px 20px 5px 20px;
-}
-
-.message img {
-  max-width: 200px;
-  border-radius: 12px;
-  margin-top: 5px;
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
-}
-
-@keyframes pop {
-  0% { transform: scale(0.8); opacity: 0; }
-  100% { transform: scale(1); opacity: 1; }
+  border: 1px solid rgba(255, 105, 180, 0.4);
 }
 
 form {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  margin-top: 1rem;
 }
 
 input[type="text"] {
@@ -91,6 +81,8 @@ input[type="text"] {
   border: none;
   outline: none;
   font-size: 1rem;
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
 }
 
 button {
