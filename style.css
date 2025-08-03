@@ -1,7 +1,7 @@
 body {
   margin: 0;
   font-family: 'Comic Sans MS', cursive;
-  background: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?fit=crop&w=1400&q=80') no-repeat center center fixed;
+  background: url('fond-stitch.jpg') no-repeat center center fixed;
   background-size: cover;
   color: #fff;
 }
@@ -19,30 +19,63 @@ body {
 header {
   text-align: center;
   margin-bottom: 1rem;
-}
-
-.logo {
-  width: 250px;
-  max-width: 90%;
-  margin-bottom: 0.5rem;
+  font-weight: bold;
+  font-size: 1.1rem;
+  color: #ffe0f6;
+  text-shadow: 0 0 10px #ff91d4;
 }
 
 #messages {
   flex-grow: 1;
   overflow-y: auto;
-  border: 1px solid #fff3;
   padding: 1rem;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.05); /* transparence douce */
+  border-radius: 15px;
+  border: 2px solid transparent;
+  animation: neonPulse 2.5s infinite alternate;
+  box-shadow: 0 0 20px rgba(255, 105, 180, 0.3);
+}
+
+/* Effet néon rose clignotant doux */
+@keyframes neonPulse {
+  0% {
+    border-color: rgba(255, 105, 180, 0.4);
+    box-shadow: 0 0 8px rgba(255, 105, 180, 0.4);
+  }
+  100% {
+    border-color: rgba(255, 105, 180, 0.9);
+    box-shadow: 0 0 20px rgba(255, 105, 180, 0.9);
+  }
 }
 
 .message {
-  margin-bottom: 0.8rem;
+  margin-bottom: 1rem;
+  max-width: 80%;
+  word-wrap: break-word;
+  padding: 0.7rem 1rem;
+  background: linear-gradient(135deg, #d78fff, #6fdfff);
+  border-radius: 20px 20px 20px 5px;
+  color: #fff;
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.3);
+  animation: pop 0.3s ease;
+}
+
+.message.me {
+  background: linear-gradient(135deg, #ff91d4, #ffa1e3);
+  align-self: flex-end;
+  border-radius: 20px 20px 5px 20px;
 }
 
 .message img {
-  max-width: 150px;
-  border-radius: 10px;
+  max-width: 200px;
+  border-radius: 12px;
+  margin-top: 5px;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+}
+
+@keyframes pop {
+  0% { transform: scale(0.8); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
 }
 
 form {
@@ -53,18 +86,21 @@ form {
 }
 
 input[type="text"] {
-  padding: 0.5rem;
-  border-radius: 10px;
+  padding: 0.6rem;
+  border-radius: 12px;
   border: none;
   outline: none;
+  font-size: 1rem;
 }
 
 button {
   background: #ff79c6;
   border: none;
-  padding: 0.5rem;
+  padding: 0.6rem;
   color: white;
   font-weight: bold;
-  border-radius: 10px;
+  font-size: 1rem;
+  border-radius: 12px;
   cursor: pointer;
+  box-shadow: 0 0 8px #ffb3e6;
 }
