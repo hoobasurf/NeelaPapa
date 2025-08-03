@@ -1,117 +1,110 @@
-/* FOND GÉNÉRAL */
+/* 🌌 Fond galaxie stitch */
 body {
   margin: 0;
-  font-family: 'Comic Sans MS', cursive;
+  padding: 0;
+  font-family: 'Comic Sans MS', 'Papyrus', cursive;
   background: url('fond-stitch.jpg') no-repeat center center fixed;
   background-size: cover;
-  color: #fff;
-  height: 100vh;
   overflow: hidden;
 }
 
-/* APP PRINCIPAL */
+/* 🪞 Fenêtre de chat transparente */
 #chat-app {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  height: 100vh;
-  padding: 1rem;
-  background: transparent;
+  padding: 10px;
+  z-index: 1;
 }
 
-/* TITRE / STATUT */
-header {
-  text-align: center;
-  font-weight: bold;
-  font-size: 1rem;
-  margin-bottom: 0.5rem;
-  color: #ffe0f6;
-  text-shadow: 0 0 8px #ff79c6;
-}
-
-/* FENÊTRE MESSAGES */
+/* 💬 Zone des messages */
 #messages {
-  flex-grow: 1;
+  flex: 1;
   overflow-y: auto;
-  padding: 1rem;
-  border-radius: 20px;
-  background: transparent;
-  border: 2px solid #ff79c6;
-  animation: neonPulse 2s infinite alternate;
-  box-shadow: 0 0 15px #ff79c6;
-  margin-bottom: 1rem;
-  backdrop-filter: blur(4px);
-}
-
-/* BULLES DE MESSAGE */
-.message {
-  margin-bottom: 1rem;
-  padding: 0.7rem 1rem;
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 16px;
-  color: #fff;
-  backdrop-filter: blur(3px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  font-size: 0.95rem;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-}
-
-.message.me {
-  background: rgba(255, 105, 180, 0.15);
-  border: 1px solid rgba(255, 105, 180, 0.4);
-  align-self: flex-end;
-}
-
-/* FORMULAIRE */
-form {
+  padding: 10px;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 10px;
 }
 
-/* INPUT TEXTE */
-input[type="text"] {
-  padding: 0.6rem;
-  border-radius: 10px;
-  border: none;
-  outline: none;
-  font-size: 1rem;
-  background: rgba(255, 255, 255, 0.15);
+/* 💫 Bulles de message */
+.message {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 10px;
   color: white;
-  backdrop-filter: blur(3px);
+  max-width: 80%;
+  backdrop-filter: blur(5px);
+  border: 2px solid rgba(255, 105, 180, 0.6);
+  animation: pulse-border 2s infinite;
+  word-break: break-word;
 }
 
-/* BOUTON ENVOYER */
-button {
-  background: #ff79c6;
-  border: none;
-  padding: 0.6rem;
-  color: white;
-  font-weight: bold;
-  font-size: 1rem;
-  border-radius: 10px;
-  cursor: pointer;
-  box-shadow: 0 0 10px #ffb3e6;
-}
-
-/* ANIMATION NEON */
-@keyframes neonPulse {
+/* ✨ Contour néon rose animé */
+@keyframes pulse-border {
   0% {
-    border-color: rgba(255, 105, 180, 0.2);
-    box-shadow: 0 0 5px rgba(255, 105, 180, 0.3);
+    box-shadow: 0 0 6px rgba(255, 105, 180, 0.3), 0 0 10px rgba(255, 105, 180, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 12px rgba(255, 105, 180, 0.6), 0 0 20px rgba(255, 105, 180, 0.8);
   }
   100% {
-    border-color: rgba(255, 105, 180, 0.8);
-    box-shadow: 0 0 20px rgba(255, 105, 180, 0.8);
+    box-shadow: 0 0 6px rgba(255, 105, 180, 0.3), 0 0 10px rgba(255, 105, 180, 0.4);
   }
+}
 
-  /* IMAGES DANS LES MESSAGES */
+/* 🖼️ Images dans les messages */
 .message img {
   max-width: 100%;
   height: auto;
-  border-radius: 12px;
-  display: block;
+  border-radius: 10px;
   margin-top: 5px;
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+  display: block;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+}
+
+/* 📝 Formulaire de message */
+form {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 10px;
+  border-radius: 12px;
+  backdrop-filter: blur(3px);
+  z-index: 2;
+}
+
+/* 📥 Champ texte */
+#message-input {
+  flex: 1;
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  outline: none;
+}
+
+/* 📤 Bouton envoyer */
+button {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 10px;
+  background: #ff69b4;
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+button:hover {
+  background: #ff85c1;
+}
+
+/* 📁 Upload image */
+#image-upload {
+  display: none;
 }
