@@ -1,3 +1,4 @@
+/* FOND GÉNÉRAL */
 body {
   margin: 0;
   font-family: 'Comic Sans MS', cursive;
@@ -8,83 +9,80 @@ body {
   overflow: hidden;
 }
 
+/* APP PRINCIPAL */
 #chat-app {
   display: flex;
   flex-direction: column;
-  justify-content: flex-end; /* Pour que la fenêtre soit plus bas */
+  justify-content: flex-end;
   height: 100vh;
-  padding: 2rem 1rem 1rem 1rem;
-  backdrop-filter: none; /* On veut laisser le fond visible */
+  padding: 1rem;
   background: transparent;
 }
 
+/* TITRE / STATUT */
 header {
   text-align: center;
-  margin-bottom: 1rem;
   font-weight: bold;
-  font-size: 1.2rem;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
   color: #ffe0f6;
-  text-shadow: 0 0 10px #ff91d4;
+  text-shadow: 0 0 8px #ff79c6;
 }
 
+/* FENÊTRE MESSAGES */
 #messages {
   flex-grow: 1;
   overflow-y: auto;
   padding: 1rem;
-  border-radius: 15px;
-  background: rgba(255, 255, 255, 0.02); /* ultra transparent */
-  border: 2px solid rgba(255, 105, 180, 0.3);
-  animation: neonPulse 2.5s infinite alternate;
-  box-shadow: 0 0 20px rgba(255, 105, 180, 0.2);
+  border-radius: 20px;
+  background: transparent;
+  border: 2px solid #ff79c6;
+  animation: neonPulse 2s infinite alternate;
+  box-shadow: 0 0 15px #ff79c6;
   margin-bottom: 1rem;
+  backdrop-filter: blur(4px);
 }
 
-@keyframes neonPulse {
-  0% {
-    border-color: rgba(255, 105, 180, 0.3);
-    box-shadow: 0 0 8px rgba(255, 105, 180, 0.3);
-  }
-  100% {
-    border-color: rgba(255, 105, 180, 0.8);
-    box-shadow: 0 0 20px rgba(255, 105, 180, 0.8);
-  }
-}
-
+/* BULLES DE MESSAGE */
 .message {
   margin-bottom: 1rem;
-  max-width: 80%;
   padding: 0.7rem 1rem;
-  background: rgba(255, 255, 255, 0.1); /* Transparence douce */
-  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
   color: #fff;
-  backdrop-filter: blur(2px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
-  animation: pop 0.3s ease;
+  backdrop-filter: blur(3px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  font-size: 0.95rem;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .message.me {
-  background: rgba(255, 105, 180, 0.2); /* Rose transparent */
-  align-self: flex-end;
+  background: rgba(255, 105, 180, 0.15);
   border: 1px solid rgba(255, 105, 180, 0.4);
+  align-self: flex-end;
 }
 
+/* FORMULAIRE */
 form {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 }
 
+/* INPUT TEXTE */
 input[type="text"] {
   padding: 0.6rem;
-  border-radius: 12px;
+  border-radius: 10px;
   border: none;
   outline: none;
   font-size: 1rem;
   background: rgba(255, 255, 255, 0.15);
   color: white;
+  backdrop-filter: blur(3px);
 }
 
+/* BOUTON ENVOYER */
 button {
   background: #ff79c6;
   border: none;
@@ -92,7 +90,19 @@ button {
   color: white;
   font-weight: bold;
   font-size: 1rem;
-  border-radius: 12px;
+  border-radius: 10px;
   cursor: pointer;
-  box-shadow: 0 0 8px #ffb3e6;
+  box-shadow: 0 0 10px #ffb3e6;
+}
+
+/* ANIMATION NEON */
+@keyframes neonPulse {
+  0% {
+    border-color: rgba(255, 105, 180, 0.2);
+    box-shadow: 0 0 5px rgba(255, 105, 180, 0.3);
+  }
+  100% {
+    border-color: rgba(255, 105, 180, 0.8);
+    box-shadow: 0 0 20px rgba(255, 105, 180, 0.8);
+  }
 }
