@@ -4,15 +4,13 @@ body {
   background: url('fond-stitch.jpg') no-repeat center top fixed;
   background-size: cover;
   overflow: hidden;
-  transform: scale(0.95); /* Zoom arrière */
-  transform-origin: top center;
 }
 
 #chat-app {
   display: flex;
   flex-direction: column;
-  height: 85vh; /* Réduction pour laisser voir le haut */
-  padding: 20px 10px 10px 10px; /* Espace en haut + bas */
+  height: 85vh;                /* réduit pour laisser apparaître le titre en haut */
+  padding: 120px 10px 10px;    /* 120px de marge en haut pour descendre le chat */
   box-sizing: border-box;
   justify-content: flex-end;
   background: transparent;
