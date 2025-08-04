@@ -9,8 +9,8 @@ body {
 #chat-app {
   display: flex;
   flex-direction: column;
-  height: 85vh;                /* réduit pour laisser apparaître le titre en haut */
-  padding: 120px 10px 10px;    /* 120px de marge en haut pour descendre le chat */
+  height: 78vh;                /* réduit un peu plus pour laisser bien voir le titre */
+  padding: 150px 10px 10px;    /* espace en haut augmenté à 150px */
   box-sizing: border-box;
   justify-content: flex-end;
   background: transparent;
