@@ -1,309 +1,164 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Neela & Papa - Messagerie + Tamagotchi Stitch</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Comic Sans MS', cursive;
-      background: url('fond-stitch.jpg') no-repeat center top fixed;
-      background-size: cover;
-      overflow: hidden;
-      color: white;
-    }
-
-    #chat-app {
-      display: flex;
-      flex-direction: column;
-      height: 78vh;
-      padding: 150px 10px 10px;
-      box-sizing: border-box;
-      justify-content: flex-end;
-      background: transparent;
-      max-width: 600px;
-      margin: auto;
-    }
-
-    #messages {
-      flex: 1;
-      overflow-y: auto;
-      padding: 10px;
-      backdrop-filter: blur(2px);
-      border-radius: 20px;
-      border: 2px solid #ff69b4;
-    }
-
-    .message {
-      background: rgba(255, 255, 255, 0.05);
-      border: 2px solid #ff69b4;
-      border-radius: 20px;
-      padding: 10px;
-      margin: 10px 0;
-      color: white;
-      backdrop-filter: blur(6px);
-      animation: neonPulse 2s infinite ease-in-out;
-      max-width: 80%;
-      word-break: break-word;
-    }
-
-    @keyframes neonPulse {
-      0%, 100% { box-shadow: 0 0 10px #ff69b4; }
-      50% { box-shadow: 0 0 20px #ff69b4, 0 0 30px #ff69b4; }
-    }
-
-    .message img {
-      max-width: 100%;
-      height: auto;
-      border-radius: 10px;
-      margin-top: 5px;
-    }
-
-    form {
-      display: flex;
-      gap: 8px;
-      padding: 10px;
-      background: rgba(0, 0, 0, 0.3);
-      backdrop-filter: blur(4px);
-      border-top: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 0 0 20px 20px;
-    }
-
-    #message-input {
-      flex: 1;
-      padding: 10px;
-      border-radius: 20px;
-      border: none;
-      outline: none;
-      font-size: 16px;
-    }
-
-    button {
-      background: #ff69b4;
-      color: white;
-      border: none;
-      border-radius: 20px;
-      padding: 10px 15px;
-      cursor: pointer;
-    }
-
-    #image-upload {
-      max-width: 120px;
-      font-size: 12px;
-    }
-
-    /* Tamagotchi container */
-    #tamagotchi-container {
-      position: fixed;
-      bottom: 20px; 
-      right: 20px; 
-      width: 180px; 
-      background: rgba(0,0,0,0.6); 
-      border-radius: 20px; 
-      padding: 15px; 
-      color: #ff69b4; 
-      font-family: 'Comic Sans MS', cursive; 
-      text-align: center;
-      box-shadow: 0 0 15px #ff69b4; 
-      user-select:none;
-      z-index: 1000;
-    }
-
-    #tamagotchi-container h3 {
-      margin: 0 0 10px 0; 
-      font-weight: bold;
-      color: #ff69b4;
-      text-shadow: 0 0 5px #ff69b4;
-    }
-
-    #tamagotchi-container svg {
-      width: 120px; 
-      height: 120px;
-      margin: auto;
-      display: block;
-    }
-
-    #tamagotchi-container div {
-      margin-top: 10px; 
-      font-size: 16px; 
-      color: white;
-    }
-
-    #feed-btn {
-      margin-top: 12px; 
-      background: #ff69b4; 
-      border:none; 
-      border-radius: 20px; 
-      padding: 8px 14px; 
-      cursor:pointer; 
-      font-weight: bold; 
-      font-size: 14px; 
-      color: black;
-      transition: background-color 0.3s ease;
-    }
-    #feed-btn:hover {
-      background-color: #e052a1;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Stitch SVG Animé</title>
+<style>
+  body {
+    background: #1a1a2e;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    overflow: hidden;
+    font-family: 'Comic Sans MS', cursive;
+  }
+  svg {
+    width: 350px;
+    height: 350px;
+    user-select: none;
+  }
+</style>
 </head>
 <body>
-  <div id="chat-app">
-    <header>
-      <p id="status">Connexion...</p>
-    </header>
-    <main id="messages"></main>
-    <form id="message-form">
-      <input type="text" id="message-input" placeholder="Écris ici..." autocomplete="off" />
-      <button type="submit">Envoyer</button>
-      <input type="file" id="image-upload" accept="image/*" />
-    </form>
-  </div>
 
-  <div id="tamagotchi-container">
-    <h3>Stitch Tamagotchi</h3>
-    <svg id="stitch-svg" viewBox="0 0 200 200" >
-      <!-- Corps -->
-      <ellipse id="body" cx="100" cy="130" rx="50" ry="60" fill="#4A90E2" stroke="#002F6C" stroke-width="3"/>
-      <!-- Tête -->
-      <circle id="head" cx="100" cy="60" r="40" fill="#007ACC" stroke="#002F6C" stroke-width="3"/>
-      <!-- Yeux -->
-      <ellipse cx="80" cy="55" rx="10" ry="15" fill="white"/>
-      <ellipse cx="120" cy="55" rx="10" ry="15" fill="white"/>
-      <circle id="eye-left" cx="80" cy="60" r="7" fill="black"/>
-      <circle id="eye-right" cx="120" cy="60" r="7" fill="black"/>
-      <!-- Oreilles -->
-      <polygon id="ear-left" points="50,20 70,50 60,65" fill="#005BA1"/>
-      <polygon id="ear-right" points="150,20 130,50 140,65" fill="#005BA1"/>
-      <!-- Bras -->
-      <ellipse id="arm-left" cx="40" cy="130" rx="20" ry="40" fill="#005BA1"/>
-      <ellipse id="arm-right" cx="160" cy="130" rx="20" ry="40" fill="#005BA1"/>
-      <!-- Jambes -->
-      <ellipse id="leg-left" cx="70" cy="190" rx="20" ry="30" fill="#003D73"/>
-      <ellipse id="leg-right" cx="130" cy="190" rx="20" ry="30" fill="#003D73"/>
-      <!-- Bouche -->
-      <path id="mouth" d="M70,90 Q100,110 130,90" stroke="#800000" stroke-width="3" fill="none"/>
-      <path id="mouth-open" d="M70,90 Q100,120 130,90 Q100,150 70,90" fill="#800000" style="opacity:0"/>
-    </svg>
-    <div>
-      Faim: <span id="tama-hunger">5</span><br/>
-      Bonheur: <span id="tama-happy">5</span>
-    </div>
-    <button id="feed-btn">Nourrir 🍎</button>
-  </div>
+<svg viewBox="0 0 200 200" id="stitch" xmlns="http://www.w3.org/2000/svg" >
+  <!-- Corps -->
+  <ellipse id="body" cx="100" cy="130" rx="50" ry="60" fill="#4A90E2" stroke="#002F6C" stroke-width="3"/>
+  
+  <!-- Tête -->
+  <circle id="head" cx="100" cy="60" r="40" fill="#007ACC" stroke="#002F6C" stroke-width="3" />
+  
+  <!-- Oreilles -->
+  <g id="ear-left" transform="translate(60,30)">
+    <polygon points="0,0 20,30 10,45" fill="#005BA1" stroke="#002F6C" stroke-width="2"/>
+    <polygon points="7,15 15,30 10,38" fill="#0080FF" />
+  </g>
+  <g id="ear-right" transform="translate(140,30)">
+    <polygon points="0,0 -20,30 -10,45" fill="#005BA1" stroke="#002F6C" stroke-width="2"/>
+    <polygon points="-7,15 -15,30 -10,38" fill="#0080FF" />
+  </g>
 
-  <script>
-    // --- Chat simple minimal (à compléter selon ton backend Firebase) ---
-    const messageForm = document.getElementById('message-form');
-    const messageInput = document.getElementById('message-input');
-    const messagesEl = document.getElementById('messages');
-    const statusEl = document.getElementById('status');
+  <!-- Yeux -->
+  <g id="eyes" transform="translate(0,10)">
+    <ellipse cx="80" cy="55" rx="12" ry="18" fill="white"/>
+    <ellipse cx="120" cy="55" rx="12" ry="18" fill="white"/>
+    <circle id="eye-left" cx="80" cy="60" r="7" fill="black"/>
+    <circle id="eye-right" cx="120" cy="60" r="7" fill="black"/>
+  </g>
 
-    // Simulation réception message (à remplacer par Firebase)
-    function addMessage(text) {
-      const div = document.createElement('div');
-      div.classList.add('message');
-      div.textContent = text;
-      messagesEl.appendChild(div);
-      messagesEl.scrollTop = messagesEl.scrollHeight;
-    }
+  <!-- Bras -->
+  <g id="arm-left" transform="translate(40,100)">
+    <ellipse cx="0" cy="30" rx="20" ry="40" fill="#005BA1" stroke="#002F6C" stroke-width="2"/>
+  </g>
+  <g id="arm-right" transform="translate(160,100)">
+    <ellipse cx="0" cy="30" rx="20" ry="40" fill="#005BA1" stroke="#002F6C" stroke-width="2"/>
+  </g>
 
-    messageForm.addEventListener('submit', e => {
-      e.preventDefault();
-      const text = messageInput.value.trim();
-      if(text){
-        addMessage('Moi: ' + text);
-        messageInput.value = '';
-        // Ici, tu peux envoyer dans Firebase...
-        setTimeout(() => {
-          addMessage('Stitch: "Aloha!" 🌺'); // Message automatique pour demo
-        }, 1000);
+  <!-- Jambes -->
+  <g id="leg-left" transform="translate(70,190)">
+    <ellipse cx="0" cy="0" rx="20" ry="30" fill="#003D73" stroke="#002F6C" stroke-width="2"/>
+  </g>
+  <g id="leg-right" transform="translate(130,190)">
+    <ellipse cx="0" cy="0" rx="20" ry="30" fill="#003D73" stroke="#002F6C" stroke-width="2"/>
+  </g>
+
+  <!-- Bouche fermée -->
+  <path id="mouth-closed" d="M70,90 Q100,110 130,90" stroke="#800000" stroke-width="3" fill="none"/>
+  <!-- Bouche ouverte -->
+  <path id="mouth-open" d="M70,90 Q100,120 130,90 Q100,150 70,90" fill="#800000" style="opacity:0"/>
+
+</svg>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script>
+  const head = document.getElementById('head');
+  const earLeft = document.getElementById('ear-left');
+  const earRight = document.getElementById('ear-right');
+  const armLeft = document.getElementById('arm-left');
+  const armRight = document.getElementById('arm-right');
+  const mouthClosed = document.getElementById('mouth-closed');
+  const mouthOpen = document.getElementById('mouth-open');
+  const eyeLeft = document.getElementById('eye-left');
+  const eyeRight = document.getElementById('eye-right');
+
+  // Origines pour rotations
+  gsap.set(earLeft, {transformOrigin: "10% 90%"});
+  gsap.set(earRight, {transformOrigin: "90% 90%"});
+  gsap.set(armLeft, {transformOrigin: "50% 0%"});
+  gsap.set(armRight, {transformOrigin: "50% 0%"});
+  gsap.set(head, {transformOrigin: "50% 60%"});
+
+  // Animation oreille battante
+  gsap.to(earLeft, {
+    rotation: 15,
+    repeat: -1,
+    yoyo: true,
+    ease: "sine.inOut",
+    duration: 1.2
+  });
+  gsap.to(earRight, {
+    rotation: -15,
+    repeat: -1,
+    yoyo: true,
+    ease: "sine.inOut",
+    duration: 1.2
+  });
+
+  // Animation bras qui bougent doucement
+  gsap.to(armLeft, {
+    rotation: 10,
+    repeat: -1,
+    yoyo: true,
+    ease: "sine.inOut",
+    duration: 2
+  });
+  gsap.to(armRight, {
+    rotation: -10,
+    repeat: -1,
+    yoyo: true,
+    ease: "sine.inOut",
+    duration: 2
+  });
+
+  // Tête qui penche doucement de gauche à droite
+  gsap.to(head, {
+    rotation: 8,
+    repeat: -1,
+    yoyo: true,
+    ease: "sine.inOut",
+    duration: 3
+  });
+
+  // Clignement des yeux toutes les 3 à 6 secondes aléatoires
+  function blink() {
+    gsap.to([eyeLeft, eyeRight], {
+      scaleY: 0.1,
+      transformOrigin: "center center",
+      duration: 0.1,
+      yoyo: true,
+      repeat: 1,
+      ease: "power1.inOut",
+      onComplete: () => {
+        setTimeout(blink, 3000 + Math.random() * 3000);
       }
     });
+  }
+  blink();
 
-    statusEl.textContent = "Connecté";
-
-    // --- Tamagotchi Stitch ---
-    const hungerEl = document.getElementById('tama-hunger');
-    const happyEl = document.getElementById('tama-happy');
-    const feedBtn = document.getElementById('feed-btn');
-
-    const head = document.getElementById('head');
-    const earLeft = document.getElementById('ear-left');
-    const earRight = document.getElementById('ear-right');
-    const armLeft = document.getElementById('arm-left');
-    const armRight = document.getElementById('arm-right');
-    const mouth = document.getElementById('mouth');
-    const mouthOpen = document.getElementById('mouth-open');
-    const eyeLeft = document.getElementById('eye-left');
-    const eyeRight = document.getElementById('eye-right');
-
-    let hunger = 5; // 0 = rassasié, 10 = affamé
-    let happiness = 5; // 0 triste, 10 heureux
-
-    function updateStats() {
-      hungerEl.textContent = hunger;
-      happyEl.textContent = happiness;
-
-      // Couleur tête change selon faim
-      if(hunger > 7){
-        head.setAttribute('fill', '#800000'); // rouge foncé
-      } else if(hunger > 4){
-        head.setAttribute('fill', '#cc3300'); // orange foncé
-      } else {
-        head.setAttribute('fill', '#007ACC'); // bleu normal
-      }
-
-      // Oreilles bougent selon humeur
-      const earAngle = (happiness - 5) * 5;
-      earLeft.setAttribute('transform', `rotate(${earAngle} 60 50)`);
-      earRight.setAttribute('transform', `rotate(${-earAngle} 140 50)`);
-
-      // Sourire / bouche ouverte selon bonheur
-      if(happiness > 6){
-        mouth.style.opacity = '0';
-        mouthOpen.style.opacity = '1';
-      } else {
-        mouth.style.opacity = '1';
-        mouthOpen.style.opacity = '0';
-      }
-
-      // Yeux clignent (petit effet)
-      if(Math.random() < 0.02){
-        eyeLeft.setAttribute('r', 2);
-        eyeRight.setAttribute('r', 2);
-        setTimeout(() => {
-          eyeLeft.setAttribute('r', 7);
-          eyeRight.setAttribute('r', 7);
-        }, 300);
-      }
-    }
-
-    function feedStitch(){
-      if(hunger > 0) {
-        hunger--;
-        happiness++;
-        if(happiness > 10) happiness = 10;
-        updateStats();
-      }
-    }
-
-    feedBtn.addEventListener('click', () => {
-      feedStitch();
-      addMessage('Tu as nourri Stitch 🍎');
-    });
-
-    // Faim augmente avec le temps
-    setInterval(() => {
-      if(hunger < 10){
-        hunger++;
-        happiness--;
-        if(happiness < 0) happiness = 0;
-        updateStats();
-      }
-    }, 1000 * 30); // toutes les 30s
-
-    updateStats();
-  </script>
+  // Ouverture/fermeture bouche toutes les 5 secondes
+  function mouthMove() {
+    gsap.to(mouthClosed, { opacity: 0, duration: 0.2 });
+    gsap.to(mouthOpen, { opacity: 1, duration: 0.2 });
+    setTimeout(() => {
+      gsap.to(mouthClosed, { opacity: 1, duration: 0.2 });
+      gsap.to(mouthOpen, { opacity: 0, duration: 0.2 });
+      setTimeout(mouthMove, 5000);
+    }, 800);
+  }
+  mouthMove();
+</script>
 </body>
 </html>
