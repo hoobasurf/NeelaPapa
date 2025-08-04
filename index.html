@@ -8,13 +8,14 @@
 </head>
 <body>
   <div id="chat-app">
+    <header>
+      <p id="status">Connexion...</p>
+    </header>
     <main id="messages"></main>
-
     <form id="message-form">
       <input type="text" id="message-input" placeholder="Écris ici..." autocomplete="off" />
-      <label for="image-upload" class="image-button">📷</label>
-      <input type="file" id="image-upload" accept="image/*" />
       <button type="submit">Envoyer</button>
+      <input type="file" id="image-upload" accept="image/*" />
     </form>
   </div>
 
