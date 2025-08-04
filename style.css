@@ -1,18 +1,18 @@
 body {
   margin: 0;
   font-family: 'Comic Sans MS', cursive;
-  background: url('fond-stitch.jpg') no-repeat center center fixed;
+  background: url('fond-stitch.jpg') no-repeat center top fixed;
   background-size: cover;
   overflow: hidden;
-  transform: scale(0.95); /* Zoom arrière léger */
+  transform: scale(0.95); /* Zoom arrière */
   transform-origin: top center;
 }
 
 #chat-app {
   display: flex;
   flex-direction: column;
-  height: 90vh; /* Réduit pour laisser voir le fond en haut */
-  padding: 10px;
+  height: 85vh; /* Réduction pour laisser voir le haut */
+  padding: 20px 10px 10px 10px; /* Espace en haut + bas */
   box-sizing: border-box;
   justify-content: flex-end;
   background: transparent;
