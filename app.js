@@ -7,9 +7,10 @@ const firebaseConfig = {
   authDomain: "neelapapa-e33a7.firebaseapp.com",
   databaseURL: "https://neelapapa-e33a7-default-rtdb.firebaseio.com",
   projectId: "neelapapa-e33a7",
-  storageBucket: "neelapapa-e33a7.appspot.com",
+  storageBucket: "neelapapa-e33a7.firebasestorage.app",
   messagingSenderId: "91492229900",
-  appId: "1:91492229900:web:ec61b2592b19627f155f29"
+  appId: "1:91492229900:web:ec61b2592b19627f155f29",
+  measurementId: "G-086NSRZF51"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -17,29 +18,32 @@ const db = getDatabase(app);
 const auth = getAuth(app);
 const messagesRef = ref(db, "messages");
 
-const status = document.getElementById("status");
-const messagesContainer = document.getElementById("messages");
-const messageForm = document.getElementById("message-form");
-const messageInput = document.getElementById("message-input");
-const imageUpload = document.getElementById("image-upload");
+const statusEl = document.getElementById("status");
+const messagesEl = document.getElementById("messages");
+const form = document.getElementById("message-form");
+const input = document.getElementById("message-input");
+const imageInput = document.getElementById("image-upload");
 
 signInAnonymously(auth).catch(console.error);
 
 onAuthStateChanged(auth, user => {
-  if (!user) return status.textContent = "🔴 Déconnecté";
-  status.textContent = "🟢 Connecté";
+  if (!user) {
+    statusEl.textContent = "🔴 Déconnecté";
+    return;
+  }
+  statusEl.textContent = "🟢 Connecté";
 
-  messageForm.addEventListener("submit", e => {
+  form.addEventListener("submit", e => {
     e.preventDefault();
-    const text = messageInput.value.trim();
+    const text = input.value.trim();
     if (text) {
       push(messagesRef, { text, uid: user.uid, time: Date.now() });
-      messageInput.value = "";
+      input.value = "";
     }
   });
 
-  imageUpload.addEventListener("change", async e => {
-    const file = e.target.files[0];
+  imageInput.addEventListener("change", async () => {
+    const file = imageInput.files[0];
     if (!file) return;
     const formData = new FormData();
     formData.append("image", file);
@@ -58,29 +62,29 @@ onAuthStateChanged(auth, user => {
     const key = snapshot.key;
     const div = document.createElement("div");
     div.className = "message";
+    if (msg.uid === user.uid) div.classList.add("me");
 
-    const deleteBtn = document.createElement("button");
-    deleteBtn.className = "delete-btn";
-    deleteBtn.textContent = "×";
-
-    let pressTimer;
-    deleteBtn.addEventListener("mousedown", () => {
-      pressTimer = setTimeout(() => remove(ref(db, `messages/${key}`)), 3000);
-    });
-    deleteBtn.addEventListener("mouseup", () => clearTimeout(pressTimer));
-    deleteBtn.addEventListener("mouseleave", () => clearTimeout(pressTimer));
-
-    div.appendChild(deleteBtn);
-
+    // Contenu
     if (msg.text) {
-      div.appendChild(document.createTextNode(msg.text));
+      div.textContent = msg.text;
     } else if (msg.imageUrl) {
       const img = document.createElement("img");
       img.src = msg.imageUrl;
+      img.alt = "Photo";
       div.appendChild(img);
     }
 
-    messagesContainer.appendChild(div);
-    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    // Ajout de la croix de suppression
+    const del = document.createElement("span");
+    del.className = "delete-btn";
+    del.textContent = "✖";
+    del.onclick = () => {
+      remove(ref(db, `messages/${key}`)); // supprime aussi dans Firebase
+      div.remove();
+    };
+    div.appendChild(del);
+
+    messagesEl.appendChild(div);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
   });
 });
