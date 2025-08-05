@@ -1,28 +1,29 @@
 /* ====== Fond et typographie ====== */
 * { box-sizing: border-box; }
-html,body { height: 100%; }
+html, body { height: 100%; margin: 0; }
 body {
-  margin: 0;
   font-family: 'Comic Sans MS', cursive;
   background: url('fond-stitch.jpg') no-repeat center top fixed;
   background-size: cover;
   color: #fff;
   -webkit-text-size-adjust: 100%;
+  overflow-x: hidden;
 }
 
 /* ====== Conteneur principal ====== */
 #chat-app {
   position: relative;
   width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  /* padding-top = espace pour laisser voir le haut (logo/titre du fond) */
-  padding: 130px 10px 0 10px;
+  padding: 140px 10px 0 10px; /* Ajusté pour bien voir le titre */
   gap: 10px;
 }
 
-/* header (statut petit) */
+/* header (statut) */
 #app-header {
   position: absolute;
   top: 10px;
@@ -45,15 +46,14 @@ body {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  /* leave bottom space so messages don't sit under the fixed bar */
-  padding-bottom: 110px; /* must be >= height of fixed form */
+  padding-bottom: 110px;
 }
 
-/* message bubble */
+/* bulles de messages */
 .message {
   background: rgba(255, 255, 255, 0.06);
   border: 2px solid #ff69b4;
-  border-radius: 22px;
+  border-radius: 18px;
   padding: 10px 14px;
   color: white;
   max-width: 85%;
@@ -62,34 +62,11 @@ body {
   align-self: flex-start;
   font-size: 15px;
 }
-
-/* message from me (optional class 'me') */
 .message.me {
   align-self: flex-end;
   background: rgba(255,105,180,0.12);
   border-color: rgba(255,105,180,0.8);
 }
-
-.btn {
-  background-color: #ff5ca2;
-  color: white;
-  border: none;
-  border-radius: 999px;
-  padding: 10px 16px;
-  font-weight: bold;
-  font-size: 15px;
-  cursor: pointer;
-  margin-left: 5px;
-}
-
-.photo-btn {
-  display: inline-block;
-}
-
-#image-upload {
-  display: none;
-}
-/* images in message */
 .message img {
   display: block;
   max-width: 100%;
@@ -98,7 +75,7 @@ body {
   margin-top: 8px;
 }
 
-/* ====== Formulaire fixe en bas ====== */
+/* ====== Formulaire en bas ====== */
 #message-form {
   position: fixed;
   left: 0;
@@ -109,14 +86,13 @@ body {
   gap: 8px;
   align-items: center;
   padding: 10px;
-  /* semi-transparent bar */
   background: linear-gradient(180deg, rgba(0,0,0,0.45), rgba(0,0,0,0.6));
   border-top: 2px solid rgba(255,105,180,0.25);
-  backdrop-filter: none; /* no blur */
+  backdrop-filter: none;
   box-shadow: 0 -8px 30px rgba(0,0,0,0.5);
 }
 
-/* input text */
+/* Champ texte */
 #message-input {
   flex: 1 1 auto;
   padding: 12px 16px;
@@ -128,12 +104,12 @@ body {
   color: #fff;
 }
 
-/* hide native file input */
+/* Cacher le champ fichier natif */
 #image-upload {
   display: none;
 }
 
-/* ====== Buttons common style ====== */
+/* ====== Boutons ====== */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -151,27 +127,24 @@ body {
   box-shadow: 0 6px 18px rgba(255,105,180,0.35);
   transition: transform .12s ease, box-shadow .12s ease;
 }
-
-/* smaller square when icon only */
+.btn:active {
+  transform: translateY(1px) scale(.995);
+  box-shadow: 0 4px 10px rgba(255,105,180,0.28);
+}
+.send-btn {
+  padding: 0 18px;
+  min-width: 70px;
+}
 .photo-btn {
   width: 46px;
   padding: 0;
 }
 
-/* hover / active */
-.btn:active { transform: translateY(1px) scale(.995); box-shadow: 0 4px 10px rgba(255,105,180,0.28); }
-
-/* send button has text */
-.send-btn {
-  padding: 0 18px;
-  min-width: 70px;
-}
-
-/* ====== Tamagotchi floating icon ====== */
+/* ====== Tamagotchi ====== */
 #tamagotchi {
   position: fixed;
   right: 14px;
-  bottom: 120px; /* above the bottom bar */
+  bottom: 120px;
   width: 64px;
   height: auto;
   z-index: 990;
@@ -183,13 +156,16 @@ body {
   50% { transform: translateY(-10px); }
 }
 
-/* ====== Scrollbar styling (optional) ====== */
+/* ====== Scrollbar ====== */
 #messages::-webkit-scrollbar { width: 6px; }
-#messages::-webkit-scrollbar-thumb { background: rgba(255,105,180,0.5); border-radius: 6px; }
+#messages::-webkit-scrollbar-thumb {
+  background: rgba(255,105,180,0.5);
+  border-radius: 6px;
+}
 
-/* ====== Responsive tweaks ====== */
-@media (max-width:420px) {
-  #chat-app { padding-top: 110px; }
+/* ====== Responsive ====== */
+@media (max-width: 420px) {
+  #chat-app { padding-top: 120px; }
   #tamagotchi { width: 56px; bottom: 110px; }
   #message-input { font-size: 15px; }
   .send-btn { min-width: 60px; padding: 0 12px; }
