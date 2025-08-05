@@ -1,139 +1,30 @@
-body {
-  margin: 0;
-  padding: 0;
-  font-family: sans-serif;
-  background: url('fond-stitch.jpg') no-repeat center top;
-  background-size: cover;
-  height: 100vh;
-  overflow: hidden;
-}
-
-#clickable-logo {
-  position: absolute;
-  top: 10px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 130px;
-  height: 130px;
-  border-radius: 50%;
-  cursor: pointer;
-  z-index: 10;
-}
-
-/* Chat */
-#chat-app {
-  position: relative;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 10px;
-}
-
-header {
-  height: 40px;
-  display: flex;
-  align-items: center;
-}
-
-#status {
-  color: white;
-  font-weight: bold;
-  font-size: 14px;
-}
-
-#messages {
-  flex: 1;
-  overflow-y: auto;
-  padding-bottom: 60px;
-}
-
-.message {
-  position: relative;
-  background: rgba(255, 255, 255, 0.9);
-  padding: 10px 14px;
-  margin: 8px 0;
-  border-radius: 14px;
-  max-width: 75%;
-  word-wrap: break-word;
-}
-
-.message img {
-  max-width: 220px;
-  border-radius: 10px;
-}
-
-.delete-btn {
-  position: absolute;
-  top: 4px;
-  right: 4px;
-  background: #ff5ca2;
-  color: white;
-  border: none;
-  border-radius: 50%;
-  width: 18px;
-  height: 18px;
-  font-size: 12px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  opacity: 0.9;
-  z-index: 1;
-}
-
-/* Form */
-#message-form {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  background: rgba(255, 255, 255, 0.9);
-  padding: 6px 8px;
-  border-radius: 16px;
-}
-
-#message-input {
-  flex: 1;
-  padding: 8px 10px;
-  border: none;
-  border-radius: 12px;
-  font-size: 14px;
-}
-
-.btn {
-  background-color: #ff5ca2;
-  color: white;
-  border: none;
-  border-radius: 999px;
-  padding: 8px 12px;
-  font-weight: bold;
-  font-size: 14px;
-  cursor: pointer;
-}
-
-.photo-btn {
-  display: inline-block;
-}
-
-#image-upload {
-  display: none;
-}
-
-/* Pour limiter la taille des images */
-.message img {
-  max-width: 220px;
-  height: auto;
-  border-radius: 12px;
-  display: block;
-}
-
-/* Petite croix rose */
-.delete-btn {
-  color: #ff5ca2;
-  font-size: 16px;
-  position: absolute;
-  top: 5px;
-  right: 10px;
-  cursor: pointer;
-  user-select: none;
-}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Tamagotchi</title>
+  <style>
+    body {
+      margin: 0;
+      background: url('fond-stitch.jpg') no-repeat center 1cm fixed;
+      background-size: cover;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    #tamagotchi {
+      width: 200px;
+      animation: float 4s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%,100% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
+    }
+  </style>
+</head>
+<body>
+  <img id="tamagotchi" src="tamagotchi.svg" alt="Tamagotchi" />
+</body>
+</html>
