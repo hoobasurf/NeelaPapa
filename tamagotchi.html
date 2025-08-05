@@ -3,16 +3,95 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Tamagotchi</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>Neela & Papa - Tamagotchi</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Comic Sans MS', cursive;
+      background: url('fond-stitch.jpg') no-repeat center top fixed;
+      background-size: cover;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    #tamagotchi-container {
+      position: relative;
+      width: 240px;
+      height: 240px;
+    }
+
+    #tamagotchi {
+      width: 100%;
+      transition: transform 0.4s;
+    }
+
+    .btn-row {
+      margin-top: 20px;
+      display: flex;
+      gap: 20px;
+    }
+
+    .action-btn {
+      font-size: 24px;
+      background: rgba(255,255,255,0.1);
+      border: 2px solid pink;
+      border-radius: 50%;
+      padding: 10px;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .action-btn:hover {
+      transform: scale(1.2);
+    }
+
+    /* Zone cliquable invisible sur le titre */
+    #title-zone {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 160px;
+      height: 50px;
+      cursor: pointer;
+      z-index: 10;
+    }
+  </style>
 </head>
 <body>
-  <!-- Retour vers page 1 -->
-  <a id="title-zone" href="index.html" aria-label="Retour à la messagerie"></a>
+  <!-- Zone invisible pour retour -->
+  <div id="title-zone" onclick="window.location.href='index.html'"></div>
 
-  <div id="tamagotchi-page">
-    <h1 style="text-align:center; color: white;">Bienvenue dans la page Tamagotchi</h1>
-    <p style="text-align:center; color: white;">(Ici tu peux ajouter un visuel ou des fonctions tamagotchi)</p>
+  <div id="tamagotchi-container">
+    <img id="tamagotchi" src="tamagotchi1.png" alt="Tamagotchi">
   </div>
+
+  <div class="btn-row">
+    <button class="action-btn" onclick="feed()">🍍</button>
+    <button class="action-btn" onclick="play()">🏄‍♂️</button>
+    <button class="action-btn" onclick="wash()">🚿</button>
+  </div>
+
+  <script>
+    const tamagotchi = document.getElementById("tamagotchi");
+
+    function feed() {
+      tamagotchi.src = "tamagotchi_eat.png";
+      setTimeout(() => tamagotchi.src = "tamagotchi1.png", 1500);
+    }
+
+    function play() {
+      tamagotchi.src = "tamagotchi_play.png";
+      setTimeout(() => tamagotchi.src = "tamagotchi1.png", 1500);
+    }
+
+    function wash() {
+      tamagotchi.src = "tamagotchi_wash.png";
+      setTimeout(() => tamagotchi.src = "tamagotchi1.png", 1500);
+    }
+  </script>
 </body>
 </html>
