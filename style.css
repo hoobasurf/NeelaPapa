@@ -118,3 +118,22 @@ header {
 #image-upload {
   display: none;
 }
+
+/* Pour limiter la taille des images */
+.message img {
+  max-width: 220px;
+  height: auto;
+  border-radius: 12px;
+  display: block;
+}
+
+/* Petite croix rose */
+.delete-btn {
+  color: #ff5ca2;
+  font-size: 16px;
+  position: absolute;
+  top: 5px;
+  right: 10px;
+  cursor: pointer;
+  user-select: none;
+}
