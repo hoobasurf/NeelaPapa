@@ -1,170 +1,120 @@
-/* ===== Fond et typo ===== */
-* { box-sizing: border-box; }
-html, body {
-  height: 100%;
+body {
   margin: 0;
-  font-family: 'Comic Sans MS', cursive;
-  background: url('fond-stitch.jpg') no-repeat center top fixed;
+  padding: 0;
+  font-family: sans-serif;
+  background: url('fond-stitch.jpg') no-repeat center top;
   background-size: cover;
-  color: #fff;
-  overflow-x: hidden;
+  height: 100vh;
+  overflow: hidden;
 }
 
-/* ===== Zone cliquable invisible sur le titre ===== */
-#click-zone {
-  position: absolute;
-  top: 18px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 240px;
-  height: 60px;
-  z-index: 10;
-  cursor: pointer;
-}
-
-/* ===== App principal ===== */
-#chat-app {
-  position: relative;
-  width: 100%;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  padding: 130px 10px 0 10px;
-  gap: 10px;
-}
-
-/* ===== En-tête / statut ===== */
-#app-header {
+#clickable-logo {
   position: absolute;
   top: 10px;
-  left: 16px;
-  z-index: 1;
-  pointer-events: none;
-}
-#status {
-  margin: 0;
-  color: #cfeeea;
-  font-size: 14px;
-  text-shadow: 0 0 6px rgba(0,0,0,0.6);
-}
-
-/* ===== Zone messages ===== */
-#messages {
-  flex: 1 1 auto;
-  overflow-y: auto;
-  padding: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding-bottom: 110px;
-}
-
-/* Bulles de messages */
-.message {
-  position: relative;
-  background: rgba(255, 255, 255, 0.06);
-  border: 2px solid #ff69b4;
-  border-radius: 22px;
-  padding: 10px 14px;
-  color: white;
-  max-width: 85%;
-  word-break: break-word;
-  box-shadow: 0 0 10px rgba(255,105,180,0.18);
-  align-self: flex-start;
-  font-size: 15px;
-}
-.message.me {
-  align-self: flex-end;
-  background: rgba(255,105,180,0.12);
-  border-color: rgba(255,105,180,0.8);
-}
-.message img {
-  display: block;
-  max-width: 220px;
-  height: auto;
-  border-radius: 10px;
-  margin-top: 8px;
-}
-
-/* Croix de suppression */
-.delete-btn {
-  position: absolute;
-  top: -10px;
-  right: -10px;
-  background: #ff69b4;
-  color: white;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 130px;
+  height: 130px;
   border-radius: 50%;
-  width: 20px;
-  height: 20px;
-  font-size: 13px;
-  text-align: center;
-  line-height: 20px;
   cursor: pointer;
-  opacity: 0.85;
   z-index: 10;
 }
 
-/* Formulaire message */
-#message-form {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 999;
+/* Chat */
+#chat-app {
+  position: relative;
+  height: 100vh;
   display: flex;
-  gap: 8px;
-  align-items: center;
+  flex-direction: column;
+  justify-content: space-between;
   padding: 10px;
-  background: linear-gradient(180deg, rgba(0,0,0,0.45), rgba(0,0,0,0.6));
-  border-top: 2px solid rgba(255,105,180,0.25);
 }
 
-/* Input */
+header {
+  height: 40px;
+  display: flex;
+  align-items: center;
+}
+
+#status {
+  color: white;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+#messages {
+  flex: 1;
+  overflow-y: auto;
+  padding-bottom: 60px;
+}
+
+.message {
+  position: relative;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 10px 14px;
+  margin: 8px 0;
+  border-radius: 14px;
+  max-width: 75%;
+  word-wrap: break-word;
+}
+
+.message img {
+  max-width: 220px;
+  border-radius: 10px;
+}
+
+.delete-btn {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: #ff5ca2;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  font-size: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  opacity: 0.9;
+  z-index: 1;
+}
+
+/* Form */
+#message-form {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 6px 8px;
+  border-radius: 16px;
+}
+
 #message-input {
   flex: 1;
-  padding: 12px 16px;
-  border-radius: 26px;
+  padding: 8px 10px;
   border: none;
-  font-size: 16px;
-  background: rgba(255,255,255,0.12);
-  color: #fff;
+  border-radius: 12px;
+  font-size: 14px;
 }
 
-/* Cacher file natif */
-#image-upload {
-  display: none;
-}
-
-/* Boutons */
 .btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 46px;
-  height: 46px;
-  padding: 0 14px;
-  border-radius: 26px;
+  background-color: #ff5ca2;
+  color: white;
   border: none;
-  font-size: 16px;
-  font-weight: 600;
-  color: #fff;
-  background: linear-gradient(180deg,#ff79c6,#ff5aa8);
-  box-shadow: 0 6px 18px rgba(255,105,180,0.35);
+  border-radius: 999px;
+  padding: 8px 12px;
+  font-weight: bold;
+  font-size: 14px;
   cursor: pointer;
 }
-.photo-btn { width: 46px; padding: 0; }
-.send-btn { padding: 0 18px; min-width: 70px; }
 
-/* Scrollbar */
-#messages::-webkit-scrollbar { width: 6px; }
-#messages::-webkit-scrollbar-thumb {
-  background: rgba(255,105,180,0.5);
-  border-radius: 6px;
+.photo-btn {
+  display: inline-block;
 }
 
-/* Responsive */
-@media (max-width: 420px) {
-  #chat-app { padding-top: 110px; }
-  #message-input { font-size: 15px; }
-  .send-btn { min-width: 60px; padding: 0 12px; }
+#image-upload {
+  display: none;
 }
