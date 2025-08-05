@@ -1,27 +1,30 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Neela & Papa</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div id="chat-app">
-    <header id="app-header" aria-hidden="true">
-      <p id="status">Connexion...</p>
-      <a href="tamagotchi.html" id="hidden-title-link" aria-label="Accès Tamagotchi"></a>
-    </header>
+  <div id="background-stitch"></div>
 
-    <main id="messages" role="log" aria-live="polite"></main>
+  <div id="status">Connexion...</div>
 
-    <form id="message-form">
-      <input type="text" id="message-input" placeholder="Écris ici..." autocomplete="off" />
-      <label for="image-upload" class="btn photo-btn" title="Envoyer une photo">📷</label>
+  <!-- Zone invisible cliquable sur le titre de fond -->
+  <div id="clickable-title-area" onclick="window.location.href='tamagotchi.html'"></div>
+
+  <div id="messages"></div>
+
+  <form id="message-form">
+    <input type="text" id="message-input" placeholder="Écris ici..." autocomplete="off" />
+    <label class="photo-btn">
+      📷
       <input type="file" id="image-upload" accept="image/*" />
-      <button type="submit" class="btn send-btn">Envoyer</button>
-    </form>
-  </div>
+    </label>
+    <button type="submit" class="btn">Envoyer</button>
+  </form>
+
   <script type="module" src="app.js"></script>
 </body>
 </html>
