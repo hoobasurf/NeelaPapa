@@ -7,25 +7,25 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <!-- Zone cliquable invisible sur le titre du fond -->
+  <a id="invisible-title-link" href="tamagotchi.html" aria-label="Accès au Tamagotchi"></a>
+
   <div id="chat-app">
-    <!-- En-tête invisible, utilisé pour le statut -->
-    <header id="app-header" aria-hidden="true">
+    <!-- Statut en haut à gauche -->
+    <header id="app-header">
       <p id="status">Connexion...</p>
     </header>
 
     <!-- Zone des messages -->
     <main id="messages" role="log" aria-live="polite"></main>
 
-    <!-- Barre de message -->
+    <!-- Formulaire en bas -->
     <form id="message-form">
       <input type="text" id="message-input" placeholder="Écris ici..." autocomplete="off" />
       <button type="submit" class="btn send-btn" aria-label="Envoyer le message">Envoyer</button>
-      <label for="image-upload" class="btn photo-btn" title="Envoyer une photo" aria-label="Envoyer une photo">📷</label>
+      <label for="image-upload" class="btn photo-btn" aria-label="Envoyer une photo">📷</label>
       <input type="file" id="image-upload" accept="image/*" />
     </form>
-
-    <!-- Tamagotchi (désactivé ici si tu veux plus l'utiliser sur cette page) -->
-    <!-- <img id="tamagotchi" src="tamagotchi.svg" alt="Tamagotchi" /> -->
   </div>
 
   <script type="module" src="app.js"></script>
