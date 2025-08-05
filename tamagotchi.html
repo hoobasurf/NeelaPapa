@@ -1,137 +1,143 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Tamagotchi</title>
+  <meta charset="UTF-8">
+  <title>Neela & Papa – Tamagotchi</title>
   <style>
     body {
       margin: 0;
-      font-family: 'Comic Sans MS', cursive;
-      background: url('fond-stitch.jpg') no-repeat center top fixed;
+      background: url('fond-stitch.jpg') no-repeat center center fixed;
       background-size: cover;
+      font-family: 'Arial', sans-serif;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
+      justify-content: flex-start;
       height: 100vh;
-      color: white;
+      padding-top: 100px; /* fond stitch descendu de 1cm environ */
     }
 
-    .tamagotchi-container {
+    #tamagotchi-container {
       position: relative;
-      width: 220px;
-      height: 220px;
-      margin-bottom: 20px;
+      text-align: center;
     }
 
-    svg {
-      width: 100%;
+    #tamagotchi-svg {
+      width: 280px;
       height: auto;
     }
 
-    .controls {
+    .btn-group {
+      margin-top: 20px;
       display: flex;
-      gap: 14px;
+      gap: 15px;
+      justify-content: center;
     }
 
-    .controls button {
-      font-size: 22px;
-      padding: 8px 14px;
+    .action-btn {
+      font-size: 20px;
+      padding: 10px;
       border-radius: 50%;
-      border: none;
-      background: linear-gradient(to bottom, #ff7ab8, #ff5aa8);
-      color: white;
+      background-color: rgba(255, 255, 255, 0.2);
+      border: 1px solid #fff;
+      color: #fff;
       cursor: pointer;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.4);
-      transition: transform 0.1s ease;
+      backdrop-filter: blur(5px);
+      transition: transform 0.2s ease;
     }
 
-    .controls button:active {
-      transform: scale(0.95);
+    .action-btn:hover {
+      transform: scale(1.1);
     }
 
-    /* Animations */
-    .animate-mouth {
-      animation: eat 0.4s ease;
+    .bubble, .drop, .fruit {
+      position: absolute;
+      animation: floatUp 2s ease-out forwards;
+      pointer-events: none;
     }
 
-    .animate-surf {
-      animation: surf 0.6s ease;
+    @keyframes floatUp {
+      0% { opacity: 1; transform: translateY(0); }
+      100% { opacity: 0; transform: translateY(-100px); }
     }
 
-    .animate-clean {
-      animation: clean 0.6s ease;
-    }
-
-    @keyframes eat {
-      0% { transform: scaleY(1); }
-      50% { transform: scaleY(0.7); }
-      100% { transform: scaleY(1); }
-    }
-
-    @keyframes surf {
-      0% { transform: translateX(0); }
-      50% { transform: translateX(10px); }
-      100% { transform: translateX(0); }
-    }
-
-    @keyframes clean {
-      0% { filter: brightness(1); }
-      50% { filter: brightness(1.5); }
-      100% { filter: brightness(1); }
-    }
-
-    /* Zone invisible pour revenir à index.html */
-    .back-area {
+    #back-link {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 120px;
-      height: 120px;
-      cursor: pointer;
-      z-index: 10;
+      top: 20px;
+      left: 20px;
+      color: white;
+      text-decoration: none;
+      font-size: 18px;
+      background: rgba(0,0,0,0.3);
+      padding: 8px 12px;
+      border-radius: 10px;
     }
+
   </style>
 </head>
 <body>
+  <a id="back-link" href="index.html">← Retour</a>
 
-  <!-- Zone invisible cliquable pour revenir -->
-  <div class="back-area" onclick="window.location.href='index.html'"></div>
-
-  <div class="tamagotchi-container">
-    <!-- Exemple de Tamagotchi SVG simplifié -->
-    <svg id="tama" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="50" cy="50" r="40" fill="#ffccff" stroke="#ff69b4" stroke-width="3"/>
-      <circle cx="35" cy="45" r="5" fill="#000"/>
-      <circle cx="65" cy="45" r="5" fill="#000"/>
-      <rect id="mouth" x="40" y="60" width="20" height="10" rx="5" ry="5" fill="#000"/>
+  <div id="tamagotchi-container">
+    <!-- 🔵 Tamagotchi SVG inséré ici -->
+    <svg id="tamagotchi-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="100" cy="100" r="80" fill="#ffc6e6" stroke="#ff85cb" stroke-width="4" />
+      <circle id="eyeL" cx="70" cy="80" r="10" fill="#000" />
+      <circle id="eyeR" cx="130" cy="80" r="10" fill="#000" />
+      <path id="mouth" d="M80,120 Q100,140 120,120" stroke="#000" stroke-width="4" fill="none" />
     </svg>
-  </div>
 
-  <div class="controls">
-    <button onclick="feedTama()">🍍</button>
-    <button onclick="surfTama()">🏄</button>
-    <button onclick="cleanTama()">🚿</button>
+    <div class="btn-group">
+      <button class="action-btn" onclick="feed()">🍍</button>
+      <button class="action-btn" onclick="play()">🏄</button>
+      <button class="action-btn" onclick="wash()">🚿</button>
+    </div>
   </div>
 
   <script>
-    const mouth = document.getElementById('mouth');
-    const tama = document.getElementById('tama');
+    const svg = document.getElementById("tamagotchi-svg");
 
-    function feedTama() {
-      mouth.classList.add('animate-mouth');
-      setTimeout(() => mouth.classList.remove('animate-mouth'), 400);
+    function feed() {
+      // Animation bouche (mange)
+      const mouth = document.getElementById("mouth");
+      mouth.setAttribute("d", "M80,120 Q100,150 120,120"); // bouche grande
+      setTimeout(() => {
+        mouth.setAttribute("d", "M80,120 Q100,140 120,120"); // retour normal
+      }, 1000);
+
+      // 🍍 Fruit qui monte
+      const fruit = document.createElement("div");
+      fruit.textContent = "🍍";
+      fruit.className = "fruit";
+      fruit.style.left = "calc(50% - 12px)";
+      fruit.style.top = "120px";
+      document.body.appendChild(fruit);
+      setTimeout(() => fruit.remove(), 2000);
     }
 
-    function surfTama() {
-      tama.classList.add('animate-surf');
-      setTimeout(() => tama.classList.remove('animate-surf'), 600);
+    function play() {
+      // Yeux qui clignent (ou sautille)
+      const eyeL = document.getElementById("eyeL");
+      const eyeR = document.getElementById("eyeR");
+      eyeL.setAttribute("r", "5");
+      eyeR.setAttribute("r", "5");
+      setTimeout(() => {
+        eyeL.setAttribute("r", "10");
+        eyeR.setAttribute("r", "10");
+      }, 500);
     }
 
-    function cleanTama() {
-      tama.classList.add('animate-clean');
-      setTimeout(() => tama.classList.remove('animate-clean'), 600);
+    function wash() {
+      // Ajoute bulles/déco
+      for (let i = 0; i < 4; i++) {
+        const bubble = document.createElement("div");
+        bubble.className = "bubble";
+        bubble.textContent = "🫧";
+        bubble.style.left = `${50 + i * 20}px`;
+        bubble.style.top = "150px";
+        document.body.appendChild(bubble);
+        setTimeout(() => bubble.remove(), 2000);
+      }
     }
   </script>
 </body>
