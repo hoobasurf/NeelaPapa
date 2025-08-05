@@ -6,8 +6,22 @@ html, body {
   font-family: 'Comic Sans MS', cursive;
   background: url('fond-stitch.jpg') no-repeat center top fixed;
   background-size: cover;
+  background-attachment: fixed;
   color: #fff;
   overflow-x: hidden;
+}
+
+/* ====== Zone cliquable invisible sur le titre intégré ====== */
+#invisible-title-link {
+  position: absolute;
+  top: 20px;          /* ajusté selon emplacement du titre dans ton fond */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 260px;       /* largeur de la zone cliquable */
+  height: 50px;       /* hauteur de la zone cliquable */
+  z-index: 1000;
+  cursor: pointer;
+  background: transparent;
 }
 
 /* ====== Conteneur principal ====== */
@@ -17,7 +31,7 @@ html, body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  padding: 30px 10px 0 10px; /* Avant : 130px */
+  padding: 30px 10px 0 10px; /* padding-top réduit pour voir le titre */
   gap: 10px;
 }
 
@@ -44,10 +58,10 @@ html, body {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  padding-bottom: 110px; /* hauteur du formulaire fixe */
+  padding-bottom: 110px; /* doit être >= hauteur du formulaire fixe */
 }
 
-/* bulles de messages */
+/* Bulles de message */
 .message {
   background: rgba(255, 255, 255, 0.06);
   border: 2px solid #ff69b4;
@@ -90,7 +104,7 @@ html, body {
   box-shadow: 0 -8px 30px rgba(0,0,0,0.5);
 }
 
-/* input texte */
+/* Input texte */
 #message-input {
   flex: 1 1 auto;
   padding: 12px 16px;
@@ -102,12 +116,12 @@ html, body {
   color: #fff;
 }
 
-/* cacher l’input file natif */
+/* Cacher l’input file natif */
 #image-upload {
   display: none;
 }
 
-/* Boutons communs */
+/* ====== Boutons communs ====== */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -125,27 +139,27 @@ html, body {
   box-shadow: 0 6px 18px rgba(255,105,180,0.35);
   transition: transform .12s ease, box-shadow .12s ease;
 }
-.photo-btn {
-  width: 46px;
-  padding: 0;
-}
 .send-btn {
   padding: 0 18px;
   min-width: 70px;
+}
+.photo-btn {
+  width: 46px;
+  padding: 0;
 }
 .btn:active {
   transform: translateY(1px) scale(.995);
   box-shadow: 0 4px 10px rgba(255,105,180,0.28);
 }
 
-/* Scrollbar */
+/* ====== Scrollbar ====== */
 #messages::-webkit-scrollbar { width: 6px; }
 #messages::-webkit-scrollbar-thumb {
   background: rgba(255,105,180,0.5);
   border-radius: 6px;
 }
 
-/* Mobile responsive */
+/* ====== Responsive ====== */
 @media (max-width: 420px) {
   #chat-app { padding-top: 30px; }
   #message-input { font-size: 15px; }
