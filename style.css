@@ -9,11 +9,12 @@ body {
 #chat-app {
   display: flex;
   flex-direction: column;
-  height: 78vh;                /* réduit un peu plus pour laisser bien voir le titre */
-  padding: 150px 10px 10px;    /* espace en haut augmenté à 150px */
+  height: 82vh;               /* ↑ Augmenté pour plus de place */
+  padding: 120px 10px 20px;   /* ↑ réduit top à 120px, ↑ plus de padding en bas */
   box-sizing: border-box;
   justify-content: flex-end;
   background: transparent;
+  position: relative;
 }
 
 #messages {
@@ -76,6 +77,21 @@ button {
 }
 
 #image-upload {
-  max-width: 120px;
+  max-width: 100px;
   font-size: 12px;
+}
+
+/* 🐣 Tamagotchi flottant */
+#tamagotchi {
+  position: absolute;
+  bottom: 80px;
+  right: 15px;
+  width: 60px;
+  height: auto;
+  animation: floatTama 4s ease-in-out infinite;
+}
+
+@keyframes floatTama {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
 }
