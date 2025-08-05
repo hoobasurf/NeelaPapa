@@ -1,32 +1,62 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
-  <title>Tamagotchi - Neela & Papa</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tamagotchi</title>
   <link rel="stylesheet" href="style.css" />
   <style>
     body {
-      background: url('fond-stitch.jpg') no-repeat center top fixed;
+      background: url('fond-stitch.jpg') no-repeat center top;
       background-size: cover;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
+      background-attachment: fixed;
       margin: 0;
+      font-family: 'Comic Sans MS', cursive;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
     }
-    #big-tamagotchi {
-      width: 180px;
+
+    #tamagotchi-page {
+      text-align: center;
+      padding: 20px;
+    }
+
+    #tamagotchi-large {
+      width: 300px;
+      max-width: 90vw;
       height: auto;
-      animation: floatTama 4s ease-in-out infinite;
+      margin-bottom: 30px;
+      filter: drop-shadow(0 0 10px rgba(255, 105, 180, 0.6));
     }
-    @keyframes floatTama {
-      0%,100% { transform: translateY(0); }
-      50% { transform: translateY(-15px); }
+
+    .btn-return {
+      background: linear-gradient(180deg, #ff79c6, #ff5aa8);
+      border: none;
+      border-radius: 999px;
+      padding: 12px 24px;
+      color: white;
+      font-weight: bold;
+      font-size: 16px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(255,105,180,0.4);
+      transition: transform 0.12s ease, box-shadow 0.12s ease;
+      text-decoration: none;
+    }
+
+    .btn-return:active {
+      transform: translateY(1px) scale(0.98);
+      box-shadow: 0 2px 8px rgba(255,105,180,0.3);
     }
   </style>
 </head>
 <body>
-  <img id="big-tamagotchi" src="tamagotchi.svg" alt="Tamagotchi" />
+  <div id="tamagotchi-page">
+    <img id="tamagotchi-large" src="tamagotchi.svg" alt="Tamagotchi" />
+    <br />
+    <a href="index.html" class="btn-return" aria-label="Retour à l'accueil">⬅ Retour</a>
+  </div>
 </body>
 </html>
