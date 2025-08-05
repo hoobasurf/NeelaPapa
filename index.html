@@ -8,7 +8,7 @@
 </head>
 <body>
   <div id="chat-app">
-    <!-- Titre visible en haut via le fond -->
+    <!-- Header / titre dans le fond (géré via fond-stitch.jpg) -->
     <header id="app-header" aria-hidden="true">
       <p id="status">Connexion...</p>
     </header>
@@ -16,10 +16,12 @@
     <!-- Messages -->
     <main id="messages" role="log" aria-live="polite"></main>
 
-    <!-- Barre en bas avec champ texte + photo + bouton envoyer -->
+    <!-- Barre fixe en bas -->
     <form id="message-form">
       <input type="text" id="message-input" placeholder="Écris ici..." autocomplete="off" />
+      <!-- Bouton envoyer -->
       <button type="submit" class="btn send-btn" aria-label="Envoyer le message">Envoyer</button>
+      <!-- Bouton photo -->
       <label for="image-upload" class="btn photo-btn" title="Envoyer une photo" aria-label="Envoyer une photo">📷</label>
       <input type="file" id="image-upload" accept="image/*" />
     </form>
