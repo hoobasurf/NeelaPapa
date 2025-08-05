@@ -1,13 +1,14 @@
 /* ====== Fond et typographie ====== */
 * { box-sizing: border-box; }
-html, body {
-  height: 100%;
+html,body { height: 100%; overflow-x: hidden; }
+body {
   margin: 0;
   font-family: 'Comic Sans MS', cursive;
   background: url('fond-stitch.jpg') no-repeat center top fixed;
   background-size: cover;
+  background-attachment: fixed;
   color: #fff;
-  overflow-x: hidden;
+  -webkit-text-size-adjust: 100%;
 }
 
 /* ====== Conteneur principal ====== */
@@ -21,13 +22,24 @@ html, body {
   gap: 10px;
 }
 
-/* ====== En-tête / statut ====== */
+/* ====== Titre cliquable ====== */
+#title-link {
+  text-decoration: none;
+  color: #fff;
+  text-shadow: 0 0 12px rgba(255, 105, 180, 0.7);
+}
+#title-link h1 {
+  font-size: 28px;
+  margin: 0;
+}
+
+/* ====== Header (statut) ====== */
 #app-header {
   position: absolute;
   top: 10px;
   left: 16px;
   z-index: 1;
-  pointer-events: none;
+  pointer-events: auto;
 }
 #status {
   margin: 0;
@@ -44,10 +56,10 @@ html, body {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  padding-bottom: 110px; /* hauteur du formulaire fixe */
+  padding-bottom: 110px;
 }
 
-/* bulles de messages */
+/* ====== Bulle de message ====== */
 .message {
   background: rgba(255, 255, 255, 0.06);
   border: 2px solid #ff69b4;
@@ -60,11 +72,13 @@ html, body {
   align-self: flex-start;
   font-size: 15px;
 }
+
 .message.me {
   align-self: flex-end;
   background: rgba(255,105,180,0.12);
   border-color: rgba(255,105,180,0.8);
 }
+
 .message img {
   display: block;
   max-width: 100%;
@@ -73,7 +87,7 @@ html, body {
   margin-top: 8px;
 }
 
-/* ====== Formulaire message fixe en bas ====== */
+/* ====== Formulaire bas de page ====== */
 #message-form {
   position: fixed;
   left: 0;
@@ -90,7 +104,6 @@ html, body {
   box-shadow: 0 -8px 30px rgba(0,0,0,0.5);
 }
 
-/* input texte */
 #message-input {
   flex: 1 1 auto;
   padding: 12px 16px;
@@ -102,12 +115,11 @@ html, body {
   color: #fff;
 }
 
-/* cacher l’input file natif */
+/* ====== Boutons ====== */
 #image-upload {
   display: none;
 }
 
-/* Boutons communs */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -125,46 +137,29 @@ html, body {
   box-shadow: 0 6px 18px rgba(255,105,180,0.35);
   transition: transform .12s ease, box-shadow .12s ease;
 }
+
 .photo-btn {
   width: 46px;
   padding: 0;
 }
-.send-btn {
-  padding: 0 18px;
-  min-width: 70px;
-}
+
 .btn:active {
   transform: translateY(1px) scale(.995);
   box-shadow: 0 4px 10px rgba(255,105,180,0.28);
 }
 
-/* Tamagotchi flottant */
-#tamagotchi {
-  position: fixed;
-  right: 14px;
-  bottom: 120px;
-  width: 64px;
-  height: auto;
-  z-index: 990;
-  pointer-events: auto;
-  animation: floatTama 4s ease-in-out infinite;
-}
-@keyframes floatTama {
-  0%,100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
+.send-btn {
+  padding: 0 18px;
+  min-width: 70px;
 }
 
-/* Scrollbar */
+/* ====== Scrollbar custom ====== */
 #messages::-webkit-scrollbar { width: 6px; }
-#messages::-webkit-scrollbar-thumb {
-  background: rgba(255,105,180,0.5);
-  border-radius: 6px;
-}
+#messages::-webkit-scrollbar-thumb { background: rgba(255,105,180,0.5); border-radius: 6px; }
 
-/* Mobile responsive */
-@media (max-width: 420px) {
+/* ====== Responsive ====== */
+@media (max-width:420px) {
   #chat-app { padding-top: 110px; }
-  #tamagotchi { width: 56px; bottom: 110px; }
   #message-input { font-size: 15px; }
   .send-btn { min-width: 60px; padding: 0 12px; }
 }
