@@ -7,10 +7,9 @@ const firebaseConfig = {
   authDomain: "neelapapa-e33a7.firebaseapp.com",
   databaseURL: "https://neelapapa-e33a7-default-rtdb.firebaseio.com",
   projectId: "neelapapa-e33a7",
-  storageBucket: "neelapapa-e33a7.firebasestorage.app",
+  storageBucket: "neelapapa-e33a7.appspot.com",
   messagingSenderId: "91492229900",
-  appId: "1:91492229900:web:ec61b2592b19627f155f29",
-  measurementId: "G-086NSRZF51"
+  appId: "1:91492229900:web:ec61b2592b19627f155f29"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -27,11 +26,7 @@ const imageUpload = document.getElementById("image-upload");
 signInAnonymously(auth).catch(console.error);
 
 onAuthStateChanged(auth, user => {
-  if (!user) {
-    status.textContent = "🔴 Déconnecté";
-    return;
-  }
-
+  if (!user) return status.textContent = "🔴 Déconnecté";
   status.textContent = "🟢 Connecté";
 
   messageForm.addEventListener("submit", e => {
@@ -63,38 +58,26 @@ onAuthStateChanged(auth, user => {
     const key = snapshot.key;
     const div = document.createElement("div");
     div.className = "message";
-    if (msg.uid === user.uid) div.classList.add("own");
 
-    // Texte
+    const deleteBtn = document.createElement("button");
+    deleteBtn.className = "delete-btn";
+    deleteBtn.textContent = "×";
+
+    let pressTimer;
+    deleteBtn.addEventListener("mousedown", () => {
+      pressTimer = setTimeout(() => remove(ref(db, `messages/${key}`)), 3000);
+    });
+    deleteBtn.addEventListener("mouseup", () => clearTimeout(pressTimer));
+    deleteBtn.addEventListener("mouseleave", () => clearTimeout(pressTimer));
+
+    div.appendChild(deleteBtn);
+
     if (msg.text) {
-      div.textContent = msg.text;
-    }
-
-    // Image
-    if (msg.imageUrl) {
+      div.appendChild(document.createTextNode(msg.text));
+    } else if (msg.imageUrl) {
       const img = document.createElement("img");
       img.src = msg.imageUrl;
-      img.alt = "Photo envoyée";
       div.appendChild(img);
-    }
-
-    // Petite croix rose
-    if (msg.uid === user.uid) {
-      const closeBtn = document.createElement("span");
-      closeBtn.className = "delete-btn";
-      closeBtn.textContent = "✖";
-
-      let pressTimer;
-      closeBtn.addEventListener("mousedown", () => {
-        pressTimer = setTimeout(() => {
-          remove(ref(db, `messages/${key}`));
-          div.remove(); // en local aussi
-        }, 3000);
-      });
-      closeBtn.addEventListener("mouseup", () => clearTimeout(pressTimer));
-      closeBtn.addEventListener("mouseleave", () => clearTimeout(pressTimer));
-
-      div.appendChild(closeBtn);
     }
 
     messagesContainer.appendChild(div);
