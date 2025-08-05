@@ -19,13 +19,16 @@
     <!-- Barre fixe en bas -->
     <form id="message-form">
       <input type="text" id="message-input" placeholder="Écris ici..." autocomplete="off" />
-      <!-- label photo stylé comme le bouton envoyer -->
-      <label for="image-upload" class="btn photo-btn" title="Envoyer une photo" aria-label="Envoyer une photo">📷</label>
-      <input type="file" id="image-upload" accept="image/*" />
+
+      <!-- Bouton envoyer à gauche -->
       <button type="submit" class="btn send-btn" aria-label="Envoyer le message">Envoyer</button>
+
+      <!-- label photo stylé comme le bouton envoyer -->
+      <label for="image-upload" class="btn photo-btn" title="Envoyer une photo" aria-label="Envoyer une photo">📷 Photo</label>
+      <input type="file" id="image-upload" accept="image/*" />
     </form>
 
-    <!-- Tamagotchi (optionnel) : place tamagotchi.svg à la racine -->
+    <!-- Tamagotchi (optionnel) -->
     <img id="tamagotchi" src="tamagotchi.svg" alt="Tamagotchi" />
   </div>
 
