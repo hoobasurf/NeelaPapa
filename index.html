@@ -1,164 +1,24 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Stitch SVG Animé</title>
-<style>
-  body {
-    background: #1a1a2e;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-    overflow: hidden;
-    font-family: 'Comic Sans MS', cursive;
-  }
-  svg {
-    width: 350px;
-    height: 350px;
-    user-select: none;
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Neela & Papa</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <div id="chat-app">
+    <header>
+      <p id="status">Connexion...</p>
+    </header>
+    <main id="messages"></main>
+    <form id="message-form">
+      <input type="text" id="message-input" placeholder="Écris ici..." autocomplete="off" />
+      <button type="submit">Envoyer</button>
+      <input type="file" id="image-upload" accept="image/*" />
+    </form>
+  </div>
 
-<svg viewBox="0 0 200 200" id="stitch" xmlns="http://www.w3.org/2000/svg" >
-  <!-- Corps -->
-  <ellipse id="body" cx="100" cy="130" rx="50" ry="60" fill="#4A90E2" stroke="#002F6C" stroke-width="3"/>
-  
-  <!-- Tête -->
-  <circle id="head" cx="100" cy="60" r="40" fill="#007ACC" stroke="#002F6C" stroke-width="3" />
-  
-  <!-- Oreilles -->
-  <g id="ear-left" transform="translate(60,30)">
-    <polygon points="0,0 20,30 10,45" fill="#005BA1" stroke="#002F6C" stroke-width="2"/>
-    <polygon points="7,15 15,30 10,38" fill="#0080FF" />
-  </g>
-  <g id="ear-right" transform="translate(140,30)">
-    <polygon points="0,0 -20,30 -10,45" fill="#005BA1" stroke="#002F6C" stroke-width="2"/>
-    <polygon points="-7,15 -15,30 -10,38" fill="#0080FF" />
-  </g>
-
-  <!-- Yeux -->
-  <g id="eyes" transform="translate(0,10)">
-    <ellipse cx="80" cy="55" rx="12" ry="18" fill="white"/>
-    <ellipse cx="120" cy="55" rx="12" ry="18" fill="white"/>
-    <circle id="eye-left" cx="80" cy="60" r="7" fill="black"/>
-    <circle id="eye-right" cx="120" cy="60" r="7" fill="black"/>
-  </g>
-
-  <!-- Bras -->
-  <g id="arm-left" transform="translate(40,100)">
-    <ellipse cx="0" cy="30" rx="20" ry="40" fill="#005BA1" stroke="#002F6C" stroke-width="2"/>
-  </g>
-  <g id="arm-right" transform="translate(160,100)">
-    <ellipse cx="0" cy="30" rx="20" ry="40" fill="#005BA1" stroke="#002F6C" stroke-width="2"/>
-  </g>
-
-  <!-- Jambes -->
-  <g id="leg-left" transform="translate(70,190)">
-    <ellipse cx="0" cy="0" rx="20" ry="30" fill="#003D73" stroke="#002F6C" stroke-width="2"/>
-  </g>
-  <g id="leg-right" transform="translate(130,190)">
-    <ellipse cx="0" cy="0" rx="20" ry="30" fill="#003D73" stroke="#002F6C" stroke-width="2"/>
-  </g>
-
-  <!-- Bouche fermée -->
-  <path id="mouth-closed" d="M70,90 Q100,110 130,90" stroke="#800000" stroke-width="3" fill="none"/>
-  <!-- Bouche ouverte -->
-  <path id="mouth-open" d="M70,90 Q100,120 130,90 Q100,150 70,90" fill="#800000" style="opacity:0"/>
-
-</svg>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-<script>
-  const head = document.getElementById('head');
-  const earLeft = document.getElementById('ear-left');
-  const earRight = document.getElementById('ear-right');
-  const armLeft = document.getElementById('arm-left');
-  const armRight = document.getElementById('arm-right');
-  const mouthClosed = document.getElementById('mouth-closed');
-  const mouthOpen = document.getElementById('mouth-open');
-  const eyeLeft = document.getElementById('eye-left');
-  const eyeRight = document.getElementById('eye-right');
-
-  // Origines pour rotations
-  gsap.set(earLeft, {transformOrigin: "10% 90%"});
-  gsap.set(earRight, {transformOrigin: "90% 90%"});
-  gsap.set(armLeft, {transformOrigin: "50% 0%"});
-  gsap.set(armRight, {transformOrigin: "50% 0%"});
-  gsap.set(head, {transformOrigin: "50% 60%"});
-
-  // Animation oreille battante
-  gsap.to(earLeft, {
-    rotation: 15,
-    repeat: -1,
-    yoyo: true,
-    ease: "sine.inOut",
-    duration: 1.2
-  });
-  gsap.to(earRight, {
-    rotation: -15,
-    repeat: -1,
-    yoyo: true,
-    ease: "sine.inOut",
-    duration: 1.2
-  });
-
-  // Animation bras qui bougent doucement
-  gsap.to(armLeft, {
-    rotation: 10,
-    repeat: -1,
-    yoyo: true,
-    ease: "sine.inOut",
-    duration: 2
-  });
-  gsap.to(armRight, {
-    rotation: -10,
-    repeat: -1,
-    yoyo: true,
-    ease: "sine.inOut",
-    duration: 2
-  });
-
-  // Tête qui penche doucement de gauche à droite
-  gsap.to(head, {
-    rotation: 8,
-    repeat: -1,
-    yoyo: true,
-    ease: "sine.inOut",
-    duration: 3
-  });
-
-  // Clignement des yeux toutes les 3 à 6 secondes aléatoires
-  function blink() {
-    gsap.to([eyeLeft, eyeRight], {
-      scaleY: 0.1,
-      transformOrigin: "center center",
-      duration: 0.1,
-      yoyo: true,
-      repeat: 1,
-      ease: "power1.inOut",
-      onComplete: () => {
-        setTimeout(blink, 3000 + Math.random() * 3000);
-      }
-    });
-  }
-  blink();
-
-  // Ouverture/fermeture bouche toutes les 5 secondes
-  function mouthMove() {
-    gsap.to(mouthClosed, { opacity: 0, duration: 0.2 });
-    gsap.to(mouthOpen, { opacity: 1, duration: 0.2 });
-    setTimeout(() => {
-      gsap.to(mouthClosed, { opacity: 1, duration: 0.2 });
-      gsap.to(mouthOpen, { opacity: 0, duration: 0.2 });
-      setTimeout(mouthMove, 5000);
-    }, 800);
-  }
-  mouthMove();
-</script>
+  <script type="module" src="app.js"></script>
 </body>
 </html>
