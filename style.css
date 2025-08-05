@@ -1,12 +1,12 @@
 /* ====== Fond et typographie ====== */
 * { box-sizing: border-box; }
-html, body { height: 100%; margin: 0; }
-body {
+html, body {
+  height: 100%;
+  margin: 0;
   font-family: 'Comic Sans MS', cursive;
   background: url('fond-stitch.jpg') no-repeat center top fixed;
   background-size: cover;
   color: #fff;
-  -webkit-text-size-adjust: 100%;
   overflow-x: hidden;
 }
 
@@ -14,16 +14,14 @@ body {
 #chat-app {
   position: relative;
   width: 100%;
-  max-width: 500px;
-  margin: 0 auto;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  padding: 140px 10px 0 10px; /* Ajusté pour bien voir le titre */
+  padding: 130px 10px 0 10px;
   gap: 10px;
 }
 
-/* header (statut) */
+/* ====== En-tête / statut ====== */
 #app-header {
   position: absolute;
   top: 10px;
@@ -46,14 +44,14 @@ body {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  padding-bottom: 110px;
+  padding-bottom: 110px; /* hauteur du formulaire fixe */
 }
 
 /* bulles de messages */
 .message {
   background: rgba(255, 255, 255, 0.06);
   border: 2px solid #ff69b4;
-  border-radius: 18px;
+  border-radius: 22px;
   padding: 10px 14px;
   color: white;
   max-width: 85%;
@@ -75,7 +73,7 @@ body {
   margin-top: 8px;
 }
 
-/* ====== Formulaire en bas ====== */
+/* ====== Formulaire message fixe en bas ====== */
 #message-form {
   position: fixed;
   left: 0;
@@ -92,7 +90,7 @@ body {
   box-shadow: 0 -8px 30px rgba(0,0,0,0.5);
 }
 
-/* Champ texte */
+/* input texte */
 #message-input {
   flex: 1 1 auto;
   padding: 12px 16px;
@@ -104,12 +102,12 @@ body {
   color: #fff;
 }
 
-/* Cacher le champ fichier natif */
+/* cacher l’input file natif */
 #image-upload {
   display: none;
 }
 
-/* ====== Boutons ====== */
+/* Boutons communs */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -127,20 +125,20 @@ body {
   box-shadow: 0 6px 18px rgba(255,105,180,0.35);
   transition: transform .12s ease, box-shadow .12s ease;
 }
-.btn:active {
-  transform: translateY(1px) scale(.995);
-  box-shadow: 0 4px 10px rgba(255,105,180,0.28);
+.photo-btn {
+  width: 46px;
+  padding: 0;
 }
 .send-btn {
   padding: 0 18px;
   min-width: 70px;
 }
-.photo-btn {
-  width: 46px;
-  padding: 0;
+.btn:active {
+  transform: translateY(1px) scale(.995);
+  box-shadow: 0 4px 10px rgba(255,105,180,0.28);
 }
 
-/* ====== Tamagotchi ====== */
+/* Tamagotchi flottant */
 #tamagotchi {
   position: fixed;
   right: 14px;
@@ -156,16 +154,16 @@ body {
   50% { transform: translateY(-10px); }
 }
 
-/* ====== Scrollbar ====== */
+/* Scrollbar */
 #messages::-webkit-scrollbar { width: 6px; }
 #messages::-webkit-scrollbar-thumb {
   background: rgba(255,105,180,0.5);
   border-radius: 6px;
 }
 
-/* ====== Responsive ====== */
+/* Mobile responsive */
 @media (max-width: 420px) {
-  #chat-app { padding-top: 120px; }
+  #chat-app { padding-top: 110px; }
   #tamagotchi { width: 56px; bottom: 110px; }
   #message-input { font-size: 15px; }
   .send-btn { min-width: 60px; padding: 0 12px; }
