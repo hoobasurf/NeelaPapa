@@ -1,4 +1,4 @@
-/* ====== Fond et typographie ====== */
+/* ===== Fond et typo ===== */
 * { box-sizing: border-box; }
 html, body {
   height: 100%;
@@ -6,36 +6,34 @@ html, body {
   font-family: 'Comic Sans MS', cursive;
   background: url('fond-stitch.jpg') no-repeat center top fixed;
   background-size: cover;
-  background-attachment: fixed;
   color: #fff;
   overflow-x: hidden;
 }
 
-/* ====== Zone cliquable invisible sur le titre intégré ====== */
-#invisible-title-link {
+/* ===== Zone cliquable invisible sur le titre ===== */
+#click-zone {
   position: absolute;
-  top: 20px;          /* ajusté selon emplacement du titre dans ton fond */
+  top: 18px;
   left: 50%;
   transform: translateX(-50%);
-  width: 260px;       /* largeur de la zone cliquable */
-  height: 50px;       /* hauteur de la zone cliquable */
-  z-index: 1000;
+  width: 240px;
+  height: 60px;
+  z-index: 10;
   cursor: pointer;
-  background: transparent;
 }
 
-/* ====== Conteneur principal ====== */
+/* ===== App principal ===== */
 #chat-app {
   position: relative;
   width: 100%;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  padding: 30px 10px 0 10px; /* padding-top réduit pour voir le titre */
+  padding: 130px 10px 0 10px;
   gap: 10px;
 }
 
-/* ====== En-tête / statut ====== */
+/* ===== En-tête / statut ===== */
 #app-header {
   position: absolute;
   top: 10px;
@@ -50,7 +48,7 @@ html, body {
   text-shadow: 0 0 6px rgba(0,0,0,0.6);
 }
 
-/* ====== Zone messages ====== */
+/* ===== Zone messages ===== */
 #messages {
   flex: 1 1 auto;
   overflow-y: auto;
@@ -58,11 +56,12 @@ html, body {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  padding-bottom: 110px; /* doit être >= hauteur du formulaire fixe */
+  padding-bottom: 110px;
 }
 
-/* Bulles de message */
+/* Bulles de messages */
 .message {
+  position: relative;
   background: rgba(255, 255, 255, 0.06);
   border: 2px solid #ff69b4;
   border-radius: 22px;
@@ -81,13 +80,31 @@ html, body {
 }
 .message img {
   display: block;
-  max-width: 100%;
+  max-width: 220px;
   height: auto;
   border-radius: 10px;
   margin-top: 8px;
 }
 
-/* ====== Formulaire message fixe en bas ====== */
+/* Croix de suppression */
+.delete-btn {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  background: #ff69b4;
+  color: white;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  font-size: 13px;
+  text-align: center;
+  line-height: 20px;
+  cursor: pointer;
+  opacity: 0.85;
+  z-index: 10;
+}
+
+/* Formulaire message */
 #message-form {
   position: fixed;
   left: 0;
@@ -100,28 +117,25 @@ html, body {
   padding: 10px;
   background: linear-gradient(180deg, rgba(0,0,0,0.45), rgba(0,0,0,0.6));
   border-top: 2px solid rgba(255,105,180,0.25);
-  backdrop-filter: none;
-  box-shadow: 0 -8px 30px rgba(0,0,0,0.5);
 }
 
-/* Input texte */
+/* Input */
 #message-input {
-  flex: 1 1 auto;
+  flex: 1;
   padding: 12px 16px;
   border-radius: 26px;
   border: none;
-  outline: none;
   font-size: 16px;
   background: rgba(255,255,255,0.12);
   color: #fff;
 }
 
-/* Cacher l’input file natif */
+/* Cacher file natif */
 #image-upload {
   display: none;
 }
 
-/* ====== Boutons communs ====== */
+/* Boutons */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -131,37 +145,26 @@ html, body {
   padding: 0 14px;
   border-radius: 26px;
   border: none;
-  cursor: pointer;
   font-size: 16px;
   font-weight: 600;
   color: #fff;
   background: linear-gradient(180deg,#ff79c6,#ff5aa8);
   box-shadow: 0 6px 18px rgba(255,105,180,0.35);
-  transition: transform .12s ease, box-shadow .12s ease;
+  cursor: pointer;
 }
-.send-btn {
-  padding: 0 18px;
-  min-width: 70px;
-}
-.photo-btn {
-  width: 46px;
-  padding: 0;
-}
-.btn:active {
-  transform: translateY(1px) scale(.995);
-  box-shadow: 0 4px 10px rgba(255,105,180,0.28);
-}
+.photo-btn { width: 46px; padding: 0; }
+.send-btn { padding: 0 18px; min-width: 70px; }
 
-/* ====== Scrollbar ====== */
+/* Scrollbar */
 #messages::-webkit-scrollbar { width: 6px; }
 #messages::-webkit-scrollbar-thumb {
   background: rgba(255,105,180,0.5);
   border-radius: 6px;
 }
 
-/* ====== Responsive ====== */
+/* Responsive */
 @media (max-width: 420px) {
-  #chat-app { padding-top: 30px; }
+  #chat-app { padding-top: 110px; }
   #message-input { font-size: 15px; }
   .send-btn { min-width: 60px; padding: 0 12px; }
 }
