@@ -2,27 +2,24 @@
 <html lang="fr">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Neela & Papa</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <!-- Zone invisible cliquable ronde sur le titre -->
-  <a href="tamagotchi.html" id="title-zone" aria-label="Aller à la page Tamagotchi"></a>
+  <a id="title-zone" href="tamagotchi.html" aria-label="Basculer de page"></a>
 
   <div id="chat-app">
-    <!-- En-tête invisible, utilisé pour le statut -->
     <header id="app-header" aria-hidden="true">
       <p id="status">Connexion...</p>
     </header>
 
-    <!-- Zone des messages -->
     <main id="messages" role="log" aria-live="polite"></main>
 
-    <!-- Barre de message -->
     <form id="message-form">
       <input type="text" id="message-input" placeholder="Écris ici..." autocomplete="off" />
-      <button type="submit" class="btn send-btn" aria-label="Envoyer le message">Envoyer</button>
+      <button type="submit" class="btn send-btn" aria-label="Envoyer">Envoyer</button>
       <label for="image-upload" class="btn photo-btn" title="Envoyer une photo" aria-label="Envoyer une photo">📷</label>
       <input type="file" id="image-upload" accept="image/*" />
     </form>
