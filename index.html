@@ -2,24 +2,24 @@
 <html lang="fr">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
   <title>Neela & Papa</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <!-- Zone cliquable invisible et circulaire sur le titre dans le fond -->
-  <a href="tamagotchi.html" id="click-zone" aria-label="Accès Tamagotchi"></a>
+  <!-- Zone cliquable invisible sur le titre du fond -->
+  <a id="invisible-title-link" href="tamagotchi.html" aria-label="Accès au Tamagotchi"></a>
 
   <div id="chat-app">
-    <!-- Statut connexion -->
+    <!-- Statut en haut à gauche -->
     <header id="app-header">
       <p id="status">Connexion...</p>
     </header>
 
-    <!-- Messages -->
+    <!-- Zone des messages -->
     <main id="messages" role="log" aria-live="polite"></main>
 
-    <!-- Formulaire -->
+    <!-- Formulaire en bas -->
     <form id="message-form">
       <input type="text" id="message-input" placeholder="Écris ici..." autocomplete="off" />
       <button type="submit" class="btn send-btn" aria-label="Envoyer le message">Envoyer</button>
