@@ -9,8 +9,8 @@ body {
 #chat-app {
   display: flex;
   flex-direction: column;
-  height: 82vh;                /* Conserve hauteur */
-  padding: 130px 10px 20px;    /* ⇦ Augmente top de 120px à 130px pour descendre tout le chat */
+  height: 82vh;
+  padding: 120px 10px 20px;
   box-sizing: border-box;
   justify-content: flex-end;
   background: transparent;
@@ -21,7 +21,7 @@ body {
   flex: 1;
   overflow-y: auto;
   padding: 10px;
-  backdrop-filter: blur(2px);
+  /* backdrop-filter: blur(2px); */ /* flou désactivé */
 }
 
 .message {
@@ -31,7 +31,7 @@ body {
   padding: 10px;
   margin: 10px 0;
   color: white;
-  backdrop-filter: blur(6px);
+  /* backdrop-filter: blur(6px); */ /* flou désactivé */
   animation: neonPulse 2s infinite ease-in-out;
   max-width: 80%;
   word-break: break-word;
@@ -54,7 +54,7 @@ form {
   gap: 8px;
   padding: 10px;
   background: rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(4px);
+  /* backdrop-filter: blur(4px); */ /* flou désactivé */
   border-top: 1px solid rgba(255, 255, 255, 0.2);
 }
 
@@ -81,7 +81,7 @@ button {
   font-size: 12px;
 }
 
-/* 🐣 Tamagotchi flottant */
+/* Tamagotchi flottant */
 #tamagotchi {
   position: absolute;
   bottom: 80px;
