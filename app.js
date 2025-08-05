@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-import { getDatabase, ref, push, onChildAdded } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
+import { getDatabase, ref, push, onChildAdded, remove } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
 import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
 
 const firebaseConfig = {
@@ -27,49 +27,77 @@ const imageUpload = document.getElementById("image-upload");
 signInAnonymously(auth).catch(console.error);
 
 onAuthStateChanged(auth, user => {
-  if (user) {
-    status.textContent = "🟢 Connecté";
-
-    messageForm.addEventListener("submit", e => {
-      e.preventDefault();
-      const text = messageInput.value.trim();
-      if (text) {
-        push(messagesRef, { text, uid: user.uid, time: Date.now() });
-        messageInput.value = "";
-      }
-    });
-
-    imageUpload.addEventListener("change", async e => {
-      const file = e.target.files[0];
-      if (file) {
-        const formData = new FormData();
-        formData.append("image", file);
-        const res = await fetch("https://api.imgbb.com/1/upload?key=0df97650eaea3c785ca5c8ea0e37ac12", {
-          method: "POST",
-          body: formData
-        });
-        const data = await res.json();
-        if (data?.data?.url) {
-          push(messagesRef, { imageUrl: data.data.url, uid: user.uid, time: Date.now() });
-        }
-      }
-    });
-
-    onChildAdded(messagesRef, snapshot => {
-      const msg = snapshot.val();
-      const div = document.createElement("div");
-      div.className = "message";
-      if (msg.text) {
-        div.textContent = msg.text;
-      } else if (msg.imageUrl) {
-        const img = document.createElement("img");
-        img.src = msg.imageUrl;
-        div.appendChild(img);
-      }
-      messagesContainer.appendChild(div);
-      messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    });
-  } else {
+  if (!user) {
     status.textContent = "🔴 Déconnecté";
+    return;
   }
+
+  status.textContent = "🟢 Connecté";
+
+  messageForm.addEventListener("submit", e => {
+    e.preventDefault();
+    const text = messageInput.value.trim();
+    if (text) {
+      push(messagesRef, { text, uid: user.uid, time: Date.now() });
+      messageInput.value = "";
+    }
+  });
+
+  imageUpload.addEventListener("change", async e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const formData = new FormData();
+    formData.append("image", file);
+    const res = await fetch("https://api.imgbb.com/1/upload?key=0df97650eaea3c785ca5c8ea0e37ac12", {
+      method: "POST",
+      body: formData
+    });
+    const data = await res.json();
+    if (data?.data?.url) {
+      push(messagesRef, { imageUrl: data.data.url, uid: user.uid, time: Date.now() });
+    }
+  });
+
+  onChildAdded(messagesRef, snapshot => {
+    const msg = snapshot.val();
+    const key = snapshot.key;
+    const div = document.createElement("div");
+    div.className = "message";
+    if (msg.uid === user.uid) div.classList.add("own");
+
+    // Texte
+    if (msg.text) {
+      div.textContent = msg.text;
+    }
+
+    // Image
+    if (msg.imageUrl) {
+      const img = document.createElement("img");
+      img.src = msg.imageUrl;
+      img.alt = "Photo envoyée";
+      div.appendChild(img);
+    }
+
+    // Petite croix rose
+    if (msg.uid === user.uid) {
+      const closeBtn = document.createElement("span");
+      closeBtn.className = "delete-btn";
+      closeBtn.textContent = "✖";
+
+      let pressTimer;
+      closeBtn.addEventListener("mousedown", () => {
+        pressTimer = setTimeout(() => {
+          remove(ref(db, `messages/${key}`));
+          div.remove(); // en local aussi
+        }, 3000);
+      });
+      closeBtn.addEventListener("mouseup", () => clearTimeout(pressTimer));
+      closeBtn.addEventListener("mouseleave", () => clearTimeout(pressTimer));
+
+      div.appendChild(closeBtn);
+    }
+
+    messagesContainer.appendChild(div);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+  });
 });
