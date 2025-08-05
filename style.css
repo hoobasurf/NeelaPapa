@@ -9,8 +9,8 @@ body {
 #chat-app {
   display: flex;
   flex-direction: column;
-  height: 82vh;               /* ↑ Augmenté pour plus de place */
-  padding: 120px 10px 20px;   /* ↑ réduit top à 120px, ↑ plus de padding en bas */
+  height: 82vh;                /* Conserve hauteur */
+  padding: 130px 10px 20px;    /* ⇦ Augmente top de 120px à 130px pour descendre tout le chat */
   box-sizing: border-box;
   justify-content: flex-end;
   background: transparent;
