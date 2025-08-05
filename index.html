@@ -1,30 +1,27 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Neela & Papa</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div id="chat-app">
-    <!-- Zone invisible cliquable sur le titre du fond -->
-    <a href="tamagotchi.html" id="click-zone" aria-label="Aller au Tamagotchi"></a>
+  <!-- Zone invisible ronde sur le titre -->
+  <a href="tamagotchi.html" id="clickable-logo" aria-label="Aller au Tamagotchi"></a>
 
-    <!-- En-tête (statut connexion à gauche) -->
-    <header id="app-header">
+  <div id="chat-app">
+    <header>
       <p id="status">Connexion...</p>
     </header>
 
-    <!-- Messages -->
-    <main id="messages" role="log" aria-live="polite"></main>
+    <main id="messages"></main>
 
-    <!-- Formulaire bas -->
     <form id="message-form">
       <input type="text" id="message-input" placeholder="Écris ici..." autocomplete="off" />
-      <button type="submit" class="btn send-btn" aria-label="Envoyer le message">Envoyer</button>
-      <label for="image-upload" class="btn photo-btn" title="Envoyer une photo">📷</label>
+      <label for="image-upload" class="btn photo-btn">📷</label>
       <input type="file" id="image-upload" accept="image/*" />
+      <button type="submit" class="btn send-btn">Envoyer</button>
     </form>
   </div>
 
