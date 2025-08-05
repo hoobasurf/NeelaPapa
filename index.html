@@ -8,28 +8,59 @@
 </head>
 <body>
   <div id="chat-app">
-    <!-- Header / titre dans le fond (géré via fond-stitch.jpg) -->
     <header id="app-header" aria-hidden="true">
+      <a href="tamagotchi.html" id="title-link">
+        <h1>Neela & Papa</h1>
+      </a>
       <p id="status">Connexion...</p>
     </header>
 
-    <!-- Messages -->
-    <main id="messages" role="log" aria-live="polite"></main>
+    <main id="messages">
+      <!-- Messages ajoutés dynamiquement ici -->
+    </main>
 
-    <!-- Barre fixe en bas -->
     <form id="message-form">
-      <input type="text" id="message-input" placeholder="Écris ici..." autocomplete="off" />
-      <!-- Bouton envoyer -->
-      <button type="submit" class="btn send-btn" aria-label="Envoyer le message">Envoyer</button>
-      <!-- Bouton photo -->
-      <label for="image-upload" class="btn photo-btn" title="Envoyer une photo" aria-label="Envoyer une photo">📷</label>
+      <input type="text" id="message-input" placeholder="Écris un message..." />
+      <button type="submit" class="btn send-btn">Envoyer</button>
+      <label for="image-upload" class="btn photo-btn">📷</label>
       <input type="file" id="image-upload" accept="image/*" />
     </form>
-
-    <!-- Tamagotchi flottant -->
-    <img id="tamagotchi" src="tamagotchi.svg" alt="Tamagotchi" />
   </div>
 
-  <script type="module" src="app.js"></script>
+  <script>
+    const messages = document.getElementById("messages");
+    const form = document.getElementById("message-form");
+    const input = document.getElementById("message-input");
+    const imageUpload = document.getElementById("image-upload");
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      if (input.value.trim() !== "") {
+        const div = document.createElement("div");
+        div.className = "message me";
+        div.textContent = input.value;
+        messages.appendChild(div);
+        messages.scrollTop = messages.scrollHeight;
+        input.value = "";
+      }
+    });
+
+    imageUpload.addEventListener("change", function () {
+      const file = this.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          const div = document.createElement("div");
+          div.className = "message me";
+          const img = document.createElement("img");
+          img.src = e.target.result;
+          div.appendChild(img);
+          messages.appendChild(div);
+          messages.scrollTop = messages.scrollHeight;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  </script>
 </body>
 </html>
