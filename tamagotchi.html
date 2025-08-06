@@ -185,24 +185,30 @@
     setInterval(decay, 15000);
     loadGauges();
 
+    <script>
+  window.addEventListener('DOMContentLoaded', () => {
+    const stitch = document.getElementById('stitch');
+    const clickZone = document.getElementById('fondClick');
+
     clickZone.onclick = () => {
-  const currentPage = location.pathname.split('/').pop();
-  
-  if (currentPage === 'index.html' || currentPage === '') {
-    // Page 1 → Aller vers tamagotchi
-    stitch.src = 'stitch25.gif';
-    setTimeout(() => {
-      location.href = 'tamagotchi.html';
-    }, 4000); // jouer 6 secondes
-  } else if (currentPage === 'tamagotchi.html') {
-    // Page 2 → Retour vers accueil
-    stitch.src = 'stitch24.gif';
-    setTimeout(() => {
-      location.href = 'index.html';
-    }, 4000); // jouer 4 secondes
-  }
-};
-  </script>
+      const currentPage = location.pathname.split('/').pop();
+
+      if (currentPage === 'index.html' || currentPage === '') {
+        // Aller vers tamagotchi
+        stitch.src = 'stitch25.gif';
+        setTimeout(() => {
+          location.href = 'tamagotchi.html';
+        }, 4000); // 4 secondes pour stitch25.gif
+      } else if (currentPage === 'tamagotchi.html') {
+        // Retour vers accueil
+        stitch.src = 'stitch24.gif';
+        setTimeout(() => {
+          location.href = 'index.html';
+        }, 4000); // 4 secondes pour stitch24.gif
+      }
+    };
+  });
+</script>
 
 </body>
 </html>
