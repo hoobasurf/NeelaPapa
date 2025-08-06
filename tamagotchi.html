@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Tamagotchi Stitch</title>
   <style>
     body {
@@ -10,217 +11,165 @@
       background-size: cover;
       font-family: 'Comic Sans MS', cursive;
       overflow-x: hidden;
+      color: white;
     }
 
     .container {
       text-align: center;
-      margin-top: 6cm; /* Stitch plus bas */
+      padding-top: 6cm;
     }
 
     #stitch {
-      width: 300px;
+      width: 200px;
       height: auto;
-      transition: all 0.3s ease-in-out;
+      margin: auto;
+      display: block;
     }
 
     .buttons {
-      margin-top: 30px;
+      margin-top: 20px;
     }
 
     .buttons button {
-      font-size: 20px;
       margin: 10px;
-      padding: 10px 20px;
-      border-radius: 20px;
+      font-size: 24px;
+      padding: 10px;
+      border-radius: 50%;
       border: none;
-      background: #00c2cb;
-      color: white;
+      background: #ffffffaa;
       cursor: pointer;
-      box-shadow: 2px 2px 10px rgba(0,0,0,0.3);
-      transition: transform 0.2s;
-    }
-
-    .buttons button:hover {
-      transform: scale(1.1);
     }
 
     .gauges {
-      margin-top: 40px;
       display: flex;
       justify-content: center;
-      gap: 40px;
+      margin-top: 40px;
+      gap: 30px;
     }
 
-    .gauge-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      width: 150px;
-    }
-
-    .gauge-container img {
-      width: 80px;
-      height: auto;
-      margin-bottom: 10px;
-    }
-
-    .gauge-bar {
-      width: 100%;
-      height: 150px; /* 500% plus haut qu'avant (~30px * 5) */
-      background-color: rgba(255, 255, 255, 0.3);
-      border-radius: 20px;
-      overflow: hidden;
+    .gauge {
+      width: 60px;
+      height: 200px;
+      background: url('coquillage.png') no-repeat center/contain;
       position: relative;
     }
 
     .gauge-fill {
       position: absolute;
-      bottom: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(to top, #00c2cb, #fff);
+      bottom: 20px;
+      left: 25%;
+      width: 50%;
+      background: yellow;
       transition: height 0.5s;
+      border-radius: 20px;
     }
 
+    .night {
+      filter: brightness(0.4);
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <img id="stitch" src="stitch5.gif" alt="Stitch" />
+    <img id="stitch" src="stitch5.gif" alt="Stitch">
 
     <div class="buttons">
-      <button onclick="feed()">🍍</button>
-      <button onclick="play()">🏄</button>
-      <button onclick="bath()">🚿</button>
-      <button onclick="sleep()">😴</button>
+      <button onclick="playAction('eat')">🍍</button>
+      <button onclick="playAction('play')">🏄</button>
+      <button onclick="playAction('wash')">🚿</button>
+      <button onclick="playAction('sleep')">😴</button>
     </div>
 
     <div class="gauges">
-      <div class="gauge-container">
-        <img src="coquillage.png" alt="Énergie">
-        <div class="gauge-bar">
-          <div id="energyFill" class="gauge-fill"></div>
-        </div>
-      </div>
-      <div class="gauge-container">
-        <img src="coquillage.png" alt="Fun">
-        <div class="gauge-bar">
-          <div id="funFill" class="gauge-fill"></div>
-        </div>
-      </div>
-      <div class="gauge-container">
-        <img src="coquillage.png" alt="Humeur">
-        <div class="gauge-bar">
-          <div id="humeurFill" class="gauge-fill"></div>
-        </div>
-      </div>
+      <div class="gauge"><div class="gauge-fill" id="g1" style="height:100%; background: yellow;"></div></div>
+      <div class="gauge"><div class="gauge-fill" id="g2" style="height:100%; background: lightblue;"></div></div>
+      <div class="gauge"><div class="gauge-fill" id="g3" style="height:100%; background: pink;"></div></div>
+      <div class="gauge"><div class="gauge-fill" id="g4" style="height:100%; background: orange;"></div></div>
     </div>
   </div>
 
   <script>
-    const stitch = document.getElementById("stitch");
-    const defaultStitch = "stitch5.gif";
-    let gaugeLevels = { energy: 100, fun: 100, mood: 100 };
+    let stitch = document.getElementById('stitch');
+    let gifs = {
+      eat: "stitch16.gif",
+      play: ["stitch7.gif", "stitch9.gif", "stitch13.gif", "stitch14.gif", "stitch15.gif"],
+      wash: "stitch18.gif",
+      sleep: ["stitch2.gif", "stitch3.gif", "stitch20.gif", "stitch21.gif", "stitch22.gif"]
+    };
 
-    function updateGaugeUI() {
-      document.getElementById("energyFill").style.height = gaugeLevels.energy + "%";
-      document.getElementById("funFill").style.height = gaugeLevels.fun + "%";
-      document.getElementById("humeurFill").style.height = gaugeLevels.mood + "%";
-    }
+    let moods = {
+      tired: "stitch12.gif",
+      sad: "stitch1.gif",
+      cold: ["stitch10.gif", "stitch11.gif"],
+      angry: "stitch17.gif"
+    };
 
-    function averageGauge() {
-      return (gaugeLevels.energy + gaugeLevels.fun + gaugeLevels.mood) / 3;
-    }
+    let gauges = [100, 100, 100, 100]; // eat, play, sleep, wash
+    const fillEls = [g1, g2, g3, g4];
+    let gaugeNames = ['eat', 'play', 'sleep', 'wash'];
 
-    function moodCheck() {
-      if      (gaugeLevels.energy  < 30) stitch.src = 'stitch12.gif';  // fatigué
-      else if (gaugeLevels.fun     < 30) stitch.src = 'stitch17.gif';  // énervé
-      else if (averageGauge()      < 30) stitch.src = 'stitch1.gif';   // triste
-      else                               stitch.src = defaultStitch;   // normal
-    }
+    // Jour/Nuit auto
+    const hour = new Date().getHours();
+    if (hour < 7 || hour > 20) document.body.classList.add("night");
 
-    function decay() {
-      for (const key in gaugeLevels) {
-        gaugeLevels[key] = Math.max(0, gaugeLevels[key] - 2);
+    function updateGauges() {
+      for (let i = 0; i < gauges.length; i++) {
+        fillEls[i].style.height = gauges[i] + "%";
       }
-      updateGaugeUI();
-      saveGauges();
-      moodCheck();
     }
 
     function saveGauges() {
-      localStorage.setItem('gauges', JSON.stringify(gaugeLevels));
+      localStorage.setItem("gauges", JSON.stringify(gauges));
     }
 
     function loadGauges() {
-      const saved = localStorage.getItem('gauges');
-      if (saved) {
-        gaugeLevels = JSON.parse(saved);
-        updateGaugeUI();
-      }
+      let saved = localStorage.getItem("gauges");
+      if (saved) gauges = JSON.parse(saved);
+      updateGauges();
     }
 
-    function playOnce(gif) {
+    function autoDecrease() {
+      gauges = gauges.map(g => Math.max(0, g - 1));
+      updateGauges();
+      saveGauges();
+      checkMood();
+    }
+
+    function checkMood() {
+      if (gauges[2] < 30) stitch.src = moods.tired;
+      else if (gauges[0] < 30) stitch.src = moods.sad;
+      else if (gauges[3] < 30) stitch.src = moods.angry;
+      else if (Math.random() < 0.05) stitch.src = moods.cold[Math.floor(Math.random() * 2)];
+      else stitch.src = "stitch5.gif";
+    }
+
+    function playAction(type) {
+      let gif;
+      if (Array.isArray(gifs[type])) {
+        gif = gifs[type][Math.floor(Math.random() * gifs[type].length)];
+      } else {
+        gif = gifs[type];
+      }
+
+      switch (type) {
+        case "eat": gauges[0] = Math.min(100, gauges[0] + 20); break;
+        case "play": gauges[1] = Math.min(100, gauges[1] + 20); break;
+        case "sleep": gauges[2] = Math.min(100, gauges[2] + 20); break;
+        case "wash": gauges[3] = Math.min(100, gauges[3] + 20); break;
+      }
+
+      updateGauges();
+      saveGauges();
+
       stitch.src = gif;
       setTimeout(() => {
-        moodCheck();
+        checkMood();
       }, 4000);
     }
 
-    function playSequence(gifs) {
-      let i = 0;
-      const next = () => {
-        if (i < gifs.length) {
-          stitch.src = gifs[i++];
-          setTimeout(next, 1300);
-        } else {
-          moodCheck();
-        }
-      };
-      next();
-    }
-
-    function feed() {
-      playOnce("stitch16.gif");
-      gaugeLevels.mood = Math.min(100, gaugeLevels.mood + 15);
-      updateGaugeUI();
-      saveGauges();
-    }
-
-    function play() {
-      const gifs = ["stitch7.gif", "stitch9.gif", "stitch13.gif", "stitch14.gif", "stitch15.gif"];
-      const chosen = gifs[Math.floor(Math.random() * gifs.length)];
-      playOnce(chosen);
-      gaugeLevels.fun = Math.min(100, gaugeLevels.fun + 15);
-      updateGaugeUI();
-      saveGauges();
-    }
-
-    function bath() {
-      playSequence(["stitch18.gif", "stitch19.gif"]);
-      gaugeLevels.mood = Math.min(100, gaugeLevels.mood + 10);
-      updateGaugeUI();
-      saveGauges();
-    }
-
-    function sleep() {
-      const sequences = [
-        ["stitch2.gif", "stitch3.gif", "stitch20.gif"],
-        ["stitch2.gif", "stitch3.gif", "stitch21.gif"],
-        ["stitch2.gif", "stitch3.gif", "stitch22.gif"]
-      ];
-      const chosen = sequences[Math.floor(Math.random() * sequences.length)];
-      playSequence(chosen);
-      gaugeLevels.energy = Math.min(100, gaugeLevels.energy + 30);
-      updateGaugeUI();
-      saveGauges();
-    }
-
-    // ↓↓ Lancement
     loadGauges();
-    updateGaugeUI();
-    setInterval(decay, 10000); // baisse toutes les 10 secondes
-
+    updateGauges();
+    setInterval(autoDecrease, 10000); // toutes les 10s
   </script>
 </body>
 </html>
