@@ -1,219 +1,257 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <title>Neela & Papa - Tamagotchi</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tamagotchi</title>
   <style>
     body {
       margin: 0;
-      background: url('fond-stitch.jpg') no-repeat center center fixed;
-      background-size: cover;
-      font-family: 'Comic Sans MS', cursive;
+      background: url('fond-stitch.jpg') no-repeat center center/cover;
+      font-family: Arial, sans-serif;
       overflow-x: hidden;
     }
 
-    #fond-stitch {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 120px;
-      cursor: pointer;
-      z-index: 100;
-    }
-
-    .container {
-      margin-top: 180px;
+    #gif-container {
       text-align: center;
+      margin-top: 6cm;
     }
 
     #stitch-gif {
       width: 200px;
+      max-width: 80%;
       height: auto;
-      margin-bottom: 20px;
     }
 
-    .button-row {
+    .buttons {
+      display: flex;
+      justify-content: center;
       margin-top: 20px;
+      gap: 20px;
     }
 
-    .button-row button {
-      background: none;
+    .buttons button {
+      font-size: 24px;
       border: none;
-      font-size: 30px;
-      margin: 10px;
+      background: none;
       cursor: pointer;
     }
 
     .jauges {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
       display: flex;
-      justify-content: space-around;
-      margin: 50px auto 0;
-      width: 90%;
-      max-width: 500px;
-      flex-wrap: wrap;
+      flex-direction: column;
+      gap: 15px;
     }
 
     .jauge {
-      position: relative;
-      width: 80px;
+      width: 60px;
       height: 150px;
-      background: url('coquillage.png') no-repeat center center;
-      background-size: contain;
-      margin: 10px;
+      background: url('coquillage.png') no-repeat center center/contain;
+      position: relative;
     }
 
-    .jauge-inner {
+    .niveau {
       position: absolute;
-      bottom: 20%;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 30px;
-      background: #fffacd;
-      border-radius: 10px;
-      transition: height 0.3s;
+      bottom: 5px;
+      left: 0;
+      width: 100%;
+      background: rgba(0, 200, 255, 0.6);
+      transition: height 0.5s ease;
     }
 
-    @keyframes gifFade {
-      from { opacity: 0; }
-      to { opacity: 1; }
+    #fond-stitch {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 120px;
+      z-index: 2;
+    }
+
+    #fond-stitch:hover {
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
+  <div id="fond-stitch" onclick="handleTitleClick()"></div>
 
-<div id="fond-stitch"></div>
+  <div id="gif-container">
+    <img id="stitch-gif" src="stitch5.gif" alt="Stitch" />
+  </div>
 
-<div class="container">
-  <img id="stitch-gif" src="stitch5.gif" alt="Stitch">
-
-  <div class="button-row">
-    <button onclick="handleAction('eat')">🍍</button>
-    <button onclick="handleAction('play')">🏄</button>
-    <button onclick="handleAction('bath')">🚿</button>
-    <button onclick="handleAction('sleep')">😴</button>
+  <div class="buttons">
+    <button onclick="jouer()">🏄</button>
+    <button onclick="manger()">🍍</button>
+    <button onclick="dormir()">😴</button>
+    <button onclick="laver()">🚿</button>
   </div>
 
   <div class="jauges">
-    <div class="jauge"><div id="jauge-eat" class="jauge-inner"></div></div>
-    <div class="jauge"><div id="jauge-play" class="jauge-inner"></div></div>
-    <div class="jauge"><div id="jauge-bath" class="jauge-inner"></div></div>
-    <div class="jauge"><div id="jauge-sleep" class="jauge-inner"></div></div>
+    <div class="jauge"><div id="jauge-jeu" class="niveau" style="height: 100%;"></div></div>
+    <div class="jauge"><div id="jauge-nourriture" class="niveau" style="height: 100%;"></div></div>
+    <div class="jauge"><div id="jauge-dodo" class="niveau" style="height: 100%;"></div></div>
+    <div class="jauge"><div id="jauge-bain" class="niveau" style="height: 100%;"></div></div>
   </div>
-</div>
 
-<script>
-  let jauges = {
-    eat: 1000,
-    play: 1000,
-    bath: 1000,
-    sleep: 1000
-  };
-
-  const gifs = {
-    eat: ["stitch16.gif"],
-    play: ["stitch7.gif", "stitch9.gif", "stitch13.gif", "stitch14.gif", "stitch15.gif"],
-    bath: ["stitch18.gif", "stitch19.gif"],
-    sleep: [["stitch2.gif", "stitch3.gif", "stitch20.gif"], ["stitch2.gif", "stitch3.gif", "stitch21.gif"], ["stitch2.gif", "stitch3.gif", "stitch22.gif"]]
-  };
-
-  const states = {
-    normal: "stitch5.gif",
-    tired: "stitch12.gif",
-    angry: "stitch17.gif",
-    sad: "stitch1.gif",
-    cold: ["stitch10.gif", "stitch11.gif"]
-  };
-
-  function updateJauges() {
-    for (let key in jauges) {
-      let value = Math.max(0, Math.min(1000, jauges[key]));
-      document.getElementById("jauge-" + key).style.height = (value / 10) + "%";
-    }
-    localStorage.setItem("jauges", JSON.stringify(jauges));
-  }
-
-  function loadJauges() {
-    let saved = localStorage.getItem("jauges");
-    if (saved) {
-      jauges = JSON.parse(saved);
-    }
-    updateJauges();
-  }
-
-  function random(array) {
-    return array[Math.floor(Math.random() * array.length)];
-  }
-
-  function playGifSequence(sequence, callback) {
+  <script>
     const stitch = document.getElementById("stitch-gif");
-    let i = 0;
 
-    function next() {
-      if (i < sequence.length) {
-        stitch.src = sequence[i];
-        i++;
-        setTimeout(next, 2000);
-      } else {
-        callback();
+    let gifNormal = "stitch5.gif";
+    let humeurActuelle = "normal";
+
+    const gifs = {
+      jouer: ["stitch7.gif", "stitch9.gif", "stitch13.gif", "stitch14.gif", "stitch15.gif"],
+      manger: ["stitch16.gif"],
+      dormir: [["stitch2.gif", "stitch3.gif", "stitch20.gif"], ["stitch2.gif", "stitch3.gif", "stitch21.gif"], ["stitch2.gif", "stitch3.gif", "stitch22.gif"]],
+      laver: ["stitch18.gif", "stitch19.gif"]
+    };
+
+    const jauges = {
+      jeu: document.getElementById("jauge-jeu"),
+      nourriture: document.getElementById("jauge-nourriture"),
+      dodo: document.getElementById("jauge-dodo"),
+      bain: document.getElementById("jauge-bain")
+    };
+
+    const niveaux = {
+      jeu: 1000,
+      nourriture: 1000,
+      dodo: 1000,
+      bain: 1000
+    };
+
+    function updateJauges() {
+      for (let key in jauges) {
+        jauges[key].style.height = niveaux[key] / 10 + "%";
       }
     }
 
-    next();
-  }
-
-  function handleAction(type) {
-    if (type === 'sleep') {
-      playGifSequence(random(gifs.sleep), () => {
-        jauges.sleep = 1000;
-        updateMood();
-        updateJauges();
-      });
-    } else {
-      const gif = random(gifs[type]);
-      document.getElementById("stitch-gif").src = gif;
-      setTimeout(() => {
-        jauges[type] = 1000;
-        updateMood();
-        updateJauges();
-      }, 3000);
+    function changerGif(tempGif, callback) {
+      stitch.src = tempGif;
+      stitch.onload = () => {
+        setTimeout(() => {
+          majHumeur();
+          callback && callback();
+        }, 4000); // attend fin du gif
+      };
     }
-  }
 
-  function updateMood() {
-    const stitch = document.getElementById("stitch-gif");
-    if (jauges.eat < 300) {
-      stitch.src = states.sad;
-    } else if (jauges.play < 300) {
-      stitch.src = states.angry;
-    } else if (jauges.sleep < 300) {
-      stitch.src = states.tired;
-    } else if (jauges.bath < 300 && Math.random() < 0.4) {
-      stitch.src = random(states.cold);
-    } else {
-      stitch.src = states.normal;
+    function jouer() {
+      niveaux.jeu = Math.min(niveaux.jeu + 200, 1000);
+      let gif = gifs.jouer[Math.floor(Math.random() * gifs.jouer.length)];
+      changerGif(gif);
+      updateJauges();
     }
-  }
 
-  setInterval(() => {
-    for (let key in jauges) {
-      jauges[key] -= 5;
-      if (jauges[key] < 0) jauges[key] = 0;
+    function manger() {
+      niveaux.nourriture = Math.min(niveaux.nourriture + 200, 1000);
+      changerGif(gifs.manger[0]);
+      updateJauges();
     }
-    updateMood();
+
+    function dormir() {
+      niveaux.dodo = Math.min(niveaux.dodo + 300, 1000);
+      let sequence = gifs.dormir[Math.floor(Math.random() * gifs.dormir.length)];
+      jouerSequence(sequence);
+      updateJauges();
+    }
+
+    function laver() {
+      niveaux.bain = Math.min(niveaux.bain + 300, 1000);
+      let gif = gifs.laver[Math.floor(Math.random() * gifs.laver.length)];
+      changerGif(gif);
+      updateJauges();
+    }
+
+    function jouerSequence(gifList, index = 0) {
+      if (index >= gifList.length) {
+        majHumeur();
+        return;
+      }
+      stitch.src = gifList[index];
+      stitch.onload = () => {
+        setTimeout(() => {
+          jouerSequence(gifList, index + 1);
+        }, 2000);
+      };
+    }
+
+    function baisseAuto() {
+      for (let key in niveaux) {
+        niveaux[key] = Math.max(niveaux[key] - 20, 0);
+      }
+      updateJauges();
+      majHumeur();
+    }
+
+    function majHumeur() {
+      if (niveaux.jeu < 300) {
+        stitch.src = "stitch17.gif"; // Énervé
+      } else if (niveaux.dodo < 300) {
+        stitch.src = "stitch12.gif"; // Fatigué
+      } else if (niveaux.bain < 300) {
+        stitch.src = "stitch10.gif"; // Froid
+      } else if (niveaux.nourriture < 300) {
+        stitch.src = "stitch1.gif"; // Triste
+      } else {
+        stitch.src = gifNormal; // Normal
+      }
+    }
+
+    // Baisse auto toutes les 15s
+    setInterval(baisseAuto, 15000);
     updateJauges();
-  }, 3000);
 
-  document.getElementById("fond-stitch").addEventListener("click", () => {
-    const stitch = document.getElementById("stitch-gif");
-    stitch.src = "stitch24.gif";
-    setTimeout(() => {
-      window.location.href = "index.html";
-    }, 1800);
-  });
+    // Sauvegarde
+    window.addEventListener("beforeunload", () => {
+      localStorage.setItem("jauges", JSON.stringify(niveaux));
+    });
 
-  loadJauges();
-</script>
+    window.addEventListener("load", () => {
+      let saved = localStorage.getItem("jauges");
+      if (saved) {
+        Object.assign(niveaux, JSON.parse(saved));
+        updateJauges();
+        majHumeur();
+      }
+    });
 
+    function handleTitleClick() {
+      // Aller/retour entre les pages
+      const current = window.location.pathname;
+      if (current.includes("tamagotchi")) {
+        // retour
+        const gif = document.createElement("img");
+        gif.src = "stitch24.gif";
+        gif.style.position = "fixed";
+        gif.style.top = "0";
+        gif.style.left = "0";
+        gif.style.width = "100%";
+        gif.style.zIndex = 9999;
+        document.body.appendChild(gif);
+        setTimeout(() => {
+          window.location.href = "index.html";
+        }, 2500);
+      } else {
+        // aller
+        const gif = document.createElement("img");
+        gif.src = "stitch25.gif";
+        gif.style.position = "fixed";
+        gif.style.top = "0";
+        gif.style.left = "0";
+        gif.style.width = "100%";
+        gif.style.zIndex = 9999;
+        document.body.appendChild(gif);
+        setTimeout(() => {
+          window.location.href = "tamagotchi.html";
+        }, 2500);
+      }
+    }
+  </script>
 </body>
 </html>
