@@ -1,208 +1,170 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <title>Tamagotchi Stitch</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tamagotchi - Neela & Papa</title>
   <style>
     body {
       margin: 0;
       background: url('fond-stitch.jpg') no-repeat center center fixed;
       background-size: cover;
-      font-family: Arial, sans-serif;
-      text-align: center;
+      font-family: 'Comic Sans MS', cursive;
       color: white;
-    }
-
-    #header {
-      height: 100px;
-      position: relative;
-    }
-
-    #back-btn {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      cursor: pointer;
-    }
-
-    h1 {
-      font-size: 0; /* invisible mais cliquable */
+      overflow-x: hidden;
     }
 
     #stitch {
-      width: 200px;
-      height: auto;
-      margin-top: 1cm;
-      border-radius: 20px;
+      display: block;
+      margin: 5cm auto 20px auto;
+      height: 200px;
+      transition: opacity 0.3s ease-in-out;
     }
 
     .buttons {
-      margin: 20px 0;
-    }
-
-    .buttons button {
-      background-color: rgba(255, 255, 255, 0.3);
-      color: white;
-      font-size: 20px;
-      padding: 10px 20px;
-      margin: 10px;
-      border: none;
-      border-radius: 20px;
-      cursor: pointer;
-      backdrop-filter: blur(5px);
-      transition: transform 0.2s, background-color 0.2s;
-    }
-
-    .buttons button:hover {
-      background-color: rgba(255, 255, 255, 0.6);
-      transform: scale(1.05);
-    }
-
-    .gauge-container {
       display: flex;
       justify-content: center;
       gap: 20px;
-      margin-top: 20px;
+      margin-bottom: 30px;
+    }
+
+    .buttons button {
+      background: pink;
+      border: none;
+      border-radius: 50%;
+      padding: 15px;
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    .gauges {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      margin-top: 40px;
     }
 
     .gauge {
-      width: 80px;
-      height: 150px;
-      background: linear-gradient(to top, #00eaff, #00c1e0);
-      border-radius: 20px;
       position: relative;
-      overflow: hidden;
-      border: 3px solid white;
+      width: 60px;
+      height: 200px;
+      background: url('coquillage.png') no-repeat center/contain;
     }
 
-    .gauge-fill {
+    .fill {
       position: absolute;
-      bottom: 0;
-      width: 100%;
-      background-color: #fff;
-      transition: height 0.3s;
+      bottom: 10px;
+      left: 15px;
+      width: 30px;
+      background-color: #00ffffaa;
+      border-radius: 10px;
+      transition: height 0.5s;
     }
 
-    .gauge-label {
-      margin-top: 10px;
-      font-size: 14px;
+    .night {
+      filter: brightness(0.5);
     }
   </style>
 </head>
 <body>
 
-  <div id="header">
-    <div id="back-btn" onclick="window.location.href='index.html'"></div>
-    <h1>Tamagotchi</h1>
-  </div>
-
   <img id="stitch" src="stitch5.jpg" alt="Stitch" />
 
   <div class="buttons">
-    <button onclick="playGif(['stitch16.gif'], 'manger')">🍍 Manger</button>
-    <button onclick="playGif(['stitch7.gif','stitch9.gif','stitch13.gif','stitch14.gif','stitch15.gif'], 'jouer')">🏄 Jouer</button>
-    <button onclick="playGif(['stitch18.gif','stitch19.gif'], 'bain')">🚿 Bain</button>
-    <button onclick="playGif(['stitch2.gif','stitch3.gif','stitch20.gif','stitch21.gif','stitch22.gif'], 'dodo')">😴 Dodo</button>
+    <button onclick="playAction('eat')">🍍</button>
+    <button onclick="playAction('play')">🏄</button>
+    <button onclick="playAction('bath')">🚿</button>
+    <button onclick="playAction('sleep')">😴</button>
   </div>
 
-  <div class="gauge-container">
-    <div class="gauge" id="energieGauge">
-      <div class="gauge-fill" id="energieFill"></div>
-    </div>
-    <div class="gauge" id="funGauge">
-      <div class="gauge-fill" id="funFill"></div>
-    </div>
-    <div class="gauge" id="propreteGauge">
-      <div class="gauge-fill" id="propreteFill"></div>
-    </div>
-  </div>
-  <div class="gauge-container">
-    <div class="gauge-label">Énergie</div>
-    <div class="gauge-label">Fun</div>
-    <div class="gauge-label">Propreté</div>
+  <div class="gauges">
+    <div class="gauge" id="energyGauge"><div class="fill" id="energyFill"></div></div>
+    <div class="gauge" id="funGauge"><div class="fill" id="funFill"></div></div>
+    <div class="gauge" id="cleanGauge"><div class="fill" id="cleanFill"></div></div>
   </div>
 
-  <!-- Audio -->
-  <audio id="actionSound" src="blop.mp3" preload="auto"></audio>
+<script>
+  const stitch = document.getElementById('stitch');
+  const gifMap = {
+    eat: ['stitch16.gif'],
+    play: ['stitch7.gif', 'stitch9.gif', 'stitch13.gif', 'stitch14.gif', 'stitch15.gif'],
+    bath: ['stitch18.gif', 'stitch19.gif'],
+    sleep: [['stitch2.gif', 'stitch3.gif', 'stitch20.gif'], ['stitch2.gif', 'stitch3.gif', 'stitch21.gif'], ['stitch2.gif', 'stitch3.gif', 'stitch22.gif']],
+  };
 
-  <script>
-    const stitch = document.getElementById("stitch");
-    const defaultStitch = "stitch5.jpg";
-    const sound = document.getElementById("actionSound");
+  let gauges = {
+    energy: parseFloat(localStorage.getItem('energy')) || 100,
+    fun: parseFloat(localStorage.getItem('fun')) || 100,
+    clean: parseFloat(localStorage.getItem('clean')) || 100,
+  };
 
-    let gauges = {
-      energie: 100,
-      fun: 100,
-      proprete: 100
-    };
+  function updateGauges() {
+    document.getElementById('energyFill').style.height = gauges.energy + '%';
+    document.getElementById('funFill').style.height = gauges.fun + '%';
+    document.getElementById('cleanFill').style.height = gauges.clean + '%';
 
-    function loadGauges() {
-      const saved = localStorage.getItem("stitchGauges");
-      if (saved) {
-        gauges = JSON.parse(saved);
+    localStorage.setItem('energy', gauges.energy);
+    localStorage.setItem('fun', gauges.fun);
+    localStorage.setItem('clean', gauges.clean);
+
+    updateMood();
+  }
+
+  function playAction(type) {
+    let sequence = gifMap[type];
+    if (type === 'sleep') {
+      sequence = sequence[Math.floor(Math.random() * sequence.length)];
+    }
+    if (!Array.isArray(sequence)) sequence = [sequence];
+
+    let index = 0;
+
+    function playNext() {
+      if (index < sequence.length) {
+        stitch.src = sequence[index];
+        index++;
+        setTimeout(playNext, 1000);
+      } else {
+        stitch.src = 'stitch5.jpg';
       }
     }
 
-    function saveGauges() {
-      localStorage.setItem("stitchGauges", JSON.stringify(gauges));
-    }
+    playNext();
 
-    function updateGauges() {
-      document.getElementById("energieFill").style.height = gauges.energie + "%";
-      document.getElementById("funFill").style.height = gauges.fun + "%";
-      document.getElementById("propreteFill").style.height = gauges.proprete + "%";
-      saveGauges();
-    }
+    // Refill logic
+    if (type === 'eat') gauges.energy = Math.min(100, gauges.energy + 25);
+    if (type === 'play') gauges.fun = Math.min(100, gauges.fun + 25);
+    if (type === 'bath') gauges.clean = Math.min(100, gauges.clean + 25);
+    if (type === 'sleep') gauges.energy = Math.min(100, gauges.energy + 50);
 
-    function playGif(gifList, actionType) {
-      sound.play(); // son
-      let gif;
-
-      if (actionType === 'dodo') {
-        gif = [gifList[0], gifList[1], gifList[2 + Math.floor(Math.random() * 3)]];
-        gauges.energie = Math.min(100, gauges.energie + 15);
-      } else if (actionType === 'jouer') {
-        gif = [gifList[Math.floor(Math.random() * gifList.length)]];
-        gauges.fun = Math.min(100, gauges.fun + 10);
-        gauges.energie = Math.max(0, gauges.energie - 5);
-      } else if (actionType === 'bain') {
-        gif = gifList;
-        gauges.proprete = 100;
-      } else if (actionType === 'manger') {
-        gif = gifList;
-        gauges.energie = Math.min(100, gauges.energie + 20);
-      }
-
-      let delay = 0;
-      function nextFrame(index) {
-        if (index >= gif.length) {
-          stitch.src = defaultStitch;
-          updateGauges();
-          return;
-        }
-        stitch.src = gif[index];
-        setTimeout(() => nextFrame(index + 1), 1000);
-      }
-
-      nextFrame(0);
-    }
-
-    // Animation froid aléatoire
-    setInterval(() => {
-      if (Math.random() < 0.05) {
-        let coldGif = Math.random() < 0.5 ? "stitch10.gif" : "stitch11.gif";
-        stitch.src = coldGif;
-        setTimeout(() => {
-          stitch.src = defaultStitch;
-        }, 2000);
-      }
-    }, 7000);
-
-    loadGauges();
     updateGauges();
-  </script>
+  }
+
+  function updateMood() {
+    if (gauges.energy < 20 || gauges.fun < 20 || gauges.clean < 20) {
+      stitch.src = 'stitch1.gif'; // triste
+    } else if (gauges.energy < 40 && gauges.fun < 40) {
+      stitch.src = 'stitch17.gif'; // énervé
+    }
+  }
+
+  function autoDecrease() {
+    gauges.energy = Math.max(0, gauges.energy - 0.1);
+    gauges.fun = Math.max(0, gauges.fun - 0.05);
+    gauges.clean = Math.max(0, gauges.clean - 0.08);
+    updateGauges();
+  }
+
+  setInterval(autoDecrease, 1000);
+
+  // Jour/Nuit
+  const hour = new Date().getHours();
+  if (hour < 7 || hour > 19) {
+    document.body.classList.add('night');
+  }
+
+  updateGauges();
+</script>
+
 </body>
 </html>
