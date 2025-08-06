@@ -1,181 +1,176 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Tamagotchi Stitch</title>
   <style>
     body {
       margin: 0;
-      padding: 0;
       background: url('fond-stitch.jpg') no-repeat center center fixed;
       background-size: cover;
       font-family: 'Comic Sans MS', cursive;
       overflow-x: hidden;
+      color: white;
     }
 
-    #container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding-top: 100px;
+    .container {
+      text-align: center;
+      padding-top: 6cm;
     }
 
-    #stitch-image {
-      width: 250px;
-      height: 250px;
-      margin-bottom: 30px;
-      transition: opacity 0.3s ease-in-out;
+    #stitch {
+      width: 200px;
+      height: auto;
+      margin: auto;
+      display: block;
     }
 
-    .button-group {
-      display: flex;
-      justify-content: center;
-      gap: 15px;
-      margin-bottom: 25px;
+    .buttons {
+      margin-top: 20px;
     }
 
-    button {
-      background-color: rgba(255, 255, 255, 0.6);
-      border: none;
+    .buttons button {
+      margin: 10px;
+      font-size: 24px;
+      padding: 10px;
       border-radius: 50%;
-      padding: 15px;
-      font-size: 25px;
+      border: none;
+      background: #ffffffaa;
       cursor: pointer;
     }
 
     .gauges {
       display: flex;
       justify-content: center;
-      gap: 50px;
-      margin-top: 30px;
+      margin-top: 40px;
+      gap: 30px;
     }
 
     .gauge {
-      width: 40px;
-      height: 300px;
-      background-image: url('coquillage.png');
-      background-size: contain;
-      background-repeat: no-repeat;
-      background-position: center;
+      width: 60px;
+      height: 200px;
+      background: url('coquillage.png') no-repeat center/contain;
       position: relative;
     }
 
     .gauge-fill {
       position: absolute;
-      bottom: 10%;
-      width: 100%;
-      background-color: rgba(255, 255, 255, 0.8);
-      border-radius: 10px;
+      bottom: 20px;
+      left: 25%;
+      width: 50%;
+      background: yellow;
+      transition: height 0.5s;
+      border-radius: 20px;
     }
 
     .night {
-      filter: brightness(0.5);
+      filter: brightness(0.4);
     }
   </style>
 </head>
 <body>
+  <div class="container">
+    <img id="stitch" src="stitch5.gif" alt="Stitch">
 
-  <div id="container">
-    <img id="stitch-image" src="stitch5.gif" alt="Stitch">
-
-    <div class="button-group">
-      <button onclick="triggerAction('manger')">🍍</button>
-      <button onclick="triggerAction('jouer')">🏄</button>
-      <button onclick="triggerAction('dormir')">😴</button>
-      <button onclick="triggerAction('bain')">🚿</button>
+    <div class="buttons">
+      <button onclick="playAction('eat')">🍍</button>
+      <button onclick="playAction('play')">🏄</button>
+      <button onclick="playAction('wash')">🚿</button>
+      <button onclick="playAction('sleep')">😴</button>
     </div>
 
     <div class="gauges">
-      <div class="gauge"><div id="gauge-manger" class="gauge-fill"></div></div>
-      <div class="gauge"><div id="gauge-jouer" class="gauge-fill"></div></div>
-      <div class="gauge"><div id="gauge-dormir" class="gauge-fill"></div></div>
-      <div class="gauge"><div id="gauge-bain" class="gauge-fill"></div></div>
+      <div class="gauge"><div class="gauge-fill" id="g1" style="background: pink;"></div></div>
+      <div class="gauge"><div class="gauge-fill" id="g2" style="background: lightgreen;"></div></div>
+      <div class="gauge"><div class="gauge-fill" id="g3" style="background: lightblue;"></div></div>
+      <div class="gauge"><div class="gauge-fill" id="g4" style="background: orange;"></div></div>
     </div>
   </div>
 
   <script>
-    const stitch = document.getElementById("stitch-image");
+    const stitch = document.getElementById('stitch');
+    const fillEls = [g1, g2, g3, g4];
+    const gaugeKeys = ['eat', 'play', 'sleep', 'wash'];
+    let gauges = [70, 70, 70, 70]; // Initial values
 
-    const gauges = {
-      manger: { element: document.getElementById("gauge-manger"), value: 100 },
-      jouer: { element: document.getElementById("gauge-jouer"), value: 100 },
-      dormir: { element: document.getElementById("gauge-dormir"), value: 100 },
-      bain:   { element: document.getElementById("gauge-bain"), value: 100 }
+    // Charger depuis localStorage
+    window.onload = () => {
+      for (let i = 0; i < 4; i++) {
+        const saved = localStorage.getItem('gauge-' + gaugeKeys[i]);
+        if (saved !== null) gauges[i] = parseInt(saved);
+      }
+      updateGauges();
+      updateMood();
     };
 
-    const gifSets = {
-      manger: ["stitch16.gif"],
-      jouer: ["stitch7.gif", "stitch9.gif", "stitch13.gif", "stitch14.gif", "stitch15.gif"],
-      dormir: ["stitch2.gif", "stitch3.gif", "stitch20.gif", "stitch21.gif", "stitch22.gif"],
-      bain: ["stitch18.gif", "stitch19.gif"]
+    const gifs = {
+      eat: ['stitch16.gif'],
+      play: ['stitch7.gif', 'stitch9.gif', 'stitch13.gif', 'stitch14.gif', 'stitch15.gif'],
+      wash: ['stitch18.gif', 'stitch19.gif'],
+      sleep: ['stitch2.gif', 'stitch3.gif', 'stitch20.gif', 'stitch21.gif', 'stitch22.gif']
     };
 
     const moods = {
-      triste: "stitch1.gif",
-      fatigué: "stitch12.gif",
-      énervé: "stitch17.gif",
-      froid: ["stitch10.gif", "stitch11.gif"]
+      tired: 'stitch12.gif',
+      sad: 'stitch1.gif',
+      cold: ['stitch10.gif', 'stitch11.gif'],
+      angry: 'stitch17.gif',
+      normal: 'stitch5.gif'
     };
 
     function updateGauges() {
-      for (let key in gauges) {
-        const value = gauges[key].value;
-        gauges[key].element.style.height = value * 3 + "px";
-        localStorage.setItem(`gauge-${key}`, value);
+      for (let i = 0; i < 4; i++) {
+        fillEls[i].style.height = `${Math.min(100, Math.max(0, gauges[i]))}%`;
+        localStorage.setItem('gauge-' + gaugeKeys[i], gauges[i]);
       }
-      updateMood();
     }
 
     function updateMood() {
-      const anyLow = Object.values(gauges).some(g => g.value < 20);
-      if (gauges.dormir.value < 20) stitch.src = moods.fatigué;
-      else if (gauges.manger.value < 20) stitch.src = moods.triste;
-      else if (gauges.jouer.value < 20) stitch.src = moods.énervé;
-      else if (gauges.bain.value < 20) stitch.src = moods.froid[Math.floor(Math.random()*2)];
-      else stitch.src = "stitch5.gif";
-    }
+      const [eat, play, sleep, wash] = gauges;
 
-    function triggerAction(action) {
-      const gifList = gifSets[action];
-      const selectedGif = gifList[Math.floor(Math.random() * gifList.length)];
-      stitch.src = selectedGif;
-
-      // Augmente la jauge
-      gauges[action].value = Math.min(100, gauges[action].value + 20);
-      updateGauges();
-
-      setTimeout(() => {
-        updateMood();
-      }, 6000); // gif = 6 secondes
-    }
-
-    function autoDecrease() {
-      for (let key in gauges) {
-        gauges[key].value = Math.max(0, gauges[key].value - 1);
-      }
-      updateGauges();
-    }
-
-    // Sauvegarde
-    window.onload = () => {
-      for (let key in gauges) {
-        const saved = parseInt(localStorage.getItem(`gauge-${key}`));
-        if (!isNaN(saved)) gauges[key].value = saved;
-      }
-      updateGauges();
-      applyDayNight();
-    };
-
-    setInterval(autoDecrease, 20000); // toutes les 20 sec
-
-    function applyDayNight() {
-      const hour = new Date().getHours();
-      if (hour < 7 || hour > 20) {
-        document.body.classList.add("night");
+      if (sleep < 30 && wash < 30) {
+        stitch.src = moods.cold[Math.floor(Math.random() * moods.cold.length)];
+      } else if (sleep < 30) {
+        stitch.src = moods.tired;
+      } else if (play < 30) {
+        stitch.src = moods.angry;
+      } else if (eat < 30) {
+        stitch.src = moods.sad;
       } else {
-        document.body.classList.remove("night");
+        stitch.src = moods.normal;
       }
     }
+
+    function playAction(type) {
+      const index = gaugeKeys.indexOf(type);
+      if (index === -1) return;
+
+      // Incrémenter la jauge
+      gauges[index] = Math.min(100, gauges[index] + 20);
+      updateGauges();
+
+      // Choisir GIF
+      const gifList = gifs[type];
+      const chosenGif = gifList[Math.floor(Math.random() * gifList.length)];
+      stitch.src = chosenGif;
+
+      // Retour à l’humeur après 6s
+      setTimeout(() => updateMood(), 6000);
+    }
+
+    // Décrémentation auto toutes les 20s
+    setInterval(() => {
+      for (let i = 0; i < 4; i++) {
+        gauges[i] = Math.max(0, gauges[i] - 2);
+      }
+      updateGauges();
+      updateMood();
+    }, 20000);
+
+    // Mode nuit
+    const hour = new Date().getHours();
+    if (hour < 7 || hour > 20) document.body.classList.add("night");
   </script>
 </body>
 </html>
