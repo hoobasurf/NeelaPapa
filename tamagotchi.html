@@ -2,209 +2,225 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Tamagotchi – Neela & Papa</title>
+  <title>Tamagotchi Stitch</title>
   <style>
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
       background: url('fond-stitch.jpg') no-repeat center center fixed;
       background-size: cover;
-      color: white;
+      font-family: 'Comic Sans MS', cursive;
+      overflow-x: hidden;
     }
-    .stitch-container {
+
+    .container {
       text-align: center;
-      margin-top: 5cm;
+      margin-top: 6cm; /* Stitch plus bas */
     }
+
     #stitch {
-      width: 160px;
-      transition: all 0.3s;
+      width: 300px;
+      height: auto;
+      transition: all 0.3s ease-in-out;
     }
-    .button-container {
-      display: flex;
-      justify-content: center;
-      margin: 20px 0;
-      gap: 20px;
+
+    .buttons {
+      margin-top: 30px;
     }
-    .emoji-button {
-      font-size: 30px;
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      background: pink;
+
+    .buttons button {
+      font-size: 20px;
+      margin: 10px;
+      padding: 10px 20px;
+      border-radius: 20px;
       border: none;
+      background: #00c2cb;
+      color: white;
       cursor: pointer;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      box-shadow: 2px 2px 10px rgba(0,0,0,0.3);
+      transition: transform 0.2s;
     }
+
+    .buttons button:hover {
+      transform: scale(1.1);
+    }
+
     .gauges {
+      margin-top: 40px;
       display: flex;
       justify-content: center;
       gap: 40px;
-      margin-top: 40px;
     }
-    .gauge {
-      width: 30px;
-      height: 200px;
-      background: rgba(255,255,255,0.15);
+
+    .gauge-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 150px;
+    }
+
+    .gauge-container img {
+      width: 80px;
+      height: auto;
+      margin-bottom: 10px;
+    }
+
+    .gauge-bar {
+      width: 100%;
+      height: 150px; /* 500% plus haut qu'avant (~30px * 5) */
+      background-color: rgba(255, 255, 255, 0.3);
       border-radius: 20px;
-      position: relative;
       overflow: hidden;
+      position: relative;
     }
+
     .gauge-fill {
       position: absolute;
       bottom: 0;
       width: 100%;
-      background: linear-gradient(to top, cyan, lightblue);
+      height: 100%;
+      background: linear-gradient(to top, #00c2cb, #fff);
       transition: height 0.5s;
     }
-    .gauge-shell {
-      position: absolute;
-      bottom: -20px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 40px;
-    }
-    .night {
-      filter: brightness(0.5);
-    }
+
   </style>
 </head>
 <body>
+  <div class="container">
+    <img id="stitch" src="stitch5.gif" alt="Stitch" />
 
-  <div class="stitch-container">
-    <img id="stitch" src="stitch5.gif" alt="Stitch">
-  </div>
+    <div class="buttons">
+      <button onclick="feed()">🍍</button>
+      <button onclick="play()">🏄</button>
+      <button onclick="bath()">🚿</button>
+      <button onclick="sleep()">😴</button>
+    </div>
 
-  <div class="button-container">
-    <button class="emoji-button" onclick="playAction('manger')">🍍</button>
-    <button class="emoji-button" onclick="playAction('jouer')">🏄</button>
-    <button class="emoji-button" onclick="playAction('bain')">🚿</button>
-    <button class="emoji-button" onclick="playAction('dodo')">😴</button>
-  </div>
-
-  <div class="gauges">
-    <div class="gauge" id="gauge-manger">
-      <div class="gauge-fill" id="fill-manger"></div>
-      <img src="coquillage.png" class="gauge-shell">
-    </div>
-    <div class="gauge" id="gauge-jouer">
-      <div class="gauge-fill" id="fill-jouer"></div>
-      <img src="coquillage.png" class="gauge-shell">
-    </div>
-    <div class="gauge" id="gauge-bain">
-      <div class="gauge-fill" id="fill-bain"></div>
-      <img src="coquillage.png" class="gauge-shell">
-    </div>
-    <div class="gauge" id="gauge-dodo">
-      <div class="gauge-fill" id="fill-dodo"></div>
-      <img src="coquillage.png" class="gauge-shell">
+    <div class="gauges">
+      <div class="gauge-container">
+        <img src="coquillage.png" alt="Énergie">
+        <div class="gauge-bar">
+          <div id="energyFill" class="gauge-fill"></div>
+        </div>
+      </div>
+      <div class="gauge-container">
+        <img src="coquillage.png" alt="Fun">
+        <div class="gauge-bar">
+          <div id="funFill" class="gauge-fill"></div>
+        </div>
+      </div>
+      <div class="gauge-container">
+        <img src="coquillage.png" alt="Humeur">
+        <div class="gauge-bar">
+          <div id="humeurFill" class="gauge-fill"></div>
+        </div>
+      </div>
     </div>
   </div>
 
   <script>
     const stitch = document.getElementById("stitch");
     const defaultStitch = "stitch5.gif";
+    let gaugeLevels = { energy: 100, fun: 100, mood: 100 };
 
-    let gauges = {
-      manger: 80,
-      jouer: 80,
-      bain: 80,
-      dodo: 80
-    };
+    function updateGaugeUI() {
+      document.getElementById("energyFill").style.height = gaugeLevels.energy + "%";
+      document.getElementById("funFill").style.height = gaugeLevels.fun + "%";
+      document.getElementById("humeurFill").style.height = gaugeLevels.mood + "%";
+    }
 
-    const gifMap = {
-      manger: ["stitch16.gif"],
-      jouer: ["stitch7.gif","stitch9.gif","stitch13.gif","stitch14.gif","stitch15.gif"],
-      bain: ["stitch18.gif","stitch19.gif"],
-      dodo: [
-        ["stitch2.gif","stitch3.gif","stitch20.gif"],
-        ["stitch2.gif","stitch3.gif","stitch21.gif"],
-        ["stitch2.gif","stitch3.gif","stitch22.gif"]
-      ]
-    };
-
-    function updateGauges() {
-      document.getElementById("fill-manger").style.height = gauges.manger + "%";
-      document.getElementById("fill-jouer").style.height = gauges.jouer + "%";
-      document.getElementById("fill-bain").style.height = gauges.bain + "%";
-      document.getElementById("fill-dodo").style.height = gauges.dodo + "%";
+    function averageGauge() {
+      return (gaugeLevels.energy + gaugeLevels.fun + gaugeLevels.mood) / 3;
     }
 
     function moodCheck() {
-      // priorité : fatigue -> froid -> tristesse -> normal
-      if (gauges.dodo < 30) {
-        stitch.src = "stitch12.gif"; // fatigué
-      } else if (gauges.bain < 30) {
-        stitch.src = Math.random()<0.5 ? "stitch10.gif" : "stitch11.gif"; // froid
-      } else if (gauges.manger < 30 || gauges.jouer < 30) {
-        stitch.src = "stitch1.gif"; // triste
-      } else {
-        stitch.src = defaultStitch; // normal
-      }
-    }
-
-    function playAction(action) {
-      let seq = gifMap[action];
-      if (action === "dodo") {
-        seq = seq[Math.floor(Math.random() * seq.length)];
-        playSequence(seq);
-      } else {
-        let gif = seq[Math.floor(Math.random() * seq.length)];
-        playOnce(gif);
-      }
-      // recharge jauge
-      gauges[action] = Math.min(100, gauges[action] + 20);
-      updateGauges();
-      saveGauges();
-    }
-
-    function playOnce(gif) {
-      stitch.src = gif;
-      setTimeout(() => moodCheck(), 4000);
-    }
-
-    function playSequence(arr) {
-      let i=0;
-      function next() {
-        if(i < arr.length) {
-          stitch.src = arr[i++];
-          setTimeout(next, 1300);
-        } else {
-          moodCheck();
-        }
-      }
-      next();
-    }
-
-    function saveGauges() {
-      localStorage.setItem("gauges", JSON.stringify(gauges));
-    }
-
-    function loadGauges() {
-      const saved = localStorage.getItem("gauges");
-      if (saved) gauges = JSON.parse(saved);
+      if      (gaugeLevels.energy  < 30) stitch.src = 'stitch12.gif';  // fatigué
+      else if (gaugeLevels.fun     < 30) stitch.src = 'stitch17.gif';  // énervé
+      else if (averageGauge()      < 30) stitch.src = 'stitch1.gif';   // triste
+      else                               stitch.src = defaultStitch;   // normal
     }
 
     function decay() {
-      for(let k in gauges) {
-        gauges[k] = Math.max(0, gauges[k] - 5);
+      for (const key in gaugeLevels) {
+        gaugeLevels[key] = Math.max(0, gaugeLevels[key] - 2);
       }
-      updateGauges();
+      updateGaugeUI();
       saveGauges();
       moodCheck();
     }
 
-    function setDayNight() {
-      const h = new Date().getHours();
-      document.body.classList.toggle("night", h<7||h>19);
+    function saveGauges() {
+      localStorage.setItem('gauges', JSON.stringify(gaugeLevels));
     }
 
-    // initialisation
+    function loadGauges() {
+      const saved = localStorage.getItem('gauges');
+      if (saved) {
+        gaugeLevels = JSON.parse(saved);
+        updateGaugeUI();
+      }
+    }
+
+    function playOnce(gif) {
+      stitch.src = gif;
+      setTimeout(() => {
+        moodCheck();
+      }, 4000);
+    }
+
+    function playSequence(gifs) {
+      let i = 0;
+      const next = () => {
+        if (i < gifs.length) {
+          stitch.src = gifs[i++];
+          setTimeout(next, 1300);
+        } else {
+          moodCheck();
+        }
+      };
+      next();
+    }
+
+    function feed() {
+      playOnce("stitch16.gif");
+      gaugeLevels.mood = Math.min(100, gaugeLevels.mood + 15);
+      updateGaugeUI();
+      saveGauges();
+    }
+
+    function play() {
+      const gifs = ["stitch7.gif", "stitch9.gif", "stitch13.gif", "stitch14.gif", "stitch15.gif"];
+      const chosen = gifs[Math.floor(Math.random() * gifs.length)];
+      playOnce(chosen);
+      gaugeLevels.fun = Math.min(100, gaugeLevels.fun + 15);
+      updateGaugeUI();
+      saveGauges();
+    }
+
+    function bath() {
+      playSequence(["stitch18.gif", "stitch19.gif"]);
+      gaugeLevels.mood = Math.min(100, gaugeLevels.mood + 10);
+      updateGaugeUI();
+      saveGauges();
+    }
+
+    function sleep() {
+      const sequences = [
+        ["stitch2.gif", "stitch3.gif", "stitch20.gif"],
+        ["stitch2.gif", "stitch3.gif", "stitch21.gif"],
+        ["stitch2.gif", "stitch3.gif", "stitch22.gif"]
+      ];
+      const chosen = sequences[Math.floor(Math.random() * sequences.length)];
+      playSequence(chosen);
+      gaugeLevels.energy = Math.min(100, gaugeLevels.energy + 30);
+      updateGaugeUI();
+      saveGauges();
+    }
+
+    // ↓↓ Lancement
     loadGauges();
-    updateGauges();
-    moodCheck();
-    setDayNight();
-    setInterval(decay, 30000);      // baisse arges 30s
-    setInterval(setDayNight, 60000); // rafraîchit jour/nuit
+    updateGaugeUI();
+    setInterval(decay, 10000); // baisse toutes les 10 secondes
+
   </script>
 </body>
 </html>
