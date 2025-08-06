@@ -186,12 +186,19 @@
     loadGauges();
 
     clickZone.onclick = () => {
-      const isHome = !location.href.includes('tamagotchi');
-      stitch.src = isHome ? 'stitch25.gif' : 'stitch24.gif';
-      setTimeout(() => {
-        location.href = isHome ? 'tamagotchi.html' : 'index.html';
-      }, 6000); // attend 6 sec pour laisser le GIF se jouer
-    };
+  const currentPage = location.pathname.split('/').pop();
+  if (currentPage === 'index.html' || currentPage === '') {
+    stitch.src = 'stitch25.gif';
+    setTimeout(() => {
+      location.href = 'tamagotchi.html';
+    }, 6000);
+  } else {
+    stitch.src = 'stitch24.gif';
+    setTimeout(() => {
+      location.href = 'index.html';
+    }, 6000);
+  }
+};
   </script>
 
 </body>
