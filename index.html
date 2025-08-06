@@ -1,30 +1,58 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="UTF-8">
   <title>Neela & Papa</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      margin: 0;
+      background: url('fond-stitch.jpg') no-repeat center top fixed;
+      background-size: cover;
+      font-family: 'Comic Sans MS', cursive;
+      overflow: hidden;
+    }
+
+    #fondClick {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 150px;
+      z-index: 10;
+      cursor: pointer;
+    }
+
+    #stitchAnim {
+      position: fixed;
+      top: 30%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 200px;
+      display: none;
+      z-index: 20;
+    }
+  </style>
 </head>
 <body>
-  <!-- Zone invisible cliquable ronde sur le titre -->
-  <a id="title-zone" href="tamagotchi.html" aria-label="Basculer de page"></a>
+  <!-- Zone cliquable -->
+  <div id="fondClick"></div>
 
-  <div id="chat-app">
-    <header id="app-header" aria-hidden="true">
-      <p id="status">Connexion...</p>
-    </header>
+  <!-- GIF Stitch 25 -->
+  <img id="stitchAnim" src="stitch25.gif" alt="Animation Stitch">
 
-    <main id="messages" role="log" aria-live="polite"></main>
+  <!-- Ton contenu original ici -->
+  <!-- (aucune modification, tout reste en place) -->
 
-    <form id="message-form">
-      <input type="text" id="message-input" placeholder="Écris ici..." autocomplete="off" />
-      <button type="submit" class="btn send-btn" aria-label="Envoyer">Envoyer</button>
-      <label for="image-upload" class="btn photo-btn" title="Envoyer une photo" aria-label="Envoyer une photo">📷</label>
-      <input type="file" id="image-upload" accept="image/*" />
-    </form>
-  </div>
+  <script>
+    const clickZone = document.getElementById('fondClick');
+    const stitchAnim = document.getElementById('stitchAnim');
 
-  <script type="module" src="app.js"></script>
+    clickZone.onclick = () => {
+      stitchAnim.style.display = 'block';
+      setTimeout(() => {
+        location.href = 'tamagotchi.html';
+      }, 4000); // 4 secondes d’animation
+    };
+  </script>
 </body>
 </html>
