@@ -13,48 +13,68 @@
       color: white;
       overflow-x: hidden;
     }
-    /* zone cliquable fond */
+
     #fondClick {
       position: fixed; top: 0; left: 0;
-      width: 100%; height: 150px; z-index: 10;
+      width: 100%; height: 150px;
+      z-index: 10;
       cursor: pointer;
     }
+
     .container {
       text-align: center;
       padding-top: 6cm;
     }
+
     #stitch {
-      width: 200px; margin: 0 auto 20px;
+      width: 200px;
+      margin: 0 auto 20px;
       display: block;
     }
+
     .buttons {
-      display: flex; justify-content: center;
-      gap: 20px; margin-bottom: 20px;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 10px;
     }
+
     .buttons button {
       background: rgba(255,255,255,0.5);
-      border: none; border-radius: 50%;
+      border: none;
+      border-radius: 50%;
       width: 60px; height: 60px;
-      font-size: 24px; cursor: pointer;
+      font-size: 24px;
+      cursor: pointer;
       transition: transform .2s;
     }
+
     .buttons button:hover {
       transform: scale(1.1);
       background: rgba(255,255,255,0.8);
     }
+
     .gauges {
-      display: flex; justify-content: center;
+      display: flex;
+      justify-content: center;
       gap: 40px;
+      margin-top: 20px;
     }
+
     .gauge {
       position: relative;
-      width: 60px; height: 200px;
+      width: 60px;
+      height: 200px;
       background: url('coquillage.png') no-repeat center/contain;
     }
+
     .gauge-fill {
-      position: absolute; bottom: 15%;
-      left: 50%; transform: translateX(-50%);
-      width: 30px; background: #ffcc70;
+      position: absolute;
+      bottom: 15%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 30px;
+      background: #ffcc70;
       border-radius: 10px;
       transition: height .3s;
     }
@@ -62,7 +82,6 @@
 </head>
 <body>
 
-  <!-- zone cliquable pour transition -->
   <div id="fondClick"></div>
 
   <div class="container">
@@ -76,88 +95,104 @@
     </div>
 
     <div class="gauges">
-      <div class="gauge"><div id="gauge-eat"   class="gauge-fill" style="height:100%;"></div></div>
-      <div class="gauge"><div id="gauge-play"  class="gauge-fill" style="height:100%;"></div></div>
-      <div class="gauge"><div id="gauge-bath"  class="gauge-fill" style="height:100%;"></div></div>
-      <div class="gauge"><div id="gauge-sleep" class="gauge-fill" style="height:100%;"></div></div>
+      <div class="gauge"><div id="gauge-eat"   class="gauge-fill"></div></div>
+      <div class="gauge"><div id="gauge-play"  class="gauge-fill"></div></div>
+      <div class="gauge"><div id="gauge-bath"  class="gauge-fill"></div></div>
+      <div class="gauge"><div id="gauge-sleep" class="gauge-fill"></div></div>
     </div>
   </div>
 
   <script>
     const stitch = document.getElementById('stitch');
     const clickZone = document.getElementById('fondClick');
-    const gauges = { eat:100, play:100, bath:100, sleep:100 };
+
+    const MAX = 1000;
+    const gauges = { eat: MAX, play: MAX, bath: MAX, sleep: MAX };
     const fills  = {
       eat:   document.getElementById('gauge-eat'),
       play:  document.getElementById('gauge-play'),
       bath:  document.getElementById('gauge-bath'),
       sleep: document.getElementById('gauge-sleep')
     };
+
     const gifs = {
       eat:   ['stitch16.gif'],
       play:  ['stitch7.gif','stitch9.gif','stitch13.gif','stitch14.gif','stitch15.gif'],
       bath:  ['stitch18.gif','stitch19.gif'],
       sleep: ['stitch2.gif','stitch3.gif','stitch20.gif','stitch21.gif','stitch22.gif']
     };
+
     const moods = {
-      normal:'stitch5.gif', sad:'stitch1.gif',
-      tired:'stitch12.gif', angry:'stitch17.gif',
+      normal:'stitch5.gif',
+      sad:'stitch1.gif',
+      tired:'stitch12.gif',
+      angry:'stitch17.gif',
       cold:['stitch10.gif','stitch11.gif']
     };
 
-    // mise à jour et sauvegarde
     function updateGauges(){
       for(let k in gauges){
-        fills[k].style.height = gauges[k] + '%';
+        const percent = Math.min(100, gauges[k]/10);
+        fills[k].style.height = percent + '%';
         localStorage.setItem('gauge-'+k, gauges[k]);
       }
     }
+
     function loadGauges(){
       const saved = localStorage.getItem('gauges-all');
       if(saved){
-        const obj=JSON.parse(saved);
-        for(let k in gauges) gauges[k]=obj[k]||100;
+        const obj = JSON.parse(saved);
+        for(let k in gauges) gauges[k] = obj[k] || MAX;
       }
       updateGauges();
     }
+
     function saveAll(){
       localStorage.setItem('gauges-all', JSON.stringify(gauges));
     }
 
-    function choose(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+    function choose(arr){ return arr[Math.floor(Math.random() * arr.length)]; }
 
     function action(type){
       let gif = choose(gifs[type]);
       stitch.src = gif;
-      // recharge
-      gauges[type]=Math.min(100, gauges[type]+30);
-      saveAll(); updateGauges();
-      // fin animation
-      setTimeout(updateMood, 4000);
+      gauges[type] = Math.min(MAX, gauges[type] + 300);
+      saveAll();
+      updateGauges();
+
+      // durée d'affichage = durée GIF complète (approximée)
+      setTimeout(updateMood, 6000);
     }
 
     function updateMood(){
-      if(gauges.eat<30) stitch.src=moods.sad;
-      else if(gauges.play<30) stitch.src=moods.angry;
-      else if(gauges.sleep<30) stitch.src=moods.tired;
-      else if(gauges.bath<30 && Math.random()<0.3) stitch.src=choose(moods.cold);
-      else stitch.src=moods.normal;
+      if(gauges.eat < 300)       stitch.src = moods.sad;
+      else if(gauges.play < 300) stitch.src = moods.angry;
+      else if(gauges.sleep < 300)stitch.src = moods.tired;
+      else if(gauges.bath < 300 && Math.random()<0.3)
+                                 stitch.src = choose(moods.cold);
+      else stitch.src = moods.normal;
     }
 
     function decay(){
-      for(let k in gauges) gauges[k]=Math.max(0,gauges[k]-3);
-      saveAll(); updateGauges(); updateMood();
+      for(let k in gauges){
+        gauges[k] = Math.max(0, gauges[k] - 30);
+      }
+      saveAll();
+      updateGauges();
+      updateMood();
     }
 
-    setInterval(decay,15000);
+    setInterval(decay, 15000);
     loadGauges();
 
-    // transition page
-    clickZone.onclick = ()=>{
+    clickZone.onclick = () => {
       const isHome = !location.href.includes('tamagotchi');
       stitch.src = isHome ? 'stitch25.gif' : 'stitch24.gif';
-      setTimeout(()=>location.href = isHome? 'tamagotchi.html':'index.html', 1800);
+      setTimeout(() => {
+        location.href = isHome ? 'tamagotchi.html' : 'index.html';
+      }, 6000); // attend 6 sec pour laisser le GIF se jouer
     };
   </script>
+
 </body>
 </html>
