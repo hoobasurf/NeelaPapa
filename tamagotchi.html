@@ -2,220 +2,203 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Neela & Papa - Tamagotchi</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <style>
     body {
       margin: 0;
-      background: url('fond-stitch.jpg') no-repeat center top fixed;
+      overflow: hidden;
+      background: url('fond-stitch.jpg') no-repeat center center fixed;
       background-size: cover;
-      font-family: 'Comic Sans MS', cursive;
-      color: white;
-      overflow-x: hidden;
+      font-family: "Comic Sans MS", cursive;
     }
 
-    #fondClick {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 150px;
-      z-index: 10;
-      cursor: pointer;
-    }
-
-    .container {
-      text-align: center;
-      padding-top: 4.5cm;
+    #clickZone {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 5;
     }
 
     #stitch {
-      width: 300px;
-      margin: 0 auto;
-      display: block;
-      position: relative;
-      margin-bottom: 10px;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 220px;
+      height: auto;
+      z-index: 3;
+      opacity: 1;
+      transition: opacity 0.5s;
     }
 
-    .buttons {
+    .fade-in {
+      opacity: 1;
+    }
+
+    .fade-out {
+      opacity: 0;
+    }
+
+    .gauge-container {
+      position: absolute;
+      bottom: 160px;
+      left: 50%;
+      transform: translateX(-50%);
       display: flex;
-      justify-content: center;
       gap: 30px;
-      margin-top: 10px;
-      margin-bottom: 30px;
-    }
-
-    .buttons button {
-      border: 4px solid transparent;
-      border-radius: 50%;
-      width: 80px;
-      height: 80px;
-      font-size: 26px;
-      background: linear-gradient(to bottom, #fff, #ccc);
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-      cursor: pointer;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    .buttons button:hover {
-      transform: scale(1.1);
-      box-shadow: 0 6px 12px rgba(255, 255, 255, 0.6);
-    }
-
-    .buttons button:active {
-      animation: vibrate 0.2s;
-    }
-
-    @keyframes vibrate {
-      0% { transform: translateX(0); }
-      25% { transform: translateX(-2px); }
-      50% { transform: translateX(2px); }
-      75% { transform: translateX(-2px); }
-      100% { transform: translateX(0); }
-    }
-
-    .eat-btn    { border-color: #ffcc70; background: radial-gradient(circle, #fff0bd, #ffcc70); }
-    .play-btn   { border-color: #66ccff; background: radial-gradient(circle, #cceeff, #66ccff); }
-    .bath-btn   { border-color: #a8e6cf; background: radial-gradient(circle, #d0fff0, #a8e6cf); }
-    .sleep-btn  { border-color: #d5a6ff; background: radial-gradient(circle, #f0e0ff, #d5a6ff); }
-
-    .gauges {
-      display: flex;
-      justify-content: center;
-      gap: 40px;
+      z-index: 2;
     }
 
     .gauge {
+      width: 80px;
+      height: 20px;
+      border-radius: 10px;
+      background: #222;
+      border: 2px solid white;
+      overflow: hidden;
       position: relative;
-      width: 60px;
-      height: 200px;
-      background: url('coquillage.png') no-repeat center/contain;
     }
 
     .gauge-fill {
-      position: absolute;
-      bottom: 15%;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 30px;
-      background: #fff;
-      border-radius: 10px;
-      transition: height 0.3s;
+      height: 100%;
+      width: 10%;
+      transition: width 0.3s;
     }
 
-    .gauge-eat   { background: #ffcc70; }
-    .gauge-play  { background: #66ccff; }
-    .gauge-bath  { background: #a8e6cf; }
-    .gauge-sleep { background: #d5a6ff; }
+    .eat .gauge-fill    { background-color: #ff9999; }
+    .play .gauge-fill   { background-color: #66ccff; }
+    .wash .gauge-fill   { background-color: #99ffcc; }
+    .sleep .gauge-fill  { background-color: #ccccff; }
+
+    .button-container {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 30px;
+      z-index: 4;
+    }
+
+    .action-button {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #fff, #aaa);
+      border: 3px solid white;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+      cursor: pointer;
+      transition: transform 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      animation: vibrate 0.4s infinite;
+    }
+
+    .action-button:hover {
+      transform: scale(1.1);
+    }
+
+    @keyframes vibrate {
+      0% { transform: translate(0px, 0px); }
+      25% { transform: translate(1px, -1px); }
+      50% { transform: translate(-1px, 1px); }
+      75% { transform: translate(1px, 1px); }
+      100% { transform: translate(0px, 0px); }
+    }
+
+    .button-icon {
+      width: 40px;
+      height: 40px;
+    }
+
+    /* Couleurs de bordures */
+    .eat    { border: 3px solid #ff9999; }
+    .play   { border: 3px solid #66ccff; }
+    .wash   { border: 3px solid #99ffcc; }
+    .sleep  { border: 3px solid #ccccff; }
+
   </style>
 </head>
 <body>
 
-  <!-- Zone cliquable fond -->
-  <div id="fondClick"></div>
+<div id="clickZone"></div>
 
-  <div class="container">
-    <img id="stitch" src="stitch5.gif" alt="Stitch normal">
+<img id="stitch" src="stitch5.gif" alt="Stitch" />
 
-    <div class="buttons">
-      <button class="eat-btn" onclick="action('eat')">🍍</button>
-      <button class="play-btn" onclick="action('play')">🎮</button>
-      <button class="bath-btn" onclick="action('bath')">🛁</button>
-      <button class="sleep-btn" onclick="action('sleep')">💤</button>
-    </div>
+<!-- Jauges -->
+<div class="gauge-container">
+  <div class="gauge eat"><div class="gauge-fill" id="gaugeEat"></div></div>
+  <div class="gauge play"><div class="gauge-fill" id="gaugePlay"></div></div>
+  <div class="gauge wash"><div class="gauge-fill" id="gaugeWash"></div></div>
+  <div class="gauge sleep"><div class="gauge-fill" id="gaugeSleep"></div></div>
+</div>
 
-    <div class="gauges">
-      <div class="gauge"><div id="gauge-eat"   class="gauge-fill gauge-eat"   style="height:100%;"></div></div>
-      <div class="gauge"><div id="gauge-play"  class="gauge-fill gauge-play"  style="height:100%;"></div></div>
-      <div class="gauge"><div id="gauge-bath"  class="gauge-fill gauge-bath"  style="height:100%;"></div></div>
-      <div class="gauge"><div id="gauge-sleep" class="gauge-fill gauge-sleep" style="height:100%;"></div></div>
-    </div>
-  </div>
+<!-- Boutons -->
+<div class="button-container">
+  <button class="action-button eat" onclick="handleAction('eat', 'stitch19.gif')">
+    🍽️
+  </button>
+  <button class="action-button play" onclick="handleAction('play', 'stitch20.gif')">
+    🎮
+  </button>
+  <button class="action-button wash" onclick="handleAction('wash', 'stitch21.gif')">
+    🧼
+  </button>
+  <button class="action-button sleep" onclick="handleAction('sleep', 'stitch22.gif')">
+    💤
+  </button>
+</div>
 
-  <script>
-    const stitch = document.getElementById('stitch');
-    const clickZone = document.getElementById('fondClick');
-    const gauges = { eat: 100, play: 100, bath: 100, sleep: 100 };
-    const fills = {
-      eat:   document.getElementById('gauge-eat'),
-      play:  document.getElementById('gauge-play'),
-      bath:  document.getElementById('gauge-bath'),
-      sleep: document.getElementById('gauge-sleep')
-    };
-    const gifs = {
-      eat:   ['stitch16.gif'],
-      play:  ['stitch7.gif','stitch9.gif','stitch13.gif','stitch14.gif','stitch15.gif'],
-      bath:  ['stitch18.gif','stitch19.gif'],
-      sleep: ['stitch2.gif','stitch3.gif','stitch20.gif','stitch21.gif','stitch22.gif']
-    };
-    const moods = {
-      normal:'stitch5.gif', sad:'stitch1.gif',
-      tired:'stitch12.gif', angry:'stitch17.gif',
-      cold:['stitch10.gif','stitch11.gif']
-    };
+<script>
+  const stitch = document.getElementById('stitch');
+  const gauges = {
+    eat: document.getElementById('gaugeEat'),
+    play: document.getElementById('gaugePlay'),
+    wash: document.getElementById('gaugeWash'),
+    sleep: document.getElementById('gaugeSleep')
+  };
 
-    function updateGauges(){
-      for (let k in gauges) {
-        fills[k].style.height = gauges[k] + '%';
-        localStorage.setItem('gauge-' + k, gauges[k]);
-      }
+  const gaugeValues = { eat: 100, play: 100, wash: 100, sleep: 100 };
+
+  function updateGauges() {
+    for (let key in gauges) {
+      let value = Math.min(gaugeValues[key], 1000); // max 1000%
+      gauges[key].style.width = value / 10 + '%';
     }
+  }
 
-    function loadGauges(){
-      const saved = localStorage.getItem('gauges-all');
-      if(saved){
-        const obj = JSON.parse(saved);
-        for(let k in gauges) gauges[k] = obj[k] || 100;
-      }
-      updateGauges();
+  function handleAction(type, gifName) {
+    gaugeValues[type] = Math.min(gaugeValues[type] + 100, 1000);
+    updateGauges();
+    playGif(gifName);
+  }
+
+  function playGif(gifName) {
+    stitch.classList.remove("fade-in");
+    stitch.classList.add("fade-out");
+    setTimeout(() => {
+      stitch.src = gifName;
+      stitch.classList.remove("fade-out");
+      stitch.classList.add("fade-in");
+    }, 300);
+  }
+
+  // Clic fond pour changer de page
+  document.getElementById('clickZone').onclick = () => {
+    const currentPage = location.pathname.split('/').pop();
+    if (currentPage === 'index.html' || currentPage === '') {
+      playGif('stitch25.gif');
+      setTimeout(() => location.href = 'tamagotchi.html', 5000);
+    } else {
+      playGif('stitch24.gif');
+      setTimeout(() => location.href = 'index.html', 5000);
     }
+  };
 
-    function saveAll(){
-      localStorage.setItem('gauges-all', JSON.stringify(gauges));
-    }
-
-    function choose(arr){
-      return arr[Math.floor(Math.random() * arr.length)];
-    }
-
-    function action(type){
-      const gif = choose(gifs[type]);
-      stitch.src = gif;
-      gauges[type] = Math.min(100, gauges[type] + 30);
-      saveAll();
-      updateGauges();
-      setTimeout(updateMood, 4000);
-    }
-
-    function updateMood(){
-      if(gauges.eat < 30) stitch.src = moods.sad;
-      else if(gauges.play < 30) stitch.src = moods.angry;
-      else if(gauges.sleep < 30) stitch.src = moods.tired;
-      else if(gauges.bath < 30 && Math.random() < 0.3) stitch.src = choose(moods.cold);
-      else stitch.src = moods.normal;
-    }
-
-    function decay(){
-      for(let k in gauges) gauges[k] = Math.max(0, gauges[k] - 3);
-      saveAll();
-      updateGauges();
-      updateMood();
-    }
-
-    setInterval(decay, 15000);
-    loadGauges();
-
-    // Animation de transition
-    clickZone.onclick = () => {
-      const currentPage = location.pathname.split('/').pop();
-      if (currentPage === 'index.html' || currentPage === '') {
-        stitch.src = 'stitch25.gif';
-        setTimeout(() => { location.href = 'tamagotchi.html'; }, 3000);
-      } else if (currentPage === 'tamagotchi.html') {
-        stitch.src = 'stitch24.gif';
-        setTimeout(() => { location.href = 'index.html'; }, 3500);
-      }
-    };
-  </script>
+  updateGauges();
+</script>
 </body>
 </html>
