@@ -1,187 +1,221 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Neela & Papa - Tamagotchi</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      overflow: hidden;
-      height: 100%;
-    }
-
     body {
-      background-image: url('fond-stitch.jpg');
+      margin: 0;
+      background: url('fond-stitch.jpg') no-repeat center top fixed;
       background-size: cover;
-      background-position: center;
-      position: relative;
-      font-family: sans-serif;
+      font-family: 'Comic Sans MS', cursive;
+      color: white;
+      overflow-x: hidden;
     }
 
-    #clickZone {
-      position: absolute;
+    #fondClick {
+      position: fixed;
       top: 0;
       left: 0;
       width: 100%;
-      height: 15%;
-      z-index: 20;
+      height: 150px;
+      z-index: 10;
+      cursor: pointer;
+    }
+
+    .container {
+      text-align: center;
+      padding-top: 4.5cm;
     }
 
     #stitch {
-      position: absolute;
-      top: 30%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 150px;
-      height: auto;
-      z-index: 10;
-    }
-
-    .button-container {
-      position: absolute;
-      bottom: 18%;
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      gap: 30px;
-      z-index: 15;
-    }
-
-    .action-btn {
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      border: 3px solid transparent;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background-color: rgba(255, 255, 255, 0.2);
-      backdrop-filter: blur(5px);
-    }
-
-    .action-btn img {
-      width: 35px;
-      height: 35px;
-    }
-
-    .jauge-container {
-      position: absolute;
-      bottom: 0;
-      display: flex;
-      width: 100%;
-      justify-content: center;
-      gap: 30px;
-      z-index: 5;
-    }
-
-    .jauge {
-      width: 20px;
-      height: 150px;
-      background-color: orange;
-      border-radius: 10px;
-      overflow: hidden;
+      width: 300px;
+      margin: 0 auto;
+      display: block;
       position: relative;
+      margin-bottom: 10px;
+    }
+
+    .buttons {
       display: flex;
-      align-items: flex-end;
-      border: 2px solid #fff;
+      justify-content: center;
+      gap: 30px;
+      margin-top: 10px;
+      margin-bottom: 30px;
     }
 
-    .jauge-fill {
-      width: 100%;
-      background-image: url('coquillage.png');
-      background-size: cover;
-      background-repeat: no-repeat;
-      background-position: center bottom;
-      transition: height 0.4s ease;
+    .buttons button {
+      border: 4px solid transparent;
+      border-radius: 50%;
+      width: 80px;
+      height: 80px;
+      font-size: 26px;
+      background: linear-gradient(to bottom, #fff, #ccc);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
 
-    /* Couleurs des cercles */
-    .btn-nourrir { border-color: #FFA500; }
-    .btn-doucher { border-color: #00CED1; }
-    .btn-jouer   { border-color: #FF69B4; }
-    .btn-dormir  { border-color: #9370DB; }
+    .buttons button:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 12px rgba(255, 255, 255, 0.6);
+    }
+
+    .buttons button:active {
+      animation: vibrate 0.2s;
+    }
+
+    @keyframes vibrate {
+      0% { transform: translateX(0); }
+      25% { transform: translateX(-2px); }
+      50% { transform: translateX(2px); }
+      75% { transform: translateX(-2px); }
+      100% { transform: translateX(0); }
+    }
+
+    .eat-btn    { border-color: #ffcc70; background: radial-gradient(circle, #fff0bd, #ffcc70); }
+    .play-btn   { border-color: #66ccff; background: radial-gradient(circle, #cceeff, #66ccff); }
+    .bath-btn   { border-color: #a8e6cf; background: radial-gradient(circle, #d0fff0, #a8e6cf); }
+    .sleep-btn  { border-color: #d5a6ff; background: radial-gradient(circle, #f0e0ff, #d5a6ff); }
+
+    .gauges {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+    }
+
+    .gauge {
+      position: relative;
+      width: 60px;
+      height: 200px;
+      background: url('coquillage.png') no-repeat center/contain;
+    }
+
+    .gauge-fill {
+      position: absolute;
+      bottom: 15%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 30px;
+      background: #fff;
+      border-radius: 10px;
+      transition: height 0.3s;
+    }
+
+    .gauge-eat   { background: #ffcc70; }
+    .gauge-play  { background: #66ccff; }
+    .gauge-bath  { background: #a8e6cf; }
+    .gauge-sleep { background: #d5a6ff; }
   </style>
 </head>
 <body>
 
-  <div id="clickZone"></div>
+  <!-- Zone cliquable fond -->
+  <div id="fondClick"></div>
 
-  <img id="stitch" src="stitch5.gif" alt="Stitch">
+  <div class="container">
+    <img id="stitch" src="stitch5.gif" alt="Stitch normal">
 
-  <div class="button-container">
-    <div class="action-btn btn-nourrir" onclick="augmenterJauge(0)">
-      <img src="ananas.png" alt="Nourrir">
+    <div class="buttons">
+      <button class="eat-btn" onclick="action('eat')">🍍</button>
+      <button class="play-btn" onclick="action('play')">🎮</button>
+      <button class="bath-btn" onclick="action('bath')">🛁</button>
+      <button class="sleep-btn" onclick="action('sleep')">💤</button>
     </div>
-    <div class="action-btn btn-doucher" onclick="augmenterJauge(1)">
-      <img src="savon.png" alt="Douche">
-    </div>
-    <div class="action-btn btn-jouer" onclick="augmenterJauge(2)">
-      <img src="joystick.png" alt="Jouer">
-    </div>
-    <div class="action-btn btn-dormir" onclick="augmenterJauge(3)">
-      <img src="sleep.png" alt="Dormir">
-    </div>
-  </div>
 
-  <div class="jauge-container">
-    <div class="jauge"><div class="jauge-fill" id="jauge0" style="height: 20%;"></div></div>
-    <div class="jauge"><div class="jauge-fill" id="jauge1" style="height: 20%;"></div></div>
-    <div class="jauge"><div class="jauge-fill" id="jauge2" style="height: 20%;"></div></div>
-    <div class="jauge"><div class="jauge-fill" id="jauge3" style="height: 20%;"></div></div>
+    <div class="gauges">
+      <div class="gauge"><div id="gauge-eat"   class="gauge-fill gauge-eat"   style="height:100%;"></div></div>
+      <div class="gauge"><div id="gauge-play"  class="gauge-fill gauge-play"  style="height:100%;"></div></div>
+      <div class="gauge"><div id="gauge-bath"  class="gauge-fill gauge-bath"  style="height:100%;"></div></div>
+      <div class="gauge"><div id="gauge-sleep" class="gauge-fill gauge-sleep" style="height:100%;"></div></div>
+    </div>
   </div>
 
   <script>
     const stitch = document.getElementById('stitch');
-    const jauges = [0, 0, 0, 0]; // Pourcentage de 0 à 1000
-    const jaugeElements = [
-      document.getElementById('jauge0'),
-      document.getElementById('jauge1'),
-      document.getElementById('jauge2'),
-      document.getElementById('jauge3')
-    ];
+    const clickZone = document.getElementById('fondClick');
+    const gauges = { eat: 100, play: 100, bath: 100, sleep: 100 };
+    const fills = {
+      eat:   document.getElementById('gauge-eat'),
+      play:  document.getElementById('gauge-play'),
+      bath:  document.getElementById('gauge-bath'),
+      sleep: document.getElementById('gauge-sleep')
+    };
+    const gifs = {
+      eat:   ['stitch16.gif'],
+      play:  ['stitch7.gif','stitch9.gif','stitch13.gif','stitch14.gif','stitch15.gif'],
+      bath:  ['stitch18.gif','stitch19.gif'],
+      sleep: ['stitch2.gif','stitch3.gif','stitch20.gif','stitch21.gif','stitch22.gif']
+    };
+    const moods = {
+      normal:'stitch5.gif', sad:'stitch1.gif',
+      tired:'stitch12.gif', angry:'stitch17.gif',
+      cold:['stitch10.gif','stitch11.gif']
+    };
 
-    function updateStitchMood() {
-      const total = jauges.reduce((a, b) => a + b, 0);
-      const moyenne = total / 4;
-
-      if (moyenne >= 1000) {
-        stitch.src = "stitch5.gif";
-      } else if (jauges.some(v => v < 200)) {
-        stitch.src = "stitch22.gif"; // Froid
-      } else if (jauges.some(v => v < 400)) {
-        stitch.src = "stitch20.gif"; // Fatigué
-      } else if (jauges.some(v => v < 600)) {
-        stitch.src = "stitch21.gif"; // Triste
-      } else if (jauges.some(v => v < 800)) {
-        stitch.src = "stitch19.gif"; // Énervé
+    function updateGauges(){
+      for (let k in gauges) {
+        fills[k].style.height = gauges[k] + '%';
+        localStorage.setItem('gauge-' + k, gauges[k]);
       }
     }
 
-    function augmenterJauge(index) {
-      jauges[index] = Math.min(jauges[index] + 100, 1000);
-      jaugeElements[index].style.height = (jauges[index] / 10) + "%";
-      updateStitchMood();
+    function loadGauges(){
+      const saved = localStorage.getItem('gauges-all');
+      if(saved){
+        const obj = JSON.parse(saved);
+        for(let k in gauges) gauges[k] = obj[k] || 100;
+      }
+      updateGauges();
     }
 
-    const clickZone = document.getElementById('clickZone');
+    function saveAll(){
+      localStorage.setItem('gauges-all', JSON.stringify(gauges));
+    }
+
+    function choose(arr){
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    function action(type){
+      const gif = choose(gifs[type]);
+      stitch.src = gif;
+      gauges[type] = Math.min(100, gauges[type] + 30);
+      saveAll();
+      updateGauges();
+      setTimeout(updateMood, 4000);
+    }
+
+    function updateMood(){
+      if(gauges.eat < 30) stitch.src = moods.sad;
+      else if(gauges.play < 30) stitch.src = moods.angry;
+      else if(gauges.sleep < 30) stitch.src = moods.tired;
+      else if(gauges.bath < 30 && Math.random() < 0.3) stitch.src = choose(moods.cold);
+      else stitch.src = moods.normal;
+    }
+
+    function decay(){
+      for(let k in gauges) gauges[k] = Math.max(0, gauges[k] - 3);
+      saveAll();
+      updateGauges();
+      updateMood();
+    }
+
+    setInterval(decay, 15000);
+    loadGauges();
+
+    // Animation de transition
     clickZone.onclick = () => {
       const currentPage = location.pathname.split('/').pop();
-
       if (currentPage === 'index.html' || currentPage === '') {
         stitch.src = 'stitch25.gif';
-        setTimeout(() => {
-          window.location.href = 'tamagotchi.html';
-        }, 4000);
+        setTimeout(() => { location.href = 'tamagotchi.html'; }, 3000);
       } else if (currentPage === 'tamagotchi.html') {
         stitch.src = 'stitch24.gif';
-        setTimeout(() => {
-          window.location.href = 'index.html';
-        }, 6000);
+        setTimeout(() => { location.href = 'index.html'; }, 3500);
       }
     };
   </script>
-
 </body>
 </html>
