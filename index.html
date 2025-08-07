@@ -1,30 +1,89 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
   <title>Neela & Papa</title>
-  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: url('fond-stitch.jpg') no-repeat center center fixed;
+      background-size: cover;
+      font-family: Arial, sans-serif;
+      overflow: hidden;
+      touch-action: manipulation;
+    }
+
+    #zone-clic-titre {
+      position: absolute;
+      top: 30px;
+      left: 50%;
+      width: 120px;
+      height: 120px;
+      transform: translateX(-50%);
+      cursor: pointer;
+      border-radius: 50%;
+      z-index: 999;
+    }
+
+    #gif-transition {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 200px;
+      height: auto;
+      transform: translate(-50%, -50%);
+      opacity: 0;
+      transition: opacity 0.5s;
+      z-index: 1000;
+      pointer-events: none;
+    }
+
+    #gif-transition.visible {
+      opacity: 1;
+    }
+
+    h1 {
+      text-align: center;
+      margin-top: 50px;
+      color: white;
+      font-size: 36px;
+      text-shadow: 2px 2px 4px black;
+    }
+  </style>
 </head>
 <body>
-  <!-- Zone invisible cliquable ronde sur le titre -->
-  <a id="title-zone" href="tamagotchi.html" aria-label="Basculer de page"></a>
 
-  <div id="chat-app">
-    <header id="app-header" aria-hidden="true">
-      <p id="status">Connexion...</p>
-    </header>
+  <h1>Neela & Papa</h1>
 
-    <main id="messages" role="log" aria-live="polite"></main>
+  <!-- Zone invisible sur le titre -->
+  <div id="zone-clic-titre"></div>
 
-    <form id="message-form">
-      <input type="text" id="message-input" placeholder="Écris ici..." autocomplete="off" />
-      <button type="submit" class="btn send-btn" aria-label="Envoyer">Envoyer</button>
-      <label for="image-upload" class="btn photo-btn" title="Envoyer une photo" aria-label="Envoyer une photo">📷</label>
-      <input type="file" id="image-upload" accept="image/*" />
-    </form>
-  </div>
+  <!-- GIF de transition -->
+  <img id="gif-transition" src="stitch25.gif" alt="transition" />
 
-  <script type="module" src="app.js"></script>
+  <script>
+    const gif = document.getElementById("gif-transition");
+    const zone = document.getElementById("zone-clic-titre");
+
+    zone.addEventListener("click", () => {
+      gif.classList.add("visible");
+      setTimeout(() => {
+        window.location.href = "tamagotchi.html";
+      }, 3500);
+    });
+
+    // Anti double tap zoom
+    let lastTouch = 0;
+    document.addEventListener("touchend", function (e) {
+      const now = new Date().getTime();
+      if (now - lastTouch <= 300) {
+        e.preventDefault();
+      }
+      lastTouch = now;
+    }, { passive: false });
+  </script>
+
 </body>
 </html>
