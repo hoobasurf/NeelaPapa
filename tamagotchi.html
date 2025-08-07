@@ -2,203 +2,204 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
   <title>Neela & Papa - Tamagotchi</title>
   <style>
     body {
       margin: 0;
       background: url('fond-stitch.jpg') no-repeat center center fixed;
       background-size: cover;
-      font-family: sans-serif;
+      font-family: Arial, sans-serif;
       overflow: hidden;
+      touch-action: manipulation;
     }
 
-    #clickZone {
+    #zone-cliquable {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
-      height: 150px;
-      z-index: 10;
-    }
-
-    #gifContainer {
-      position: absolute;
-      top: 58%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      opacity: 0;
-      transition: opacity 0.5s ease;
-      z-index: 2;
-    }
-
-    #actionGif {
-      width: 180px;
-      height: auto;
-    }
-
-    .buttons {
-      position: absolute;
-      bottom: 40px;
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      z-index: 3;
-    }
-
-    .btn {
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      font-size: 24px;
-      border: none;
-      background: radial-gradient(circle, #fff, #ccc);
-      box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+      height: 80px;
       cursor: pointer;
-      transition: transform 0.2s ease;
+      z-index: 1000;
     }
 
-    .btn:hover {
-      transform: scale(1.1);
-      animation: vibrate 0.3s linear infinite;
-    }
-
-    @keyframes vibrate {
-      0% { transform: translate(0); }
-      25% { transform: translate(1px, -1px); }
-      50% { transform: translate(-1px, 1px); }
-      75% { transform: translate(1px, 1px); }
-      100% { transform: translate(-1px, -1px); }
-    }
-
-    .gauges {
+    .gif-stitch {
       position: absolute;
-      bottom: 110px;
-      width: 100%;
+      width: 150px;
+      height: auto;
+      left: 50%;
+      transform: translate(-50%, -100%);
+      opacity: 0;
+      transition: opacity 0.5s;
+      z-index: 999;
+    }
+
+    .visible {
+      opacity: 1;
+    }
+
+    .bouton {
+      position: absolute;
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      border: none;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+      cursor: pointer;
+      background: radial-gradient(circle, #fdfdfd, #ccc);
       display: flex;
+      align-items: center;
       justify-content: center;
-      gap: 20px;
-      z-index: 3;
+      font-size: 26px;
+      transition: transform 0.1s;
     }
 
-    .gauge {
-      width: 60px;
-      height: 8px;
-      background: #eee;
-      border-radius: 5px;
+    .bouton:active {
+      transform: scale(0.95);
+    }
+
+    .jauge {
+      position: absolute;
+      width: 10px;
+      height: 100px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.3);
       overflow: hidden;
-      box-shadow: inset 0 0 5px #0005;
     }
 
-    .fill {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, #ffb347, #ffcc33);
-      transition: width 0.2s linear;
+    .remplissage {
+      width: 100%;
+      height: 0%;
+      transition: height 0.3s;
     }
+
+    .manger .remplissage { background: orange; }
+    .jouer .remplissage { background: deepskyblue; }
+    .dormir .remplissage { background: plum; }
+
+    #btn-manger { bottom: 30px; left: 20%; }
+    #btn-jouer  { bottom: 30px; left: 45%; }
+    #btn-dodo   { bottom: 30px; left: 70%; }
+    #btn-bain   { top: 100px; right: 30px; }
+
+    #jauge-manger { bottom: 110px; left: 22%; }
+    #jauge-jouer  { bottom: 110px; left: 47%; }
+    #jauge-dodo   { bottom: 110px; left: 72%; }
   </style>
 </head>
 <body>
-  <div id="clickZone"></div>
 
-  <div id="gifContainer">
-    <img id="actionGif" src="" alt="Action GIF" />
-  </div>
+<div id="zone-cliquable"></div>
 
-  <div class="gauges">
-    <div class="gauge"><div class="fill" id="eatGauge"></div></div>
-    <div class="gauge"><div class="fill" id="playGauge"></div></div>
-    <div class="gauge"><div class="fill" id="bathGauge"></div></div>
-    <div class="gauge"><div class="fill" id="sleepGauge"></div></div>
-  </div>
+<img id="gif-stitch" class="gif-stitch" src="" />
 
-  <div class="buttons">
-    <button class="btn" onclick="playAction('eat')">🍗</button>
-    <button class="btn" onclick="playAction('play')">🎮</button>
-    <button class="btn" onclick="playAction('bath')">🛁</button>
-    <button class="btn" onclick="playAction('sleep')">🌙</button>
-  </div>
+<button id="btn-manger" class="bouton">🍗</button>
+<button id="btn-jouer" class="bouton">🎮</button>
+<button id="btn-dodo" class="bouton">🌙</button>
+<button id="btn-bain" class="bouton">🛁</button>
 
-  <script>
-    const gifContainer = document.getElementById("gifContainer");
-    const actionGif = document.getElementById("actionGif");
+<div id="jauge-manger" class="jauge manger"><div class="remplissage"></div></div>
+<div id="jauge-jouer" class="jauge jouer"><div class="remplissage"></div></div>
+<div id="jauge-dodo" class="jauge dormir"><div class="remplissage"></div></div>
 
-    const gifs = {
-      eat: ['eat1.gif'],
-      play: ['play1.gif'],
-      bath: ['bath1.gif'],
-      sleep: ['sleep1.gif']
-    };
+<script>
+  const gif = document.getElementById('gif-stitch');
+  const gifs = {
+    manger: ['stitch16.gif'],
+    jouer: ['stitch7.gif', 'stitch9.gif', 'stitch13.gif', 'stitch14.gif', 'stitch15.gif'],
+    dodo: [
+      ['stitch2.gif', 'stitch3.gif', 'stitch20.gif'],
+      ['stitch2.gif', 'stitch3.gif', 'stitch21.gif'],
+      ['stitch2.gif', 'stitch3.gif', 'stitch22.gif']
+    ],
+    bain: ['stitch18.gif', 'stitch19.gif'],
+    froid: ['stitch10.gif', 'stitch11.gif'],
+    normal: 'stitch5.gif',
+    triste: 'stitch1.gif',
+    enerve: 'stitch17.gif',
+    sommeil: 'stitch12.gif'
+  };
 
-    const gifDurations = {
-      eat: 4000,
-      play: 4500,
-      bath: 5000,
-      sleep: 5500
-    };
+  let jauges = {
+    manger: 0,
+    jouer: 0,
+    dormir: 0
+  };
 
-    const gauges = {
-      eat: document.getElementById('eatGauge'),
-      play: document.getElementById('playGauge'),
-      bath: document.getElementById('bathGauge'),
-      sleep: document.getElementById('sleepGauge')
-    };
+  const max = 2000;
 
-    const gaugeValues = {
-      eat: 0,
-      play: 0,
-      bath: 0,
-      sleep: 0
-    };
+  function updateJauge(type) {
+    if (jauges[type] < max) jauges[type] += 100;
+    const pourcent = Math.min(100, (jauges[type] / max) * 100);
+    document.querySelector(`#jauge-${type} .remplissage`).style.height = pourcent + '%';
+  }
 
-    function playAction(type) {
-      const gifList = gifs[type];
-      const gif = gifList[Math.floor(Math.random() * gifList.length)];
-      const duration = gifDurations[type];
+  function jouerGif(src) {
+    gif.src = src;
+    gif.classList.add('visible');
+    setTimeout(() => {
+      gif.classList.remove('visible');
+    }, 2000);
+  }
 
-      actionGif.src = gif;
-      gifContainer.style.opacity = 1;
-
+  function jouerGifSequence(sequence) {
+    let index = 0;
+    function nextGif() {
+      if (index >= sequence.length) return;
+      gif.src = sequence[index];
+      gif.classList.add('visible');
       setTimeout(() => {
-        gifContainer.style.opacity = 0;
-      }, duration);
-
-      increaseGauge(type);
+        gif.classList.remove('visible');
+        index++;
+        setTimeout(nextGif, 300);
+      }, 2000);
     }
+    nextGif();
+  }
 
-    function increaseGauge(type) {
-      if (gaugeValues[type] < 5000) {
-        gaugeValues[type] += 100;
-        gauges[type].style.width = (gaugeValues[type] / 50) + '%'; // convert to %
-      }
+  // Boutons
+  document.getElementById('btn-manger').addEventListener('click', () => {
+    const gifFile = gifs.manger[0];
+    jouerGif(gifFile);
+    updateJauge('manger');
+  });
+
+  document.getElementById('btn-jouer').addEventListener('click', () => {
+    const gifFile = gifs.jouer[Math.floor(Math.random() * gifs.jouer.length)];
+    jouerGif(gifFile);
+    updateJauge('jouer');
+  });
+
+  document.getElementById('btn-dodo').addEventListener('click', () => {
+    const sequence = gifs.dodo[Math.floor(Math.random() * gifs.dodo.length)];
+    jouerGifSequence(sequence);
+    updateJauge('dormir');
+  });
+
+  document.getElementById('btn-bain').addEventListener('click', () => {
+    jouerGifSequence(gifs.bain);
+  });
+
+  // Zone retour (stitch25.gif puis redirect)
+  document.getElementById('zone-cliquable').addEventListener('click', () => {
+    gif.src = 'stitch25.gif';
+    gif.classList.add('visible');
+    setTimeout(() => {
+      window.location.href = 'index.html'; // Modifier ici si autre page
+    }, 3500);
+  });
+
+  // Anti zoom mobile double tap
+  let lastTouch = 0;
+  document.addEventListener('touchend', function (e) {
+    const now = new Date().getTime();
+    if (now - lastTouch <= 300) {
+      e.preventDefault();
     }
+    lastTouch = now;
+  }, { passive: false });
+</script>
 
-    const clickZone = document.getElementById("clickZone");
-    const stitch = new Image();
-    stitch.style.position = "absolute";
-    stitch.style.top = "50%";
-    stitch.style.left = "50%";
-    stitch.style.transform = "translate(-50%, -50%)";
-    stitch.style.zIndex = "100";
-    document.body.appendChild(stitch);
-
-    clickZone.onclick = () => {
-      const currentPage = location.pathname.split('/').pop();
-      if (currentPage === 'index.html' || currentPage === '') {
-        stitch.src = 'stitch25.gif';
-        stitch.style.display = "block";
-        setTimeout(() => {
-          location.href = 'tamagotchi.html';
-        }, 4200); // stitch25.gif = 4.2s
-      } else if (currentPage === 'tamagotchi.html') {
-        stitch.src = 'stitch24.gif';
-        stitch.style.display = "block";
-        setTimeout(() => {
-          location.href = 'index.html';
-        }, 6300); // stitch24.gif = 6.3s
-      }
-    };
-  </script>
 </body>
 </html>
