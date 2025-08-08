@@ -1,77 +1,82 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-  <title>Tamagotchi – Neela & Papa</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Neela & Papa - Tamagotchi</title>
   <link rel="stylesheet" href="style.css" />
+
   <style>
-    /* Zone invisible ronde en haut pour retour */
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      touch-action: manipulation;
+    }
+
+    /* Zone invisible ronde pour retour */
     #return-zone {
       position: absolute;
       top: 20px;
       left: 50%;
+      transform: translateX(-50%);
       width: 120px;
       height: 120px;
-      transform: translateX(-50%);
       border-radius: 50%;
-      cursor: pointer;
       z-index: 1000;
+      cursor: pointer;
     }
-    /* Animation de transition (stitch24) plein écran */
+
+    /* Animation Stitch24 */
     #return-gif {
       position: fixed;
-      top: 50%;
-      left: 50%;
+      top: 0;
+      left: 0;
       width: 100vw;
       height: 100vh;
-      transform: translate(-50%, -50%);
-      background-color: black;
+      background: transparent;
       display: flex;
       align-items: center;
       justify-content: center;
       z-index: 1100;
       visibility: hidden;
+      pointer-events: none;
     }
+
     #return-gif img {
       max-width: 80%;
       height: auto;
     }
   </style>
 </head>
-<body>
-  <!-- Zone invisible en haut -->
-  <div id="return-zone" aria-hidden="true"></div>
 
-  <!-- GIF de retour -->
-  <div id="return-gif">
-    <img src="stitch24.gif" alt="Retour à l'accueil">
+<body>
+  <!-- TON CONTENU NORMAL EXISTANT -->
+  <div id="tamagotchi-app">
+    <!-- TODO: tes jauges, boutons, fond etc. que tu veux garder ici -->
   </div>
 
-  <!-- Ton HTML existant (chat, boutons, jauges, etc.) -->
-  <!-- ... (le reste de ton code HTML actuel reste ici, inchangé) ... -->
+  <!-- Zone invisible de retour -->
+  <div id="return-zone" aria-label="Retour à la page 1"></div>
+
+  <!-- Conteneur pour stitch24.gif -->
+  <div id="return-gif">
+    <img src="stitch24.gif" alt="Animation retour" />
+  </div>
 
   <script>
     const returnZone = document.getElementById('return-zone');
     const returnGif = document.getElementById('return-gif');
 
     returnZone.addEventListener('click', () => {
+      // Affiche le gif
       returnGif.style.visibility = 'visible';
+
+      // Attend 3.5s, puis redirige
       setTimeout(() => {
-        window.location.href = 'index.html';
-      }, 3500); // correspond à la durée complète du GIF
+        window.location.href = "index.html";
+      }, 3500);
     });
-
-    // Empêche le zoom sur mobile
-    document.addEventListener('touchend', (e) => {
-      const now = new Date().getTime();
-      if (now - (window._lastTouch || 0) <= 300) {
-        e.preventDefault();
-      }
-      window._lastTouch = now;
-    }, { passive: false });
   </script>
-
-  <script type="module" src="app.js"></script>
 </body>
 </html>
