@@ -1,74 +1,73 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1, maximum-scale=1, user-scalable=no" />
   <title>Neela & Papa</title>
+  <link rel="stylesheet" href="style.css" />
   <style>
-    body {
-      margin: 0;
-      padding: 0;
-      background: url('fond-stitch.jpg') no-repeat center center fixed;
-      background-size: cover;
-      font-family: Arial, sans-serif;
-      overflow: hidden;
-      touch-action: manipulation;
-    }
-
-    #zone-clic-titre {
+    /* Zone invisible ronde centrée sur le haut */
+    #title-zone {
       position: absolute;
       top: 30px;
       left: 50%;
-      width: 120px;
-      height: 120px;
       transform: translateX(-50%);
-      cursor: pointer;
+      width: 160px;
+      height: 80px;
       border-radius: 50%;
-      z-index: 999;
+      z-index: 10;
+      cursor: pointer;
     }
 
-    #gif-transition {
-      position: absolute;
+    /* GIF de transition */
+    #transition-gif {
+      position: fixed;
       top: 50%;
       left: 50%;
-      width: 200px;
-      height: auto;
       transform: translate(-50%, -50%);
-      opacity: 0;
-      transition: opacity 0.5s;
-      z-index: 1000;
+      width: 200px;
+      display: none;
+      z-index: 999;
       pointer-events: none;
-    }
-
-    #gif-transition.visible {
-      opacity: 1;
-    }
-
-    h1 {
-      text-align: center;
-      margin-top: 50px;
-      color: white;
-      font-size: 36px;
-      text-shadow: 2px 2px 4px black;
     }
   </style>
 </head>
+
 <body>
+  <!-- Zone invisible cliquable ronde -->
+  <div id="title-zone" aria-label="Basculer de page"></div>
 
-<!-- Zone cliquable centrée sur le haut -->
-  <div id="zone-cliquable"></div>
+  <!-- GIF de transition -->
+  <img id="transition-gif" src="" alt="Animation de transition" />
 
-  <!-- Animation de transition -->
-  <img id="transition-gif" src="" />
+  <div id="chat-app">
+    <header id="app-header" aria-hidden="true">
+      <p id="status">Connexion...</p>
+    </header>
+
+    <main id="messages" role="log" aria-live="polite"></main>
+
+    <form id="message-form">
+      <input type="text" id="message-input" placeholder="Écris ici..." autocomplete="off" />
+      <button type="submit" class="btn send-btn" aria-label="Envoyer">Envoyer</button>
+      <label for="image-upload" class="btn photo-btn" title="Envoyer une photo" aria-label="Envoyer une photo">📷</label>
+      <input type="file" id="image-upload" accept="image/*" />
+    </form>
+  </div>
+
+  <script type="module" src="app.js"></script>
 
   <script>
-    const transition = document.getElementById('transition-gif');
-    document.getElementById('zone-cliquable').addEventListener('click', () => {
-      transition.src = 'stitch25.gif';
-      transition.style.display = 'block';
+    const titleZone = document.getElementById('title-zone');
+    const transitionGif = document.getElementById('transition-gif');
+
+    titleZone.addEventListener('click', () => {
+      transitionGif.src = 'stitch25.gif';
+      transitionGif.style.display = 'block';
+
       setTimeout(() => {
         window.location.href = 'tamagotchi.html';
-      }, 3500);
+      }, 3500); // attendre la fin du gif
     });
   </script>
 </body>
