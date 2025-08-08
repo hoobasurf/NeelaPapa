@@ -2,41 +2,60 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
   <title>Neela & Papa</title>
   <style>
     body {
       margin: 0;
-      overflow: hidden;
+      padding: 0;
       background: url('fond-stitch.jpg') no-repeat center center fixed;
       background-size: cover;
+      font-family: Arial, sans-serif;
+      overflow: hidden;
       touch-action: manipulation;
     }
 
-    #zone-cliquable {
+    #zone-clic-titre {
       position: absolute;
       top: 30px;
       left: 50%;
-      width: 200px;
-      height: 80px;
+      width: 120px;
+      height: 120px;
       transform: translateX(-50%);
       cursor: pointer;
-      z-index: 10;
+      border-radius: 50%;
+      z-index: 999;
     }
 
-    #transition-gif {
+    #gif-transition {
       position: absolute;
       top: 50%;
       left: 50%;
       width: 200px;
+      height: auto;
       transform: translate(-50%, -50%);
-      display: none;
-      z-index: 99;
+      opacity: 0;
+      transition: opacity 0.5s;
+      z-index: 1000;
+      pointer-events: none;
+    }
+
+    #gif-transition.visible {
+      opacity: 1;
+    }
+
+    h1 {
+      text-align: center;
+      margin-top: 50px;
+      color: white;
+      font-size: 36px;
+      text-shadow: 2px 2px 4px black;
     }
   </style>
 </head>
 <body>
-  <!-- Zone cliquable centrée sur le haut -->
+
+<!-- Zone cliquable centrée sur le haut -->
   <div id="zone-cliquable"></div>
 
   <!-- Animation de transition -->
