@@ -2,192 +2,199 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Neela & Papa - Tamagotchi</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tamagotchi Stitch</title>
   <style>
     body {
       margin: 0;
-      overflow: hidden;
-      background: url('fond-stitch.jpg') no-repeat center center fixed;
-      background-size: cover;
-      touch-action: manipulation;
+      font-family: 'Comic Sans MS', cursive;
+      background: linear-gradient(to bottom, #97c4f5, #fffbe7);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 100px;
     }
 
-    .gif-stitch {
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      top: calc(100vh - 200px);
-      width: 150px;
-      opacity: 0;
-      transition: opacity 0.5s;
+    #stitch-img {
+      width: 250px;
+      height: auto;
+      margin-top: 60px; /* 6 cm approx */
     }
 
-    .visible {
-      opacity: 1;
+    .button-container {
+      margin-top: 30px;
+      display: flex;
+      gap: 20px;
     }
 
-    .btn {
-      position: absolute;
-      bottom: 40px;
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
+    .action-btn {
+      background-color: transparent;
       border: none;
-      background-size: cover;
-      background-repeat: no-repeat;
-      background-position: center;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-      z-index: 5;
-    }
-
-    #btn-manger { left: 20%; background-image: url('bouton-manger.png'); }
-    #btn-jouer  { left: 40%; background-image: url('bouton-jouer.png'); }
-    #btn-dodo   { left: 60%; background-image: url('bouton-dodo.png'); }
-    #btn-bain   { left: 80%; background-image: url('bouton-bain.png'); }
-
-    .jauge {
-      position: absolute;
-      bottom: 120px;
-      width: 40px;
-      height: 100px;
-      background: #eee;
-      border: 2px solid #333;
-      border-radius: 8px;
-      overflow: hidden;
-    }
-
-    .barre {
-      width: 100%;
-      height: 0%;
-      background: linear-gradient(to top, #00f0ff, #0ff);
-      transition: height 0.3s;
-    }
-
-    #jauge-manger { left: 20%; transform: translateX(-50%); }
-    #jauge-jouer  { left: 40%; transform: translateX(-50%); }
-    #jauge-dodo   { left: 60%; transform: translateX(-50%); }
-    #jauge-bain   { left: 80%; transform: translateX(-50%); }
-
-    #zone-cliquable {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 150px;
+      font-size: 30px;
       cursor: pointer;
-      z-index: 10;
     }
 
-    #transition-gif {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 200px;
-      transform: translate(-50%, -50%);
-      display: none;
-      z-index: 99;
+    .gauges {
+      margin-top: 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      align-items: center;
+    }
+
+    .gauge {
+      display: flex;
+      align-items: center;
+    }
+
+    .gauge img {
+      width: 40px;
+      height: 40px;
+      margin-right: 10px;
+    }
+
+    .gauge-bar {
+      width: 250px;
+      height: 20px;
+      background-color: #eee;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 2px solid #bca;
+    }
+
+    .gauge-fill {
+      height: 100%;
+      background: linear-gradient(to right, #ffcc70, #ff8c42);
+      width: 100%;
+      transition: width 0.5s;
     }
   </style>
 </head>
 <body>
-  <div id="zone-cliquable"></div>
+  <img id="stitch-img" src="stitch5.gif" alt="Stitch" />
 
-  <img id="gif-stitch" class="gif-stitch" src="stitch5.gif" />
+  <div class="button-container">
+    <button class="action-btn" onclick="playAction('eat')">🍍</button>
+    <button class="action-btn" onclick="playAction('play')">🏄</button>
+    <button class="action-btn" onclick="playAction('wash')">🚿</button>
+    <button class="action-btn" onclick="playAction('sleep')">😴</button>
+  </div>
 
-  <button id="btn-manger" class="btn"></button>
-  <button id="btn-jouer" class="btn"></button>
-  <button id="btn-dodo" class="btn"></button>
-  <button id="btn-bain" class="btn"></button>
-
-  <div id="jauge-manger" class="jauge"><div class="barre"></div></div>
-  <div id="jauge-jouer" class="jauge"><div class="barre"></div></div>
-  <div id="jauge-dodo" class="jauge"><div class="barre"></div></div>
-  <div id="jauge-bain" class="jauge"><div class="barre"></div></div>
-
-  <img id="transition-gif" src="" />
+  <div class="gauges">
+    <div class="gauge">
+      <img src="coquillage.png" alt="Manger">
+      <div class="gauge-bar"><div class="gauge-fill" id="gauge-eat"></div></div>
+    </div>
+    <div class="gauge">
+      <img src="coquillage.png" alt="Jouer">
+      <div class="gauge-bar"><div class="gauge-fill" id="gauge-play"></div></div>
+    </div>
+    <div class="gauge">
+      <img src="coquillage.png" alt="Lavage">
+      <div class="gauge-bar"><div class="gauge-fill" id="gauge-wash"></div></div>
+    </div>
+    <div class="gauge">
+      <img src="coquillage.png" alt="Dodo">
+      <div class="gauge-bar"><div class="gauge-fill" id="gauge-sleep"></div></div>
+    </div>
+  </div>
 
   <script>
-    const gif = document.getElementById('gif-stitch');
+    const stitchImg = document.getElementById("stitch-img");
+
+    const gauges = {
+      eat: 1000,
+      play: 1000,
+      wash: 1000,
+      sleep: 1000
+    };
+
+    const gaugeElements = {
+      eat: document.getElementById("gauge-eat"),
+      play: document.getElementById("gauge-play"),
+      wash: document.getElementById("gauge-wash"),
+      sleep: document.getElementById("gauge-sleep")
+    };
+
+    const gifDurations = {
+      "stitch16.gif": 3800,
+      "stitch7.gif": 4000,
+      "stitch9.gif": 4200,
+      "stitch13.gif": 5200,
+      "stitch14.gif": 4300,
+      "stitch15.gif": 4500,
+      "stitch18.gif": 3000,
+      "stitch19.gif": 5800,
+      "stitch12.gif": 4000,
+      "stitch20.gif": 6000,
+      "stitch21.gif": 5800,
+      "stitch22.gif": 5900,
+      "stitch1.gif": 2000,
+      "stitch17.gif": 2000,
+      "stitch10.gif": 3000,
+      "stitch11.gif": 2800
+    };
+
     const gifs = {
-      manger: ['stitch16.gif'],
-      jouer: ['stitch7.gif', 'stitch9.gif', 'stitch13.gif', 'stitch14.gif', 'stitch15.gif'],
-      dodo: [
-        ['stitch2.gif', 'stitch3.gif', 'stitch20.gif'],
-        ['stitch2.gif', 'stitch3.gif', 'stitch21.gif'],
-        ['stitch2.gif', 'stitch3.gif', 'stitch22.gif']
-      ],
-      bain: ['stitch18.gif', 'stitch19.gif']
+      eat: ["stitch16.gif"],
+      play: ["stitch7.gif", "stitch9.gif", "stitch13.gif", "stitch14.gif", "stitch15.gif"],
+      wash: ["stitch18.gif", "stitch19.gif"],
+      sleep: ["stitch12.gif", "stitch20.gif", "stitch21.gif", "stitch22.gif"]
     };
 
-    const jauges = {
-      manger: 0,
-      jouer: 0,
-      dodo: 0,
-      bain: 0
-    };
-
-    function updateJauge(nom) {
-      jauges[nom] = Math.min(jauges[nom] + 100, 2000);
-      const barre = document.querySelector(`#jauge-${nom} .barre`);
-      barre.style.height = Math.min((jauges[nom] / 20), 100) + '%';
+    function updateGauges() {
+      for (let key in gauges) {
+        const percent = Math.max(0, Math.min(1000, gauges[key]));
+        gaugeElements[key].style.width = (percent / 1000 * 100) + "%";
+      }
     }
 
-    function showGif(srcList, delay = 1000) {
-      gif.classList.remove('visible');
-      setTimeout(async () => {
-        if (Array.isArray(srcList)) {
-          for (const src of srcList) {
-            gif.src = src;
-            gif.classList.add('visible');
-            await new Promise(r => setTimeout(r, delay));
-            gif.classList.remove('visible');
-            await new Promise(r => setTimeout(r, 200));
-          }
-        } else {
-          gif.src = srcList;
-          gif.classList.add('visible');
-        }
-      }, 300);
-    }
+    function playAction(type) {
+      const gifList = gifs[type];
+      const selectedGif = gifList[Math.floor(Math.random() * gifList.length)];
 
-    document.getElementById('btn-manger').onclick = () => {
-      updateJauge('manger');
-      const gifList = gifs.manger[Math.floor(Math.random() * gifs.manger.length)];
-      showGif(gifList);
-    };
+      stitchImg.src = selectedGif;
 
-    document.getElementById('btn-jouer').onclick = () => {
-      updateJauge('jouer');
-      const gifList = gifs.jouer[Math.floor(Math.random() * gifs.jouer.length)];
-      showGif(gifList);
-    };
+      if (type === "eat") gauges.eat = Math.min(1000, gauges.eat + 200);
+      if (type === "play") gauges.play = Math.min(1000, gauges.play + 200);
+      if (type === "wash") gauges.wash = Math.min(1000, gauges.wash + 200);
+      if (type === "sleep") gauges.sleep = Math.min(1000, gauges.sleep + 200);
 
-    document.getElementById('btn-dodo').onclick = () => {
-      updateJauge('dodo');
-      const sequence = gifs.dodo[Math.floor(Math.random() * gifs.dodo.length)];
-      showGif(sequence, 1000);
-    };
+      updateGauges();
 
-    document.getElementById('btn-bain').onclick = () => {
-      updateJauge('bain');
-      showGif(gifs.bain, 1000);
-    };
+      const duration = gifDurations[selectedGif] || 4000;
 
-    // Retour page 1 avec animation stitch24.gif
-    const transition = document.getElementById('transition-gif');
-    document.getElementById('zone-cliquable').addEventListener('click', () => {
-      transition.src = 'stitch24.gif';
-      transition.style.display = 'block';
       setTimeout(() => {
-        window.location.href = 'index.html';
-      }, 3500);
-    });
+        updateMood();
+      }, duration);
+    }
 
-    // Désactivation zoom mobile
-    document.querySelectorAll('button').forEach(btn => {
-      btn.addEventListener('touchstart', e => e.preventDefault());
-    });
+    function updateMood() {
+      if (gauges.eat < 300) {
+        stitchImg.src = "stitch1.gif"; // triste
+      } else if (gauges.play < 300) {
+        stitchImg.src = "stitch17.gif"; // énervé
+      } else if (gauges.sleep < 300) {
+        stitchImg.src = "stitch12.gif"; // fatigué
+      } else if (gauges.wash < 300) {
+        stitchImg.src = Math.random() > 0.5 ? "stitch10.gif" : "stitch11.gif"; // froid
+      } else {
+        stitchImg.src = "stitch5.gif"; // normal
+      }
+    }
+
+    function autoDecrease() {
+      for (let key in gauges) {
+        gauges[key] = Math.max(0, gauges[key] - 2);
+      }
+      updateGauges();
+      updateMood();
+      setTimeout(autoDecrease, 5000);
+    }
+
+    // Init
+    updateGauges();
+    autoDecrease();
   </script>
 </body>
 </html>
