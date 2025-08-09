@@ -5,64 +5,68 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Neela & Papa - Tamagotchi</title>
   <link rel="stylesheet" href="style.css" />
-
   <style>
     body {
       margin: 0;
       padding: 0;
-      overflow: hidden;
-      touch-action: manipulation;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
       background: url('fond.jpg') no-repeat center center fixed;
       background-size: cover;
+      overflow: hidden;
+      touch-action: manipulation;
     }
 
-    #tamagotchi-container {
+    #tamagotchi-app {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 20px;
+      justify-content: center;
+      height: 100vh;
     }
 
-    .gauge-container {
-      width: 200px;
-      height: 20px;
-      background-color: #ddd;
-      border-radius: 10px;
-      overflow: hidden;
+    .gif-container img {
+      max-width: 250px;
+      height: auto;
+      display: block;
+    }
+
+    .gauges {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
     }
 
     .gauge {
-      height: 100%;
-      background-color: orange;
-      width: 0%;
-      transition: width 0.3s ease;
+      width: 60px;
+      height: 200px;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
     }
 
-    #stitch-gif img {
-      max-width: 250px;
-      height: auto;
+    .gauge-fill {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      background: linear-gradient(to top, #4cafef, #90ee90);
     }
 
-    .button-row {
+    .buttons {
       display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      justify-content: center;
+      gap: 15px;
+      margin-top: 20px;
     }
 
     button {
-      font-size: 1.5rem;
+      font-size: 18px;
       padding: 10px;
-      border-radius: 10px;
       border: none;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.7);
       cursor: pointer;
     }
 
-    /* Zone invisible retour */
+    /* Zone invisible pour retour */
     #return-zone {
       position: absolute;
       top: 20px;
@@ -96,80 +100,102 @@
     }
   </style>
 </head>
-
 <body>
-  <div id="tamagotchi-container">
-    <!-- GIF principal -->
-    <div id="stitch-gif"><img src="stitch1.gif" alt="Stitch" /></div>
+  <div id="tamagotchi-app">
+    <div class="gif-container">
+      <img id="stitch-gif" src="stitch1.gif" alt="Stitch" />
+    </div>
 
-    <!-- Jauges -->
-    <div class="gauge-container"><div id="gauge-manger" class="gauge"></div></div>
-    <div class="gauge-container"><div id="gauge-jouer" class="gauge"></div></div>
-    <div class="gauge-container"><div id="gauge-dormir" class="gauge"></div></div>
-    <div class="gauge-container"><div id="gauge-bain" class="gauge"></div></div>
+    <div class="gauges">
+      <div class="gauge"><div class="gauge-fill" id="gauge-manger"></div></div>
+      <div class="gauge"><div class="gauge-fill" id="gauge-jouer"></div></div>
+      <div class="gauge"><div class="gauge-fill" id="gauge-dodo"></div></div>
+      <div class="gauge"><div class="gauge-fill" id="gauge-bain"></div></div>
+    </div>
 
-    <!-- Boutons -->
-    <div class="button-row">
-      <button id="btn-manger">🍗</button>
-      <button id="btn-jouer">🎮</button>
-      <button id="btn-dormir">🌙</button>
-      <button id="btn-bain">🛁</button>
+    <div class="buttons">
+      <button id="btn-manger">🍗 Manger</button>
+      <button id="btn-jouer">🎮 Jouer</button>
+      <button id="btn-dodo">🌙 Dodo</button>
+      <button id="btn-bain">🛁 Bain</button>
     </div>
   </div>
 
-  <!-- Zone invisible retour -->
+  <!-- Zone invisible de retour -->
   <div id="return-zone" aria-label="Retour à la page 1"></div>
-  <div id="return-gif"><img src="stitch24.gif" alt="Retour" /></div>
+
+  <!-- Conteneur pour stitch24.gif -->
+  <div id="return-gif">
+    <img src="stitch24.gif" alt="Animation retour" />
+  </div>
 
   <script>
-    const gif = document.querySelector('#stitch-gif img');
+    const stitchGif = document.getElementById('stitch-gif');
     const gauges = {
       manger: document.getElementById('gauge-manger'),
       jouer: document.getElementById('gauge-jouer'),
-      dormir: document.getElementById('gauge-dormir'),
+      dodo: document.getElementById('gauge-dodo'),
       bain: document.getElementById('gauge-bain')
     };
-    let values = JSON.parse(localStorage.getItem('gauges')) || {
+
+    let gaugeValues = {
       manger: 0,
       jouer: 0,
-      dormir: 0,
+      dodo: 0,
       bain: 0
     };
 
-    function updateGauge(name, amount, gifSrc, duration=3000) {
-      values[name] = Math.min(values[name] + amount, 2000);
-      gauges[name].style.width = Math.min(values[name] / 20, 100) + '%';
-      gif.src = gifSrc;
-      setTimeout(() => {
-        gif.src = 'stitch1.gif';
-      }, duration);
-      localStorage.setItem('gauges', JSON.stringify(values));
+    function updateGauge(name, value) {
+      gaugeValues[name] = Math.min(gaugeValues[name] + value, 2000);
+      gauges[name].style.height = Math.min((gaugeValues[name] / 20), 100) + '%';
+      localStorage.setItem('tamagotchiGauges', JSON.stringify(gaugeValues));
     }
 
-    document.getElementById('btn-manger').onclick = () => {
-      updateGauge('manger', 100, 'stitch16.gif');
-    };
-    document.getElementById('btn-jouer').onclick = () => {
-      const gifs = ['stitch7.gif', 'stitch9.gif', 'stitch13.gif', 'stitch14.gif', 'stitch15.gif'];
-      updateGauge('jouer', 100, gifs[Math.floor(Math.random()*gifs.length)]);
-    };
-    document.getElementById('btn-dormir').onclick = () => {
-      const gifs = ['stitch2.gif', 'stitch3.gif', 'stitch20.gif', 'stitch21.gif', 'stitch22.gif', 'stitch5.gif', 'stitch1.gif', 'stitch17.gif', 'stitch12.gif'];
-      updateGauge('dormir', 100, gifs[Math.floor(Math.random()*gifs.length)], 5000);
-    };
-    document.getElementById('btn-bain').onclick = () => {
-      updateGauge('bain', 100, 'stitch18.gif', 5000);
-      setTimeout(() => gif.src = 'stitch19.gif', 2500);
-    };
+    function playGifOnce(src, callback) {
+      stitchGif.src = src + '?t=' + new Date().getTime();
+      stitchGif.onload = () => {
+        const duration = stitchGif.naturalWidth / 10; // estimation si pas de durée exacte
+        setTimeout(() => {
+          if (callback) callback();
+        }, duration * 100); 
+      };
+    }
 
-    // Initialisation
-    Object.keys(values).forEach(k => {
-      gauges[k].style.width = Math.min(values[k] / 20, 100) + '%';
+    document.getElementById('btn-manger').addEventListener('click', () => {
+      playGifOnce('stitch16.gif');
+      updateGauge('manger', 100);
     });
 
-    // Bouton retour
+    document.getElementById('btn-jouer').addEventListener('click', () => {
+      playGifOnce(['stitch7.gif', 'stitch9.gif', 'stitch13.gif', 'stitch14.gif', 'stitch15.gif'][Math.floor(Math.random()*5)]);
+      updateGauge('jouer', 100);
+    });
+
+    document.getElementById('btn-dodo').addEventListener('click', () => {
+      playGifOnce(['stitch2.gif', 'stitch3.gif', 'stitch20.gif', 'stitch21.gif', 'stitch22.gif'][Math.floor(Math.random()*5)]);
+      updateGauge('dodo', 100);
+    });
+
+    document.getElementById('btn-bain').addEventListener('click', () => {
+      playGifOnce(['stitch18.gif', 'stitch19.gif'][Math.floor(Math.random()*2)]);
+      updateGauge('bain', 100);
+    });
+
+    // Sauvegarde des jauges
+    window.addEventListener('load', () => {
+      const saved = localStorage.getItem('tamagotchiGauges');
+      if (saved) {
+        gaugeValues = JSON.parse(saved);
+        for (let key in gaugeValues) {
+          gauges[key].style.height = Math.min((gaugeValues[key] / 20), 100) + '%';
+        }
+      }
+    });
+
+    // Retour page 1
     const returnZone = document.getElementById('return-zone');
     const returnGif = document.getElementById('return-gif');
+
     returnZone.addEventListener('click', () => {
       returnGif.style.visibility = 'visible';
       setTimeout(() => {
