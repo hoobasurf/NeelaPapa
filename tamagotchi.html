@@ -10,18 +10,59 @@
     body {
       margin: 0;
       padding: 0;
-      background: url('fond-stitch.jpg') no-repeat center center fixed;
-      background-size: cover;
       overflow: hidden;
+      touch-action: manipulation;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background: url('fond.jpg') no-repeat center center fixed;
+      background-size: cover;
+    }
+
+    #tamagotchi-container {
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start;
-      height: 100vh;
-      touch-action: manipulation;
+      gap: 20px;
     }
 
-    /* Zone invisible ronde pour retour */
+    .gauge-container {
+      width: 200px;
+      height: 20px;
+      background-color: #ddd;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .gauge {
+      height: 100%;
+      background-color: orange;
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    #stitch-gif img {
+      max-width: 250px;
+      height: auto;
+    }
+
+    .button-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    button {
+      font-size: 1.5rem;
+      padding: 10px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+    }
+
+    /* Zone invisible retour */
     #return-zone {
       position: absolute;
       top: 20px;
@@ -34,7 +75,6 @@
       cursor: pointer;
     }
 
-    /* Animation Stitch24 */
     #return-gif {
       position: fixed;
       top: 0;
@@ -54,123 +94,82 @@
       max-width: 80%;
       height: auto;
     }
-
-    /* GIF principal */
-    #stitch-display {
-      margin-top: 100px;
-      max-width: 200px;
-      height: auto;
-    }
-
-    /* Jauges */
-    .jauge-container {
-      display: flex;
-      gap: 10px;
-      margin-top: 20px;
-    }
-
-    .jauge {
-      width: 60px;
-      height: 100px;
-      background: #fff8;
-      border-radius: 10px;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column-reverse;
-    }
-
-    .jauge-fill {
-      background: linear-gradient(to top, #ff6, #fc0);
-      width: 100%;
-      height: 0%;
-      transition: height 0.3s;
-    }
-
-    /* Boutons */
-    .button-container {
-      display: flex;
-      gap: 15px;
-      position: fixed;
-      bottom: 20px;
-      z-index: 100;
-    }
-
-    .action-btn {
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      border: none;
-      font-size: 24px;
-      cursor: pointer;
-      background: #fff;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-    }
   </style>
 </head>
 
 <body>
-  <!-- GIF principal -->
-  <img id="stitch-display" src="stitch5.gif" alt="Stitch" />
+  <div id="tamagotchi-container">
+    <!-- GIF principal -->
+    <div id="stitch-gif"><img src="stitch1.gif" alt="Stitch" /></div>
 
-  <!-- Jauges -->
-  <div class="jauge-container">
-    <div class="jauge" id="jauge-manger"><div class="jauge-fill"></div></div>
-    <div class="jauge" id="jauge-jouer"><div class="jauge-fill"></div></div>
-    <div class="jauge" id="jauge-dormir"><div class="jauge-fill"></div></div>
-    <div class="jauge" id="jauge-bain"><div class="jauge-fill"></div></div>
+    <!-- Jauges -->
+    <div class="gauge-container"><div id="gauge-manger" class="gauge"></div></div>
+    <div class="gauge-container"><div id="gauge-jouer" class="gauge"></div></div>
+    <div class="gauge-container"><div id="gauge-dormir" class="gauge"></div></div>
+    <div class="gauge-container"><div id="gauge-bain" class="gauge"></div></div>
+
+    <!-- Boutons -->
+    <div class="button-row">
+      <button id="btn-manger">🍗</button>
+      <button id="btn-jouer">🎮</button>
+      <button id="btn-dormir">🌙</button>
+      <button id="btn-bain">🛁</button>
+    </div>
   </div>
 
-  <!-- Boutons -->
-  <div class="button-container">
-    <button class="action-btn" data-action="manger">🍗</button>
-    <button class="action-btn" data-action="jouer">🎮</button>
-    <button class="action-btn" data-action="dormir">🌙</button>
-    <button class="action-btn" data-action="bain">🛁</button>
-  </div>
-
-  <!-- Zone invisible de retour -->
+  <!-- Zone invisible retour -->
   <div id="return-zone" aria-label="Retour à la page 1"></div>
-
-  <!-- Conteneur pour stitch24.gif -->
-  <div id="return-gif">
-    <img src="stitch24.gif" alt="Animation retour" />
-  </div>
+  <div id="return-gif"><img src="stitch24.gif" alt="Retour" /></div>
 
   <script>
-    const returnZone = document.getElementById('return-zone');
-    const returnGif = document.getElementById('return-gif');
-    const stitchDisplay = document.getElementById('stitch-display');
-
-    // GIFs par action
-    const gifs = {
-      manger: ['stitch16.gif'],
-      jouer: ['stitch7.gif','stitch9.gif','stitch13.gif','stitch14.gif','stitch15.gif'],
-      dormir: ['stitch2.gif','stitch3.gif','stitch20.gif','stitch21.gif','stitch22.gif'],
-      bain: ['stitch18.gif','stitch19.gif']
+    const gif = document.querySelector('#stitch-gif img');
+    const gauges = {
+      manger: document.getElementById('gauge-manger'),
+      jouer: document.getElementById('gauge-jouer'),
+      dormir: document.getElementById('gauge-dormir'),
+      bain: document.getElementById('gauge-bain')
+    };
+    let values = JSON.parse(localStorage.getItem('gauges')) || {
+      manger: 0,
+      jouer: 0,
+      dormir: 0,
+      bain: 0
     };
 
-    // Gestion jauges
-    document.querySelectorAll('.action-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const action = btn.dataset.action;
-        const gifList = gifs[action];
-        const randomGif = gifList[Math.floor(Math.random() * gifList.length)];
-        stitchDisplay.src = randomGif;
+    function updateGauge(name, amount, gifSrc, duration=3000) {
+      values[name] = Math.min(values[name] + amount, 2000);
+      gauges[name].style.width = Math.min(values[name] / 20, 100) + '%';
+      gif.src = gifSrc;
+      setTimeout(() => {
+        gif.src = 'stitch1.gif';
+      }, duration);
+      localStorage.setItem('gauges', JSON.stringify(values));
+    }
 
-        // Ralentir le changement de GIF
-        setTimeout(() => {
-          stitchDisplay.src = 'stitch5.gif';
-        }, 3000);
+    document.getElementById('btn-manger').onclick = () => {
+      updateGauge('manger', 100, 'stitch16.gif');
+    };
+    document.getElementById('btn-jouer').onclick = () => {
+      const gifs = ['stitch7.gif', 'stitch9.gif', 'stitch13.gif', 'stitch14.gif', 'stitch15.gif'];
+      updateGauge('jouer', 100, gifs[Math.floor(Math.random()*gifs.length)]);
+    };
+    document.getElementById('btn-dormir').onclick = () => {
+      const gifs = ['stitch2.gif', 'stitch3.gif', 'stitch20.gif', 'stitch21.gif', 'stitch22.gif', 'stitch5.gif', 'stitch1.gif', 'stitch17.gif', 'stitch12.gif'];
+      updateGauge('dormir', 100, gifs[Math.floor(Math.random()*gifs.length)], 5000);
+    };
+    document.getElementById('btn-bain').onclick = () => {
+      updateGauge('bain', 100, 'stitch18.gif', 5000);
+      setTimeout(() => gif.src = 'stitch19.gif', 2500);
+    };
 
-        // Augmenter jauge
-        const jaugeFill = document.querySelector(`#jauge-${action} .jauge-fill`);
-        let current = parseInt(jaugeFill.style.height) || 0;
-        current = Math.min(current + 10, 100);
-        jaugeFill.style.height = current + '%';
-      });
+    // Initialisation
+    Object.keys(values).forEach(k => {
+      gauges[k].style.width = Math.min(values[k] / 20, 100) + '%';
     });
 
-    // Retour page 1 avec Stitch24
+    // Bouton retour
+    const returnZone = document.getElementById('return-zone');
+    const returnGif = document.getElementById('return-gif');
     returnZone.addEventListener('click', () => {
       returnGif.style.visibility = 'visible';
       setTimeout(() => {
