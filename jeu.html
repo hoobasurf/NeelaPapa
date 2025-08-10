@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Jeu de Fruits</title>
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: url('fruits.jpg') no-repeat center center fixed;
+        background-size: cover;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+    }
+    #scoreboard {
+        background: rgba(255, 255, 255, 0.7);
+        padding: 20px 30px;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        gap: 30px;
+        margin-top: -1cm;
+        font-size: 22px;
+        font-weight: bold;
+        user-select: none;
+        box-shadow: 0 0 15px rgba(0,255,255,0.3);
+    }
+    #scoreboard img {
+        width: auto;
+        height: 60px;
+        border-radius: 12px;
+        box-shadow:
+          0 0 8px #0ff,
+          0 0 15px #0ff;
+    }
+    #game {
+        display: grid;
+        grid-template-columns: repeat(5, 70px);
+        grid-template-rows: repeat(5, 70px);
+        gap: 5px;
+        margin-top: 0;
+        touch-action: none;
+    }
+    .cell {
+        width: 80px;
+        height: 80px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .cell img {
+        width: 200%;
+        height: 200%;
+        object-fit: contain;
+        pointer-events: none;
+        user-select: none;
+        transition: transform 0.1s ease, filter 0.1s ease;
+        border-radius: 10px;
+    }
+    .cell.selected {
+        box-shadow:
+            0 0 8px #0ff,
+            0 0 15px #0ff,
+            0 0 25px #0ff,
+            0 0 40px #0ff;
+        border-radius: 10px;
+    }
+    #endScreen {
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: rgba(0,0,0,0.8);
+        color: white;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        font-size: 24px;
+        display: none;
+    }
+    .btn {
+        margin-top: 20px;
+        padding: 10px 20px;
+        font-size: 18px;
+        background: #ffcc00;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+    }
+</style>
+</head>
+<body>
+
+<div id="scoreboard">
+    <span id="moves">Coups : 30</span>
+    <span id="objectives"></span>
+</div>
+
+<div id="game"></div>
+
+<div id="endScreen">
+    <div id="endMessage"></div>
+    <button class="btn" onclick="startGame()">Recommencer</button>
+</div>
+
+<script>
+const fruits = ["banane.png", "ananas.png", "fraise.png", "kiwi.png", "noix.png"];
+let grid = [];
+let selected = [];
+let moves = 30;
+let objectives = {};
+let targetFruits = [];
+const size = 5;
+
+function randomFruit() {
+    return fruits[Math.floor(Math.random() * fruits.length)];
+}
+
+function initObjectives() {
+    objectives = {};
+    targetFruits = [];
+    let num = Math.floor(Math.random() * 3) + 1;
+    let chosen = [...fruits].sort(() => Math.random() - 0.5).slice(0, num);
+    chosen.forEach(f => {
+        objectives[f] = Math.floor(Math.random() * 8) + 5;
+        targetFruits.push(f);
+    });
+    updateScoreboard();
+}
+
+function updateScoreboard() {
+    document.getElementById("moves").textContent = "Coups : " + moves;
+    document.getElementById("objectives").innerHTML = targetFruits.map(f => 
+        `<img src="${f}" alt="${f}"> ${objectives[f]}`
+    ).join(" ");
+}
+
+function startGame() {
+    moves = 30;
+    initObjectives();
+    grid = [];
+    for (let r = 0; r < size; r++) {
+        grid[r] = [];
+        for (let c = 0; c < size; c++) {
+            grid[r][c] = randomFruit();
+        }
+    }
+    drawGrid();
+    document.getElementById("endScreen").style.display = "none";
+}
+
+function drawGrid() {
+    const game = document.getElementById("game");
+    game.innerHTML = "";
+    grid.forEach((row, r) => {
+        row.forEach((fruit, c) => {
+            const cell = document.createElement("div");
+            cell.classList.add("cell");
+            const img = document.createElement("img");
+            img.src = fruit;
+            cell.appendChild(img);
+            cell.dataset.row = r;
+            cell.dataset.col = c;
+            game.appendChild(cell);
+        });
+    });
+}
+
+function clearSelected() {
+    document.querySelectorAll(".selected").forEach(el => el.classList.remove("selected"));
+    selected = [];
+}
+
+function applyGravity() {
+    for (let c = 0; c < size; c++) {
+        for (let r = size - 1; r >= 0; r--) {
+            if (!grid[r][c]) {
+                for (let nr = r - 1; nr >= 0; nr--) {
+                    if (grid[nr][c]) {
+                        grid[r][c] = grid[nr][c];
+                        grid[nr][c] = null;
+                        break;
+                    }
+                }
+            }
+        }
+        for (let r = 0; r < size; r++) {
+            if (!grid[r][c]) grid[r][c] = randomFruit();
+        }
+    }
+}
+
+function checkEndGame() {
+    let win = Object.values(objectives).every(v => v <= 0);
+    if (win) {
+        document.getElementById("endMessage").textContent = "GAGNÉ !";
+        document.getElementById("endScreen").style.display = "flex";
+    } else if (moves <= 0) {
+        document.getElementById("endMessage").textContent = "PERDU...";
+        document.getElementById("endScreen").style.display = "flex";
+    }
+}
+
+function finishSelection() {
+    if (selected.length > 0) {
+        let fruitType = grid[selected[0].row][selected[0].col];
+        selected.forEach(pos => {
+            if (grid[pos.row][pos.col] === fruitType) {
+                grid[pos.row][pos.col] = null;
+                if (objectives[fruitType] !== undefined) {
+                    objectives[fruitType]--;
+                }
+            }
+        });
+        moves--;
+        applyGravity();
+        drawGrid();
+        updateScoreboard();
+        checkEndGame();
+    }
+    clearSelected();
+}
+
+let isDragging = false;
+let allowedFruit = null;
+
+document.getElementById("game").addEventListener("mousedown", startSelect);
+document.getElementById("game").addEventListener("touchstart", startSelect);
+
+function startSelect(e) {
+    e.preventDefault();
+    isDragging = true;
+    let cell = e.target.closest(".cell");
+    if (cell) {
+        let row = parseInt(cell.dataset.row);
+        let col = parseInt(cell.dataset.col);
+        allowedFruit = grid[row][col];
+        selectCell(row, col);
+    }
+}
+
+document.getElementById("game").addEventListener("mousemove", moveSelect);
+document.getElementById("game").addEventListener("touchmove", moveSelect);
+
+function moveSelect(e) {
+    if (!isDragging) return;
+    let touch = e.touches ? e.touches[0] : e;
+    let target = document.elementFromPoint(touch.clientX, touch.clientY);
+    let cell = target.closest(".cell");
+    if (cell) {
+        let row = parseInt(cell.dataset.row);
+        let col = parseInt(cell.dataset.col);
+        if (!selected.some(s => s.row === row && s.col === col) && grid[row][col] === allowedFruit) {
+            selectCell(row, col);
+        }
+    }
+}
+
+document.addEventListener("mouseup", endSelect);
+document.addEventListener("touchend", endSelect);
+
+function endSelect() {
+    if (isDragging) {
+        isDragging = false;
+        finishSelection();
+    }
+}
+
+function selectCell(row, col) {
+    selected.push({row, col});
+    let cells = document.querySelectorAll(".cell");
+    cells.forEach(cell => {
+        if (parseInt(cell.dataset.row) === row && parseInt(cell.dataset.col) === col) {
+            cell.classList.add("selected");
+        }
+    });
+}
+
+startGame();
+</script>
+
+</body>
+</html>
