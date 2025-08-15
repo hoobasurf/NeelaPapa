@@ -1,73 +1,277 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1, maximum-scale=1, user-scalable=no" />
-  <title>Neela & Papa</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Neela & Papa - Tamagotchi</title>
   <link rel="stylesheet" href="style.css" />
   <style>
-    /* Zone invisible ronde centrée sur le haut */
-    #title-zone {
+    body {
+      margin: 0;
+      padding: 0;
+      background: url('fond.jpg') no-repeat center center fixed;
+      background-size: cover;
+      overflow: hidden;
+      touch-action: manipulation;
+    }
+
+    #tamagotchi-app {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    .gif-container img {
+      max-width: 250px;
+      height: auto;
+      display: block;
+    }
+
+    .gauges {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .gauge {
+      width: 60px;
+      height: 200px;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .gauge-fill {
       position: absolute;
-      top: 30px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 160px;
-      height: 80px;
-      border-radius: 50%;
-      z-index: 10;
+      bottom: 0;
+      width: 100%;
+      background: linear-gradient(to top, #4cafef, #90ee90);
+    }
+
+    .buttons {
+      display: flex;
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    button {
+      font-size: 18px;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.7);
       cursor: pointer;
     }
 
-    /* GIF de transition */
-    #transition-gif {
-      position: fixed;
-      top: 50%;
+    /* Zone invisible pour retour (titre rond) */
+    #return-zone {
+      position: absolute;
+      top: 20px;
       left: 50%;
-      transform: translate(-50%, -50%);
-      width: 200px;
-      display: none;
-      z-index: 999;
+      transform: translateX(-50%);
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      z-index: 1000;
+      cursor: pointer;
+    }
+
+    /* Overlay d’animation stitch24 (retour) */
+    #return-gif {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1100;
+      visibility: hidden;
       pointer-events: none;
     }
+    #return-gif img { max-width: 80%; height: auto; }
   </style>
 </head>
-
 <body>
-  <!-- Zone invisible cliquable ronde -->
-  <div id="title-zone" aria-label="Basculer de page"></div>
+  <div id="tamagotchi-app">
+    <div class="gif-container">
+      <!-- ÉTAT PAR DÉFAUT = stitch5.gif -->
+      <img id="stitch-gif" src="stitch5.gif" alt="Stitch" />
+    </div>
 
-  <!-- GIF de transition -->
-  <img id="transition-gif" src="" alt="Animation de transition" />
+    <div class="gauges">
+      <div class="gauge"><div class="gauge-fill" id="gauge-manger"></div></div>
+      <div class="gauge"><div class="gauge-fill" id="gauge-jouer"></div></div>
+      <div class="gauge"><div class="gauge-fill" id="gauge-dodo"></div></div>
+      <div class="gauge"><div class="gauge-fill" id="gauge-bain"></div></div>
+    </div>
 
-  <div id="chat-app">
-    <header id="app-header" aria-hidden="true">
-      <p id="status">Connexion...</p>
-    </header>
-
-    <main id="messages" role="log" aria-live="polite"></main>
-
-    <form id="message-form">
-      <input type="text" id="message-input" placeholder="Écris ici..." autocomplete="off" />
-      <button type="submit" class="btn send-btn" aria-label="Envoyer">Envoyer</button>
-      <label for="image-upload" class="btn photo-btn" title="Envoyer une photo" aria-label="Envoyer une photo">📷</label>
-      <input type="file" id="image-upload" accept="image/*" />
-    </form>
+    <div class="buttons">
+      <button id="btn-manger">🍗 Manger</button>
+      <button id="btn-jouer">🎮 Jouer</button>
+      <button id="btn-dodo">🌙 Dodo</button>
+      <button id="btn-bain">🛁 Bain</button>
+    </div>
   </div>
 
-  <script type="module" src="app.js"></script>
+  <!-- Zone invisible ronde (titre) pour RETOUR page 1 -->
+  <div id="return-zone" aria-label="Retour à la page 1"></div>
+
+  <!-- Conteneur overlay pour stitch24.gif (retour) -->
+  <div id="return-gif">
+    <img src="stitch24.gif" alt="Animation retour" />
+  </div>
 
   <script>
-    const titleZone = document.getElementById('title-zone');
-    const transitionGif = document.getElementById('transition-gif');
+    // ---- Références DOM
+    const stitchGif = document.getElementById('stitch-gif');
 
-    titleZone.addEventListener('click', () => {
-      transitionGif.src = 'stitch25.gif';
-      transitionGif.style.display = 'block';
+    const gauges = {
+      manger: document.getElementById('gauge-manger'),
+      jouer:  document.getElementById('gauge-jouer'),
+      dodo:   document.getElementById('gauge-dodo'),
+      bain:   document.getElementById('gauge-bain')
+    };
+
+    // ---- Valeurs de jauges (max interne 2000, affichage capé à 100%)
+    let gaugeValues = { manger: 0, jouer: 0, dodo: 0, bain: 0 };
+
+    // ---- Durées exactes (ms) pour stopper le GIF puis revenir au défaut
+    // Ajuste ici si nécessaire selon tes durées Imgur
+    const DURATION_MS = {
+      'stitch16.gif': 5000,  // manger
+      'stitch7.gif' : 4000,  // jouer
+      'stitch9.gif' : 4200,  // jouer
+      'stitch13.gif': 4300,  // jouer
+      'stitch14.gif': 4400,  // jouer
+      'stitch15.gif': 4500,  // jouer
+      'stitch2.gif' : 3000,  // dodo séq.
+      'stitch3.gif' : 3200,  // dodo séq.
+      'stitch20.gif': 6000,  // dodo fin alt
+      'stitch21.gif': 6000,  // dodo fin alt
+      'stitch22.gif': 6500,  // dodo fin alt
+      'stitch18.gif': 5000,  // bain
+      'stitch19.gif': 6000   // bain +
+    };
+    const DEFAULT_STITCH = 'stitch5.gif';
+
+    // Pour éviter de rejouer le même GIF deux fois de suite par catégorie
+    const lastPlayed = { jouer: null, dodo: null, bain: null };
+
+    function setGauge(name, delta) {
+      gaugeValues[name] = Math.min(2000, Math.max(0, gaugeValues[name] + delta));
+      const pct = Math.min(100, gaugeValues[name] / 20); // 2000 -> 100%
+      gauges[name].style.height = pct + '%';
+      localStorage.setItem('tamagotchiGauges', JSON.stringify(gaugeValues));
+    }
+
+    function loadGauges() {
+      const saved = localStorage.getItem('tamagotchiGauges');
+      if (saved) {
+        gaugeValues = JSON.parse(saved);
+        for (const k in gaugeValues) {
+          const pct = Math.min(100, gaugeValues[k] / 20);
+          gauges[k].style.height = pct + '%';
+        }
+      }
+    }
+    loadGauges();
+
+    let currentTimer = null;
+
+    function playGifOnce(src, thenDefault = true) {
+      // Stoppe un éventuel timer précédent
+      if (currentTimer) {
+        clearTimeout(currentTimer);
+        currentTimer = null;
+      }
+      // Force le rechargement (anti-cache) et lance le GIF
+      stitchGif.src = src + '?v=' + Date.now();
+
+      const cleanSrc = src; // clé dans DURATION_MS
+      const ms = DURATION_MS[cleanSrc] || 4000;
+
+      // Après la durée, on revient au Stitch par défaut
+      currentTimer = setTimeout(() => {
+        if (thenDefault) {
+          stitchGif.src = DEFAULT_STITCH + '?v=' + Date.now();
+        }
+        currentTimer = null;
+      }, ms);
+    }
+
+    function pickRandom(array, avoid) {
+      if (array.length <= 1) return array[0];
+      let choice;
+      do {
+        choice = array[Math.floor(Math.random() * array.length)];
+      } while (choice === avoid);
+      return choice;
+    }
+
+    // ---- Boutons
+    document.getElementById('btn-manger').addEventListener('click', () => {
+      playGifOnce('stitch16.gif');
+      setGauge('manger', 100);
+    });
+
+    document.getElementById('btn-jouer').addEventListener('click', () => {
+      const list = ['stitch7.gif', 'stitch9.gif', 'stitch13.gif', 'stitch14.gif', 'stitch15.gif'];
+      const choice = pickRandom(list, lastPlayed.jouer);
+      lastPlayed.jouer = choice;
+      playGifOnce(choice);
+      setGauge('jouer', 100);
+    });
+
+    document.getElementById('btn-dodo').addEventListener('click', () => {
+      // séquences aléatoires : (2 -> 3 -> finAlt)
+      const finals = ['stitch20.gif', 'stitch21.gif', 'stitch22.gif'];
+      const fin = finals[Math.floor(Math.random() * finals.length)];
+
+      // On enchaîne 2 puis 3 puis fin : on calcule la somme des durées et on remplace l’image à chaque étape
+      // Étape 1
+      playGifOnce('stitch2.gif', false);
+      const t1 = DURATION_MS['stitch2.gif'] || 3000;
 
       setTimeout(() => {
-        window.location.href = 'tamagotchi.html';
-      }, 3500); // attendre la fin du gif
+        // Étape 2
+        playGifOnce('stitch3.gif', false);
+      }, t1);
+
+      const t2 = (DURATION_MS['stitch3.gif'] || 3200);
+
+      setTimeout(() => {
+        // Étape finale (aléatoire), puis retour au défaut
+        playGifOnce(fin, true);
+      }, t1 + t2);
+
+      setGauge('dodo', 100);
+    });
+
+    document.getElementById('btn-bain').addEventListener('click', () => {
+      const list = ['stitch18.gif', 'stitch19.gif'];
+      const choice = pickRandom(list, lastPlayed.bain);
+      lastPlayed.bain = choice;
+      playGifOnce(choice);
+      setGauge('bain', 100);
+    });
+
+    // ---- Retour page 1 (zone titre ronde + gif stitch24 en overlay)
+    const returnZone = document.getElementById('return-zone');
+    const returnGif = document.getElementById('return-gif');
+
+    returnZone.addEventListener('click', () => {
+      returnGif.style.visibility = 'visible';
+      // (Optionnel) relance l’animation du GIF overlay à chaque clic
+      const img = returnGif.querySelector('img');
+      img.src = 'stitch24.gif?v=' + Date.now();
+
+      setTimeout(() => {
+        window.location.href = "index.html";
+      }, 3500);
     });
   </script>
 </body>
