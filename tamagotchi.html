@@ -131,6 +131,7 @@
 
   <script>
     const stitchGif = document.getElementById('stitch-gif');
+    const defaultGif = "stitch1.gif"; // GIF par défaut
     const gauges = {
       manger: document.getElementById('gauge-manger'),
       jouer: document.getElementById('gauge-jouer'),
@@ -151,37 +152,46 @@
       localStorage.setItem('tamagotchiGauges', JSON.stringify(gaugeValues));
     }
 
-    function playGifOnce(src, callback) {
-      stitchGif.src = src + '?t=' + new Date().getTime();
-      stitchGif.onload = () => {
-        const duration = stitchGif.naturalWidth / 10; // estimation si pas de durée exacte
-        setTimeout(() => {
-          if (callback) callback();
-        }, duration * 100); 
-      };
+    // Durées fixes pour chaque action (ms)
+    const gifDurations = {
+      manger: 3000,
+      jouer: 4000,
+      dodo: 5000,
+      bain: 4000
+    };
+
+    function playGifOnce(src, duration, callback) {
+      stitchGif.src = src + "?t=" + new Date().getTime();
+      setTimeout(() => {
+        stitchGif.src = defaultGif;
+        if (callback) callback();
+      }, duration);
     }
 
     document.getElementById('btn-manger').addEventListener('click', () => {
-      playGifOnce('stitch16.gif');
+      playGifOnce("stitch16.gif", gifDurations.manger);
       updateGauge('manger', 100);
     });
 
     document.getElementById('btn-jouer').addEventListener('click', () => {
-      playGifOnce(['stitch7.gif', 'stitch9.gif', 'stitch13.gif', 'stitch14.gif', 'stitch15.gif'][Math.floor(Math.random()*5)]);
+      const gifs = ["stitch7.gif","stitch9.gif","stitch13.gif","stitch14.gif","stitch15.gif"];
+      playGifOnce(gifs[Math.floor(Math.random()*gifs.length)], gifDurations.jouer);
       updateGauge('jouer', 100);
     });
 
     document.getElementById('btn-dodo').addEventListener('click', () => {
-      playGifOnce(['stitch2.gif', 'stitch3.gif', 'stitch20.gif', 'stitch21.gif', 'stitch22.gif'][Math.floor(Math.random()*5)]);
+      const gifs = ["stitch2.gif","stitch3.gif","stitch20.gif","stitch21.gif","stitch22.gif"];
+      playGifOnce(gifs[Math.floor(Math.random()*gifs.length)], gifDurations.dodo);
       updateGauge('dodo', 100);
     });
 
     document.getElementById('btn-bain').addEventListener('click', () => {
-      playGifOnce(['stitch18.gif', 'stitch19.gif'][Math.floor(Math.random()*2)]);
+      const gifs = ["stitch18.gif","stitch19.gif"];
+      playGifOnce(gifs[Math.floor(Math.random()*gifs.length)], gifDurations.bain);
       updateGauge('bain', 100);
     });
 
-    // Sauvegarde des jauges
+    // Sauvegarde jauges
     window.addEventListener('load', () => {
       const saved = localStorage.getItem('tamagotchiGauges');
       if (saved) {
@@ -195,7 +205,6 @@
     // Retour page 1
     const returnZone = document.getElementById('return-zone');
     const returnGif = document.getElementById('return-gif');
-
     returnZone.addEventListener('click', () => {
       returnGif.style.visibility = 'visible';
       setTimeout(() => {
