@@ -130,6 +130,33 @@
   </div>
 
   <script>
+  const stitchGif = document.getElementById('stitch-gif');
+  const defaultGif = "stitch1.gif";
+
+  const gifDurations = {
+    "stitch16.gif": 2500, // manger
+    "stitch7.gif": 2000,
+    "stitch9.gif": 2200,
+    "stitch13.gif": 2500,
+    "stitch14.gif": 1800,
+    "stitch15.gif": 2300,
+    "stitch2.gif": 3000,
+    "stitch3.gif": 2800,
+    "stitch20.gif": 3500,
+    "stitch21.gif": 3200,
+    "stitch22.gif": 3000,
+    "stitch18.gif": 2600,
+    "stitch19.gif": 2400
+  };
+
+  function playGifOnce(src, callback) {
+    stitchGif.src = src + "?t=" + new Date().getTime(); // recharge
+    const duration = gifDurations[src] || 3000; // si pas défini → 3s par défaut
+    setTimeout(() => {
+      stitchGif.src = defaultGif;
+      if (callback) callback();
+    }, duration);
+  }
     const stitchGif = document.getElementById('stitch-gif');
     const defaultGif = "stitch1.gif"; // GIF par défaut
     const gauges = {
